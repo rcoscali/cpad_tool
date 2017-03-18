@@ -14,7 +14,12 @@ namespace cpad
   class Func
   {
   public:
+	Func(void);
     Func(string name);
+    Func(Func const&);
+    virtual ~Func(void);
+    Func& operator =(Func const&);
+    const char *get_name(void);
     
   private:
     string m_name;

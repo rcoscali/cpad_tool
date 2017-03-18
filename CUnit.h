@@ -21,7 +21,11 @@ namespace cpad
     virtual ~CUnit();
     CUnit& operator = (const CUnit &);
 
+    const char *get_filename();
+    unsigned long get_length();
+    
   private:
+    bool m_opened;
     string m_filename;
     unsigned long m_length;
   };

@@ -2,28 +2,30 @@
  * Copyright ©2017 NagraFrance
  */
 
+#include "Cpad.h"
+
+#include <memory>
 #include <cstdlib>
 #include <boost/program_options.hpp>
 
 #include "xml3all.h"
-#include "cpad.h"
 #include "Filter.h"
 #include "CUnit.h"
 
-#define read_from_ifstream(IS) \
-  if (IS)                                                             \
-    {                                                                 \
-      IS.seekg(0, is.end);                                            \
-      filelen = IS.tellg();                                           \
-      IS.seekg(0, IS.beg);                                            \
-                                                                      \
-      m_semantics_buffer = new char [filelen];                        \
-                                                                      \
-      IS.read(m_semantics_buffer, filelen);                           \
-                                                                      \
-      if (!IS)                                                        \
-        cerr << "error: only " << IS.gcount() << " could be read" << endl;\
-      IS.close();                                                     \
+#define READ_FROM_STREAM(IS)                                               \
+  if (IS)                                                                  \
+    {                                                                      \
+      IS.seekg(0, is.end);                                                 \
+      filelen = IS.tellg();                                                \
+      IS.seekg(0, IS.beg);                                                 \
+                                                                           \
+      m_semantics_buffer = new char [filelen];                             \
+                                                                           \
+      IS.read(m_semantics_buffer, filelen);                                \
+                                                                           \
+      if (!IS)                                                             \
+        cerr << "error: only " << IS.gcount() << " could be read" << endl; \
+      IS.close();                                                          \
     }
 
 using namespace std;
@@ -40,7 +42,7 @@ Cpad::Cpad()
   ifstream is(m_semantics_path, ios::in);
 
   // First try local directory
-  read_from_ifstream(is)
+  READ_FROM_STREAM(is)
   else
     {
       // Then HOME directory
@@ -49,20 +51,18 @@ Cpad::Cpad()
         {
           m_semantics_path = string(home) + "/.cpad/" + m_semantics_path;
           ifstream ishome(m_semantics_path, ios::in);
-          read_from_ifstream(ishome);
+          READ_FROM_STREAM(ishome);
         }
     }
 
-  if (filelen)
-    cout << "Read file " << m_semantics_path << " (" << filelen << " bytes)" << endl;
-
   XML semantics(m_semantics_buffer, filelen);
-  auto&root = semantics.GetRootElement();
-  shared_ptr<XMLElement> coverage = root.FindElementZ("cpad:coverage");
-  shared_ptr<XMLElement> compilunits = coverage->FindElementZ("cpad:compilunits");
-  shared_ptr<XMLElement> filterselt1 = compilunits->FindElementZ("cpad:filters");
-  vector<shared_ptr<XMLElement>> compilunits_filter_list = filterselt1->GetChildren();
+  auto& root = semantics.GetRootElement();
+  auto coverage = root.FindElementZ("cpad:coverage");
+  auto compilunits = coverage->FindElementZ("cpad:compilunits");
+  auto filterselt1 = compilunits->FindElementZ("cpad:filters");
+  auto compilunits_filter_list = filterselt1->GetChildren();
 
+  // Handle filters
   for (vector<shared_ptr<XMLElement>>::iterator vi = compilunits_filter_list.begin();
        vi != compilunits_filter_list.end(); vi++)
     {
@@ -73,33 +73,53 @@ Cpad::Cpad()
       string type_value = type_attr->GetValue();
       vector<shared_ptr<XMLCData>> filter_cdata = filter_elt->GetCDatas();
       
-      cout << "Filter applies on " << applyon_value << " and is of type " << type_value << endl;
-      cout << (filter_cdata[0])->GetValue() << endl;
-
       const string expr = (filter_cdata[0])->GetValue();
       if (type_value.compare("expr"))
         {
-          //Filter<CUnit> filter(cpad::EXPR);
-          //m_cunit_filters.insert(m_cunit_filters.begin(),
-          //                     filter);
+          Filter<CUnit> a_filter(cpad::EXPR, expr.c_str());
+          m_cunit_filters.push_back(a_filter);
         }
       else if (type_value.compare("regexp"))
         {
-          //Filter<CUnit> filter(cpad::REGEXP, expr.c_str());
-          //m_cunit_filters.insert(m_cunit_filters.begin(),
-          //filter);
+          Filter<CUnit> a_filter(cpad::REGEXP, expr.c_str());
+          m_cunit_filters.push_back(a_filter);
         }
       else if (type_value.compare("wildcard"))
         {
-          //Filter<CUnit> filter(cpad::WILDCARD, expr.c_str());
-          //m_cunit_filters.insert(m_cunit_filters.begin(),
-          //                     filter);
+          Filter<CUnit> a_filter(cpad::WILDCARD, expr.c_str());
+          m_cunit_filters.push_back(a_filter);
         }
     }
-  
-  
+
+#if 0
+  for (vector<cpad::Filter<cpad::CUnit>>::iterator fi = m_cunit_filters.begin();
+       fi != m_cunit_filters.end();
+       fi++)
+    {
+      Filter<CUnit> filter = *fi;
+      cout << "Filter: " << filter.get_expr() << endl;
+    }
+#endif
+
+  // Handle cunits
   shared_ptr<XMLElement> listelt1 = compilunits->FindElementZ("cpad:list");
   vector<shared_ptr<XMLElement>> compilunits_list = listelt1->GetChildren();
+
+  for (vector<shared_ptr<XMLElement>>::iterator culi = compilunits_list.begin();
+       culi != compilunits_list.end();
+       culi++)
+    {
+      CUnit cunit((*culi)->GetContent());
+      m_cunits.push_back(cunit);
+    }
+
+  for (vector<cpad::CUnit>::iterator cui = m_cunits.begin();
+       cui != m_cunits.end();
+       cui++)
+    {
+      cout << (*cui).get_filename() << ": " << (*cui).get_length() << " bytes" << endl;
+    }
+  
   shared_ptr<XMLElement> functions = coverage->FindElementZ("cpad:functions");
   shared_ptr<XMLElement> filterselt2 = functions->FindElementZ("cpad:filters");
   vector<shared_ptr<XMLElement>> functions_filter_list = filterselt2->GetChildren();

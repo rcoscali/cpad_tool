@@ -11,9 +11,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "Filter.h"
 #include "CUnit.h"
 #include "Func.h"
+#include "Filter.h"
 
 using namespace std;
 
@@ -38,10 +38,10 @@ namespace cpad
     ifstream *m_semantics_file_p;
     char *m_semantics_buffer;
     
-    vector<Filter<CUnit>> m_cunit_filters;
-    vector<Filter<Func>> mfunc_filters;
-    vector<CUnit> m_cunits;
-    vector<Func> m_funcs;
+    vector<cpad::Filter<cpad::CUnit>> m_cunit_filters;
+    vector<cpad::Filter<cpad::Func>> mfunc_filters;
+    vector<cpad::CUnit> m_cunits;
+    vector<cpad::Func> m_funcs;
   };
 }
 
