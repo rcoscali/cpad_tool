@@ -1,0 +1,106 @@
+<?xml version = "1.1" encoding="UTF-8" standalone="yes" ?>
+<cpad:semantics>
+  <!--
+      cpad:processing globally activate or deactivate cpad processing
+      Can take value in:
+      - on
+      - off
+      - yes
+      - no
+      - true
+      - false
+      - 1
+      - 0
+  -->
+  <cpad:coverage cpad:processing="on">
+    <cpad:compilunits>
+      <cpad:filters>
+        <!--
+            Filter compilation units, to apply CPAD tool on, by filename matching or not a regexp
+            Available cpad:applyon attribute can have value in:
+            - filename: match the full file pathname
+            - basename: match the file basename
+            - dirname: match the file directory
+            - extension: match the file extension
+            - mimetype: match the file mime type
+            - size: numerical value for the file size
+            - mdate: modification date (as time_t)
+            - cdate: creation date (as time_t)
+            Available filter cpad:type can have value in:
+            - regexp: an extended regexp and its operator. ex. ~ /.*\.c/ or !~ /\.cpp$/
+            - wildcard: a shell wilcard expression. ex. *.c
+            - expr: a boolean expr against a value. ex. == "toto.c" or > 2048
+        -->
+        <cpad:filter cpad:applyon="filename" cpad:type="regexp">
+          <![CDATA[~ /.*\.c/]]>
+        </cpad:filter>
+        <cpad:filter cpad:applyon="size" cpad:type="expr">
+          <![CDATA[> 2048]]>
+        </cpad:filter>
+      </cpad:filters>
+      <cpad:directory cpad:recursive="on">
+      </cpad:directory>
+      <cpad:list>
+        <cpad:compilunit>toto.c</cpad:compilunit>
+        <cpad:compilunit>tata.c</cpad:compilunit>
+        <cpad:compilunit>titi.c</cpad:compilunit>
+      </cpad:list>
+    </cpad:compilunits>
+    <cpad:functions>
+      <cpad:filters>
+        <cpad:filter cpad:applyon="funcname" cpad:type="regexp">
+          <![CDATA[~ /^module_cpad_.*$/]]>
+        </cpad:filter>
+      </cpad:filters>
+      <cpad:list>
+        <cpad:function>func1</cpad:function>
+        <cpad:function>func2</cpad:function>
+        <cpad:function>func3</cpad:function>
+        <cpad:function>func4</cpad:function>
+        <cpad:function>func4</cpad:function>
+      </cpad:list>
+    </cpad:functions>
+  </cpad:coverage>
+  <cpad:insnsdata>
+    <cpad:insns cpad:id="bb-start" cpad:length="4">
+      <cpad:code>
+        <![CDATA[
+                 00000000  90                nop
+                 00000001  90                nop
+                 00000002  90                nop
+                 00000003  90                nop
+        ]]>
+      </cpad:code>
+    </cpad:insns>
+    <cpad:insns id="bb-end" cpad:length="4">
+      <cpad:code>
+        <![CDATA[
+                 00000000  90                nop
+                 00000001  90                nop
+                 00000002  90                nop
+                 00000003  90                nop
+        ]]>
+      </cpad:code>
+    </cpad:insns>
+    <cpad:insns id="fun-start" cpad:length="4">
+      <cpad:code>
+        <![CDATA[
+                 00000000  90                nop
+                 00000001  90                nop
+                 00000002  90                nop
+                 00000003  90                nop
+        ]]>
+      </cpad:code>
+    </cpad:insns>
+    <cpad:insns id="fun-end" cpad:length="4">
+      <cpad:code>
+        <![CDATA[
+                 00000000  90                nop
+                 00000001  90                nop
+                 00000002  90                nop
+                 00000003  90                nop
+        ]]>
+      </cpad:code>
+    </cpad:insns>
+  </cpad:insnsdata>
+</cpad:semantics>
