@@ -1,4 +1,4 @@
-SRCS = main.cc cpad.cc CUnit.cc Func.cc 
+SRCS = main.cc Filter.cc Cpad.cc CUnit.cc Func.cc 
 OBJS = $(SRCS:%.cc=%.o)
 
 CXXFLAGS = -g -O1 -std=c++11
@@ -20,7 +20,8 @@ clean:
 	rm -f *.o cpad
 	rm -f *~ \#*\#
 
-cpad.o : cpad.h CUnit.h Func.h Filter.h
+Cpad.o : Cpad.h CUnit.h Func.h Filter.h
+Filter.o: Filter.h
 Func.o: Func.h
 CUnit.o: CUnit.h
 

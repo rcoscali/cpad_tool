@@ -19,90 +19,57 @@ namespace cpad
     EXPR = 3
   };
 
-  template<class T>
-    class Filter : public vector<T>
+  enum FilterApplyOn
+  {
+    APPLYON_FILENAME  = 1,
+    APPLYON_BASENAME  = 2,
+    APPLYON_DIRNAME   = 3,
+    APPLYON_EXTENSION = 4,
+    APPLYON_MIMETYPE  = 5,
+    APPLYON_SIZE      = 6,
+    APPLYON_MDATE     = 7,
+    APPLYON_CDATE     = 8,
+    APPLYON_NUMBERS   = 9    
+  }
+
+  const char *FilterApplyOn_str[cpad::APPLYON_NUMBERS+1] =
     {
-    public:
-      Filter<T>(enum FilterType type);
-      Filter<T>(enum FilterType type, char const* expr);
+      /*0*/ "",
+      /*1*/ "filename",
+      /*2*/ "basename",
+      /*3*/ "dirname",
+      /*4*/ "extension",
+      /*5*/ "mimetype",
+      /*6*/ "size",
+      /*7*/ "mdate",
+      /*8*/ "cdate",
+      /*9*/ NULL
+    };
+  
+  class Filter
+  {
+  public:
+    Filter(enum FilterType type);
+    Filter(enum FilterType type, char const* expr);
 
-      virtual ~Filter();
+    virtual ~Filter();
+    
+    Filter(Filter const&);
+    Filter& operator = (Filter const&);
+    Filter& operator != (Filter const&);
 
-      Filter(Filter<T> const&);
-      Filter<T>& operator = (Filter<T> const&);
-      Filter<T>& operator != (Filter<T> const&);
-
-      enum FilterType get_type();
-      const char *get_expr();
-
+    enum FilterType get_type();
+    const char *get_expr();
+    string get_applyon();
+    set_applyon(string applyon);
+    
     private:
       enum FilterType m_type;
       string m_filter_expr;
       regex m_filter_regexp;
+      string m_applyon;
     };
 }
 
-template <class T>
-cpad::Filter<T>::Filter(enum FilterType type)
-{
-  m_type = type;
-  m_filter_expr = "";
-  m_filter_regexp = regex("");
-}
-  
-template <class T>
-cpad::Filter<T>::Filter(enum FilterType type, char const *expr)
-  : cpad::Filter<T>(type)
-{
-  switch (m_type)
-    {
-    case cpad::EXPR:
-      m_filter_expr = string(expr);
-      break;
-    case cpad::REGEXP:
-      m_filter_expr = string(expr);
-      m_filter_regexp = regex(expr, regex::extended);
-      break;
-    case cpad::WILDCARD:
-      m_filter_expr = string(expr);
-      m_filter_regexp = regex(expr, regex::basic);
-      break;
-    }
-}
-  
-template <class T>
-cpad::Filter<T>::~Filter()
-{
-}
 
-template <class T>
-cpad::Filter<T>::Filter(cpad::Filter<T> const& a_copy) 
-{
-  m_type = a_copy.m_type;
-  m_filter_expr = a_copy.m_filter_expr;
-}
-
-template <class T>
-cpad::Filter<T>&
-cpad::Filter<T>::operator = (cpad::Filter<T> const &a_copy)
-{
-  m_type = a_copy.m_type;
-  m_filter_expr = a_copy.m_filter_expr;
-  return *this;
-}
-
-template <class T>
-enum cpad::FilterType
-cpad::Filter<T>::get_type()
-{
-  return m_type;
-}
-
-template <class T>
-const char *
-cpad::Filter<T>::get_expr()
-{
-  return m_filter_expr.c_str();
-}
-  
 #endif
