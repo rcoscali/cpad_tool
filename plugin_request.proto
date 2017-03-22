@@ -1,0 +1,55 @@
+//
+// CPAD server messaging
+//
+// Copyright © 2017 Nagravision
+//
+
+syntax = "proto3";
+
+enum InsertionLocation
+{
+  FUNCTION_ENTRY_BLOCK = 0;
+  FUNCTION_BEFORE_CALL = 1;
+  FUNCTION_AFTER_CALL = 2;
+  FUNCTION_EXIT_BLOCK = 3;
+  BASIC_BLOCK_ENTRY = 4;
+  BASIC_BLOCK_EXIT = 5;
+}
+
+message VersionRequest
+{
+  uint32 client_version_minor = 1;
+  uint32 client_version_major = 2;
+  string client_provider_name = 3;
+}
+
+message VersionResponse
+{
+  uint32 server_version_minor = 1;
+  uint32 server_version_major = 2;
+  string server_provider_name = 3;
+}
+
+service VersionService
+{
+  rpc VersionService (VersionRequest) returns (VersionResponse);
+}
+
+message InsertionPointRequest
+{
+  string cfun_name = 1;
+  InsertionLocation location = 2;	
+}
+
+message InsertionPointResponse
+{
+  bool insert = 1;
+  string asm = 2;
+}
+
+service InsertionPointService
+{
+  rpc InsertionPointService (InsertionPointRequest) returns (InsertionPointResponse);
+}
+
+  
