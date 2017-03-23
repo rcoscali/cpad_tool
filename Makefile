@@ -1,6 +1,6 @@
 CPAD_SRCS = main.cc Filter.cc Cpad.cc CUnit.cc Func.cc 
-SRV_SRCS = srv_main.cc Server.cc plugin_request.pb.cc
-CLT_SRCS = clt_main.cc plugin_request.pb.cc
+SRV_SRCS = srv_main.cc Server.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
+CLT_SRCS = clt_main.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
 CPAD_OBJS = $(CPAD_SRCS:%.cc=%.o)
 SRV_OBJS = $(SRV_SRCS:%.cc=%.o)
 CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
@@ -22,9 +22,12 @@ CLT_LDLIBS := -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -l
 %.pb.cc %.pb.h: %.proto
 	$(PROTOC) $(PROTOC_FLAGS) $< 
 
-.PHONY: all cpad clean cpad_srv cpad_clt
+.PHONY: all cls cpad clean cpad_srv cpad_clt
 
-all: cpad
+all: cls cpad
+
+cls:
+	clear
 
 cpad: $(CPAD_OBJS)
 	$(CXX) $(LDFLAGS) $(CPAD_OBJS) -o $@ $(CPAD_LDLIBS)
@@ -44,9 +47,12 @@ Cpad.o : Cpad.cc Cpad.h CUnit.h Func.h Filter.h
 Filter.o: Filter.cc Filter.h
 Func.o: Func.cc Func.h
 CUnit.o: CUint.cc CUnit.h
-srv_main.o: srv_main.cc Server.h plugin_request.pb.cc plugin_request.pb.h
-clt_main.cc: plugin_request.pb.cc plugin_request.pb.h
+srv_main.o: srv_main.cc Server.h plugin_request.pb.cc VersionMsg.h InsertionPointMsg.h CUnitTerminateMsg.h
+clt_main.cc: plugin_request.pb.cc VersionMsg.h InsertionPointMsg.h CUnitTerminateMsg.h
 Server.o: Server.cc Server.h plugin_request.pb.cc plugin_request.pb.h
 plugin_request.pb.o: plugin_request.pb.cc plugin_request.pb.h
 plugin_request.pb.cc: plugin_request.proto
 plugin_request.pb.h: plugin_request.proto
+VersionMsg.o: plugin_request.pb.h
+InsertionPointMsg.o: plugin_request.pb.h
+CUnitTerminateMsg.o: plugin_request.pb.h

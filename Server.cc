@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include "Server.h"
-#include "plugin_request.pb.h"
+#include "VersionMsg.h"
 
 using namespace boost::system;
 using namespace boost;
@@ -72,27 +72,29 @@ void
 cpad::session::handle_read(const error_code& error,
 			   size_t bytes_transferred)
 {
+  std::cout << "handle_read: entry" << std::endl;
   if (!error)
     {
-      std::cout << "handle_read" << std::endl;
-      VersionRequest req;
-      req.ParseFromString(m_data);
-      std::cout << "client minor: " << req.client_version_minor() << std::endl;
-      std::cout << "client major: " << req.client_version_major() << std::endl;
-      std::cout << "client provider: " << req.client_provider_name() << std::endl;
+      // Dump bytes received
       std::cout << "recv data:\n";
       dump_data(bytes_transferred);
-      std::string response;
-      VersionResponse resp;
-      resp.set_server_version_minor(3);
-      resp.set_server_version_major(4);
-      resp.set_server_provider_name("server");
-      resp.SerializeToString(&response);
-      response.copy(m_data, response.length());
+
+      // Create request from data
+      VersionRequestHelper req((const char *)m_data);
+      req.dump();
+
+      // Create response
+      VersionResponseHelper resp(3, 4, "server");
+      resp.dump();
+
+      // Serialize response
+      size_t response_len = resp.serialize(m_data);
       std::cout << "sent data:\n";
-      dump_data(response.length());
+      dump_data(response_len);
+
+      // And send it asynchronously
       async_write(m_socket,
-                  buffer(m_data, response.length()),
+                  buffer(m_data, response_len),
                   boost::bind(&session::handle_write,
                               this,
                               asio::placeholders::error));
