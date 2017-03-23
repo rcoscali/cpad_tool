@@ -1,0 +1,72 @@
+Server runs as a daemon and fork a process for each session. Client send a VersionRequest Message
+with minor 1, major 2 and provider 'client'.
+The server receives it and send back a VersionResponse with minor 3, major 4 and provider name 'server'.
+As last the VersionRequest should be launched at plugin start (for checking interfaces compat), then
+each callback should send a InsertionPointRequest and receives back a InsertionPointResponse.
+At last we could add a TerminateRequest / TerminateResponse, as for now, processes remain running
+waiting for other requests.
+See the proto file for further details on messages.
+
+Server is launched this way, and a tail of the log file is also listed:
+
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ ./cpad_srv 1234
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ tail -f cpad_srv.log 
+PID 26943: CPAD server started!
+handle_read
+client minor: 1
+client major: 2
+client provider: client
+recv data:
+00000000 0801 1002 1a06 636c 6965 6e74       ......client 
+sent data:
+00000000 0803 1004 1a06 7365 7276 6572       ......server 
+handle_write
+handle_read
+client minor: 1
+client major: 2
+client provider: client
+recv data:
+00000000 0801 1002 1a06 636c 6965 6e74       ......client 
+sent data:
+00000000 0803 1004 1a06 7365 7276 6572       ......server 
+handle_write
+handle_read
+client minor: 1
+client major: 2
+client provider: client
+recv data:
+00000000 0801 1002 1a06 636c 6965 6e74       ......client 
+sent data:
+00000000 0803 1004 1a06 7365 7276 6572       ......server 
+handle_write
+^C
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ 
+
+
+
+Running client:
+
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ make cpad_srv
+protoc --proto_path=. --cpp_out=.  plugin_request.proto 
+g++  -g -O1 -std=c++11 -c srv_main.cc -o srv_main.o
+g++  -g -O1 -std=c++11 -c Server.cc -o Server.o
+g++  -g -O1 -std=c++11 -c plugin_request.pb.cc -o plugin_request.pb.o
+g++ -g -O1 -std=c++11 srv_main.o Server.o plugin_request.pb.o -o cpad_srv -lprotobuf -lboost_system -lboost_iostreams -lboost_program_options -lstdc++ -lpthread -lrt
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ make cpad_clt
+g++ -g -O1 -std=c++11 clt_main.o plugin_request.pb.o -o cpad_clt -lprotobuf -lboost_system -lboost_iostreams -lboost_program_options -lstdc++ -lpthread -lrt
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ ./cpad_clt 127.0.0.1 1234
+Reply is: 
+minor: 3
+major: 4
+provider: server
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ ./cpad_clt 127.0.0.1 1234
+Reply is: 
+minor: 3
+major: 4
+provider: server
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ ./cpad_clt 127.0.0.1 1234
+Reply is: 
+minor: 3
+major: 4
+provider: server
+rcoscali@srjlx0001:/usr/local/src/gcc/cpad$ 
