@@ -6,6 +6,8 @@
 
 syntax = "proto3";
 
+package cpad;
+
 enum InsertionLocation
 {
   FUNCTION_ENTRY_BLOCK = 0;
