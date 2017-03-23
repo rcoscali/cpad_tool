@@ -21,6 +21,7 @@ namespace cpad
     void start(void);
     
   private:
+    void dump_data(size_t size);
     void handle_read(const error_code& error,
 		     size_t  bytes_transferred);
     
