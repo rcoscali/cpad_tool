@@ -40,6 +40,35 @@ cpad::session::start(void)
 }
 
 void
+cpad::session::dump_data(size_t size)
+{
+  char chardump[17];
+  bzero(chardump, 17);
+  char dumped = 0;
+  
+  for (int i = 0; i < size; i++)
+    {
+      dumped = 0;
+      chardump[i%16] = (m_data[i] > 32 ? (m_data[i] < 127 ? m_data[i] : '.') : '.');
+      if (i % 16 == 0)
+        printf("%08x ", i);
+      printf("%02x", m_data[i]);
+      if (i % 2 == 1)
+        printf(" ");
+      if (i % 16 == 15)
+        {
+          dumped = 1;
+          printf("  %16s \n", chardump);
+          bzero(chardump, 16);
+        }
+    }
+  if (!dumped)
+    printf("  %16s \n", chardump);
+  else
+    printf("\n");
+}
+
+void
 cpad::session::handle_read(const error_code& error,
 			   size_t bytes_transferred)
 {
@@ -51,6 +80,8 @@ cpad::session::handle_read(const error_code& error,
       std::cout << "client minor: " << req.client_version_minor() << std::endl;
       std::cout << "client major: " << req.client_version_major() << std::endl;
       std::cout << "client provider: " << req.client_provider_name() << std::endl;
+      std::cout << "recv data:\n";
+      dump_data(bytes_transferred);
       std::string response;
       VersionResponse resp;
       resp.set_server_version_minor(3);
@@ -58,6 +89,8 @@ cpad::session::handle_read(const error_code& error,
       resp.set_server_provider_name("server");
       resp.SerializeToString(&response);
       response.copy(m_data, response.length());
+      std::cout << "sent data:\n";
+      dump_data(response.length());
       async_write(m_socket,
                   buffer(m_data, response.length()),
                   boost::bind(&session::handle_write,
@@ -79,7 +112,6 @@ cpad::session::handle_write(const error_code& error)
                                            this,
                                            asio::placeholders::error,
                                            asio::placeholders::bytes_transferred));
-      std::cout << "data written: " << m_data << std::endl;
     }
   else
     delete this;
@@ -131,7 +163,6 @@ cpad::server::handle_accept(session* new_session,
 {
   if (!error)
     {
-      std::cout << "Forking for handling session\n";
       m_io_svc.notify_fork(io_service::fork_prepare);
       if (fork() > 0)
         {
@@ -139,8 +170,6 @@ cpad::server::handle_accept(session* new_session,
           m_acceptor.close();
           m_signal.cancel();
 
-          std::cout << "PID " << getpid() << " forked for handling session\n";
-          
           new_session->start();
         }
     }
