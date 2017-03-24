@@ -7,7 +7,7 @@ CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
 
 CXXFLAGS = -g -O1 -std=c++11
 PROTOC := protoc
-PROTOC_FLAGS = --proto_path=. --cpp_out=. 
+PROTOC_FLAGS = --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --proto_path=. --cpp_out=. --grpc_out=.
 
 LDFLAGS := -g -O1 -std=c++11
 LDLIBS := -lboost_program_options -lstdc++
@@ -19,7 +19,7 @@ CLT_LDLIBS := -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -l
 %.o: %.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-%.pb.cc %.pb.h: %.proto
+%.grpc.pb.cc %.grpc.pb.h %.pb.cc %.pb.h: %.proto
 	$(PROTOC) $(PROTOC_FLAGS) $< 
 
 .PHONY: all cls cpad clean cpad_srv cpad_clt
