@@ -24,6 +24,18 @@
 *.lib
 
 # Executables
+cpad_clt
+cpad_srv
 *.exe
 *.out
 *.app
+
+# Generated sources
+*.grpc.pb.cc
+*.grpc.pb.h
+*.pb.cc
+*.pb.h
+
+# Backups
+*~
+\#*\#
