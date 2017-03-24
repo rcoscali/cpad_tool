@@ -6,50 +6,142 @@
 
 syntax = "proto3";
 
-enum InsertionLocation
-{
-  FUNCTION_ENTRY_BLOCK = 0;
-  FUNCTION_BEFORE_CALL = 1;
-  FUNCTION_AFTER_CALL = 2;
-  FUNCTION_EXIT_BLOCK = 3;
-  BASIC_BLOCK_ENTRY = 4;
-  BASIC_BLOCK_EXIT = 5;
-}
+package cpad_protobuf;
 
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ===============================
+// Version management messages
+// ===============================
+
+// VersionRequest message is sent by plugin client at its very startup
+// for allowing to check interfaces compatibility between plugin client
+// and CPAD server.
+// Server respond with a VersionResponse message
+// Simple rule could be: a mismatch on major version implies server and
+// client being not compatible.
 message VersionRequest
 {
-  uint32 client_version_minor = 1;
-  uint32 client_version_major = 2;
-  string client_provider_name = 3;
+  // The client minor version
+  uint32 client_version_minor = 10;
+  // The client major version
+  uint32 client_version_major = 20;
+  // A client provider name (informative)
+  string client_provider_name = 30;
 }
 
+// VersionResponse message is sent back by server to plugin client in
+// response to a VersionRequest message.
+// Client and server shall both verify their corresponding versions matches
+// and will allow to implement a valid communication.
+// Compatibility rules still need to be defined at time of writing...
 message VersionResponse
 {
-  uint32 server_version_minor = 1;
-  uint32 server_version_major = 2;
-  string server_provider_name = 3;
+  // Server minor version
+  uint32 server_version_minor = 10;
+  // Server major version
+  uint32 server_version_major = 20;
+  // Server provider name (informative)
+  string server_provider_name = 30;
 }
 
-service VersionService
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ====================================
+// Insertion Points management messages
+// ====================================
+
+// InsetionLocation are  semantically describing all possible locations
+// the CPAD tool could insert statements.
+// The set of locations modified by CPAD is security model dependent.
+enum InsertionLocation
 {
-  rpc VersionService (VersionRequest) returns (VersionResponse);
+  // Insert at the begginning of the first basic block of a function
+  FUNCTION_ENTRY_BLOCK = 0;
+  // Insert just before a call
+  FUNCTION_BEFORE_CALL = 5;
+  // Insert just after a call
+  FUNCTION_AFTER_CALL = 10;
+  // Insert at end of a function, just before exit/return
+  FUNCTION_EXIT_BLOCK = 15;
+  // Insert at the begginning of a basic block
+  BASIC_BLOCK_ENTRY = 20;
+  // Insert at the end of a basic block
+  BASIC_BLOCK_EXIT = 25;
 }
 
+// InsertionPointRequest message is sent by the plugin client to notify CPAD
+// that a possible insertion point was reach by the compilation at a specific
+// pass. CPAD shall answer if insertion is required or not and if required,
+// shall provide the assembler statements to insert.
+// The statement to insert is a GCC __asm__ statement with inputs, outputs,
+// clobbers and labels. Plugin will process this statement in order to insert
+// corresponding insns.
+// Actually the choosen compilation pass should accept asm statement insertion
+// as it, for simpler plugin implementation.
 message InsertionPointRequest
 {
-  string cfun_name = 1;
-  InsertionLocation location = 2;	
+  // Compilation unit name
+  string cunit_name = 10;
+  // Current function name
+  string cfun_name = 20;
+  // Semantic desciption of the location
+  InsertionLocation location = 30;
 }
 
+// InsertionPointResponse message is sent back by server as a response to plugin
+// request InsertionPointRequest.
+// It contains a boolean for granting/denying asm statement insertion, and, if
+// granted, the asm statement to insert.
 message InsertionPointResponse
 {
-  bool insert = 1;
-  string asm = 2;
+  // Boolean for allowing/refusing insertion
+  bool insert_asm_statement = 10;
+  // If allowed, this is the asm statement to insert
+  string asm_statement = 20;
 }
 
-service InsertionPointService
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ===================================
+// CUnit Terminate management messages
+// ===================================
+
+// CUnitTerminateRequest allows the client to notify the server that
+// the compilation unit is done. Server will then close the associated
+// session and release resources.
+message CUnitTerminateRequest
 {
-  rpc InsertionPointService (InsertionPointRequest) returns (InsertionPointResponse);
+  string cunit_name = 10;
 }
 
-  
+// CUnitTerminateResponse allows the server to acknowledge the
+// client CUnitTerminateRequest.
+message CUnitTerminateResponse
+{  
+  string cunit_name = 10;
+}
+
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ============
+// RPC services
+// ============
+
+//
+// Declare RPC services
+// In protobuf rpc service is let open. It is up to us to define an underlying RPC mechanism
+// that will be used for calling a remote method.
+// gprc is such a service (http://grpc.io) in version v1.2.0
+//
+
+service PluginServices
+{
+  rpc VersionService (VersionRequest) returns (VersionResponse) {};
+  rpc InsertionPointService (InsertionPointRequest) returns (InsertionPointResponse) {};
+  rpc CUnitTerminateService (CUnitTerminateRequest) returns (CUnitTerminateResponse) {};
+}

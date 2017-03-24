@@ -1,11 +1,5 @@
 //
-// blocking_tcp_echo_client.cpp
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//http://www.boost.org/doc/libs/1_53_0/doc/html/boost_asio/examples.html
-// Copyright (c) 2003-2012 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// Copyright ©2017 Nagravision
 //
 
 #include <cstdlib>
@@ -13,47 +7,87 @@
 #include <iostream>
 #include <boost/asio.hpp>
 
+#include "VersionMsg.h"
+#include "CUnitTerminateMsg.h"
+
 using boost::asio::ip::tcp;
 
 enum { max_length = 1024 };
 
-int main(int argc, char* argv[])
+Client::Client(boost::asio::io_service io_svc)
+  : m_io_svc(io_svc),
+    m_socket(io_svc)
+{
+}
+
+void
+Client::do_connect(std::string hostname, std::string port)
 {
   try
-  {
-    if (argc != 3)
     {
-      std::cerr << "Usage: blocking_tcp_echo_client <host> <port>\n";
-      return 1;
+      // Use network (dns, tcp, etc...)
+      tcp::resolver resolver(m_io_svc);
+      tcp::resolver::query query(tcp::v4(), argv[1], argv[2]);
+      tcp::resolver::iterator iterator = resolver.resolve(query);
+  
+      // Get socket and connect
+      boost::asio::connect(m_socket, iterator);
     }
+  catch (Exception &e)
+    {
+      std::cerr << "Exception: " << e.what() << std::endl;
+    }
+}
 
-    boost::asio::io_service io_service;
+void
+Client::check_version(void)
+{
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+  
+  // Create version request
+  cpad::VersionRequestHelper req(1, 2, "client");
+  
+  // Serialize and send
+  char request[max_length];    
+  size_t request_length = req.serialize(request);
+  boost::asio::write(s,
+                     boost::asio::buffer(request,
+                                         request_length));
+  
+  // Read response
+  char reply[max_length];
+  size_t reply_length = boost::asio::read(s,
+                                          boost::asio::buffer(reply,
+                                                              request_length));
+  
+  // Display unserialized response
+  cpad::VersionResponseHelper resp((const char *)reply);
+  std::cout << "Reply is: " << std::endl;
+  resp.dump();
+}
 
-    tcp::resolver resolver(io_service);
-    tcp::resolver::query query(tcp::v4(), argv[1], argv[2]);
-    tcp::resolver::iterator iterator = resolver.resolve(query);
+void
+send_insertion_point()
+{
+}
 
-    tcp::socket s(io_service);
-    boost::asio::connect(s, iterator);
+void
+send_cunit_terminate()
+{
+    // Create Terminate request
+    cpad::CUnitTerminateRequestHelper req2(std::string("clt_main.cc"));
+    request_length = req.serialize(request);
+    boost::asio::write(s,
+                       boost::asio::buffer(request,
+                                           request_length));
 
-    using namespace std; // For strlen.
-    std::cout << "Enter message: ";
-    char request[max_length];
-    std::cin.getline(request, max_length);
-    size_t request_length = strlen(request);
-    boost::asio::write(s, boost::asio::buffer(request, request_length));
-
-    char reply[max_length];
-    size_t reply_length = boost::asio::read(s,
-        boost::asio::buffer(reply, request_length));
-    std::cout << "Reply is: ";
-    std::cout.write(reply, reply_length);
-    std::cout << "\n";
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << "Exception: " << e.what() << "\n";
-  }
-
-  return 0;
+    // Read response
+    reply_length = boost::asio::read(s,
+                                     boost::asio::buffer(reply,
+                                                         request_length));
+    
+    // Display unserialized response
+    cpad::CUnitTerminateResponseHelper resp2((const char *)reply);
+    std::cout << "Reply is: " << std::endl;
+    resp2.dump();
 }

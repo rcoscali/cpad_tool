@@ -21,6 +21,7 @@ namespace cpad
     void start(void);
     
   private:
+    void dump_data(size_t size);
     void handle_read(const error_code& error,
 		     size_t  bytes_transferred);
     
@@ -40,13 +41,16 @@ namespace cpad
     server(io_service& io_svc, short port);
     
   private:
+    void start_signal_wait(void);
+    void handle_signal_wait(void);
+
     void start_accept(void);
 
     void handle_accept(session* new_session,
 		       const error_code& error);
 
     io_service& m_io_svc;
+    boost::asio::signal_set m_signal;
     tcp::acceptor m_acceptor;
-};
-
+  };
 }
