@@ -9,7 +9,7 @@ TARGET_GCC ?= $(BUILD_GCC)
 TARGET_GXX ?= $(BUILD_GXX)
 
 CPAD_SRCS = main.cc Filter.cc Cpad.cc CUnit.cc Func.cc 
-CFG_SRCS = Node.cc Edge.cc
+CFG_SRCS = cfgtest.cc Node.cc Edge.cc
 SRV_SRCS = srv_main.cc Server.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
 CLT_SRCS = clt_main.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
 CPAD_OBJS = $(CPAD_SRCS:%.cc=%.o)

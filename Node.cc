@@ -109,3 +109,9 @@ cpad::Node::add_fallback_edge(cpad::Edge const* an_edge_ptr)
 {
   m_edges_ptr.second = (cpad::Edge *)an_edge_ptr;
 }
+
+void
+cpad::Node::dump(std::ostream &os)
+{
+  os << "\tm_name [shape=record,style=filled,fillcolor=lightgrey,label=\"{ ADD " << m_add_value << " | " << m_name << " | " << " INC " << m_checkpoint << " }\";";
+}

@@ -19,6 +19,7 @@ namespace cpad
   {
   public:
     Edge(int, Node const*, Node const*);
+    Edge(Node const*, Node const*);
     Edge(void);
     Edge(Edge const&);
     virtual ~Edge();

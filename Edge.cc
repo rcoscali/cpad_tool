@@ -16,6 +16,15 @@ cpad::Edge::Edge(int delta_value,
   m_nodes_ptr.second = (cpad::Node *)end;
 }
 
+cpad::Edge::Edge(cpad::Node const* start,
+		 cpad::Node const* end)
+  : Edge(0, start, end),
+{
+  _has_delta_value = false;
+  m_nodes_ptr.first = (cpad::Node *)start;
+  m_nodes_ptr.second = (cpad::Node *)end;
+}
+
 cpad::Edge::Edge()
   : Edge(0, (cpad::Node const*)NULL, (cpad::Node const*)NULL)
 {
@@ -45,3 +54,8 @@ cpad::Edge::Edge()
   return (*this);
 }
 
+void
+cpad::Node::dump(std::ostream &os)
+{
+  os << "\tm_name [shape=record,style=filled,fillcolor=lightgrey,label=\"{ ADD " << m_add_value << " | " << m_name << " | " << " INC " << m_checkpoint << " }\";";
+}

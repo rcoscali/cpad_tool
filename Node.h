@@ -36,7 +36,7 @@ namespace cpad
     void add_default_edge(Edge const*); // default branch is first of pair
     void add_fallback_edge(Edge const*); // fallback branch is second of pair
     
-    void dump();
+    void dump(std::ostream);
 
   private:
     string m_name;
