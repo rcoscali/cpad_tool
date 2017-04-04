@@ -1,9 +1,21 @@
+PROTOC ?= protoc
+GCC ?= gcc
+GXX ?= gxx
+HOST_GCC ?= $(GCC)
+HOST_GXX ?= $(GXX)
+BUILD_GCC ?= $(HOST_GCC)
+BUILD_GXX ?= $(HOST_GXX)
+TARGET_GCC ?= $(BUILD_GCC)
+TARGET_GXX ?= $(BUILD_GXX)
+
 CPAD_SRCS = main.cc Filter.cc Cpad.cc CUnit.cc Func.cc 
+CFG_SRCS = Node.cc Edge.cc
 SRV_SRCS = srv_main.cc Server.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
 CLT_SRCS = clt_main.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
 CPAD_OBJS = $(CPAD_SRCS:%.cc=%.o)
 SRV_OBJS = $(SRV_SRCS:%.cc=%.o)
 CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
+CFG_OBJS = Node.o Edge.o
 
 CXXFLAGS = -g -O1 -std=c++11
 PROTOC := protoc
@@ -24,7 +36,7 @@ CLT_LDLIBS := -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -l
 
 .PHONY: all cls cpad clean cpad_srv cpad_clt
 
-all: cls cpad
+all: cls cpad cfgtest
 
 cls:
 	clear
@@ -37,6 +49,9 @@ cpad_srv: $(SRV_OBJS)
 
 cpad_clt: $(CLT_OBJS)
 	$(CXX) $(LDFLAGS) $(CLT_OBJS) -o $@ $(CLT_LDLIBS)
+
+cfgtest: $(CFG_OBJS)
+	$(CXX) $(LDFLAGS) $(CFG_OBJS) -o $@ $(CFG_LDLIBS)
 
 clean:
 	rm -f *.o cpad
