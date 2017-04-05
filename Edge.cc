@@ -5,35 +5,44 @@
 #include "Edge.h"
 
 cpad::Edge::Edge(int delta_value,
-		 cpad::Node const* start,
-		 cpad::Node const* end)
+		 shared_ptr<cpad::Node> start,
+		 shared_ptr<cpad::Node> end)
   : m_delta_value(delta_value),
     _has_delta_value(true),
-    _has_start_node(start != (cpad::Node const*)NULL),
-    _has_end_node(end != (cpad::Node const*)NULL)
+    _has_start_node(start != nullptr),
+    _has_end_node(end != nullptr)
 {
-  m_nodes_ptr.first = (cpad::Node *)start;
-  m_nodes_ptr.second = (cpad::Node *)end;
+  m_nodes_ptr.first = start;
+  m_nodes_ptr.second = end;
 }
 
-cpad::Edge::Edge(cpad::Node const* start,
-		 cpad::Node const* end)
-  : Edge(0, start, end),
+cpad::Edge::Edge(shared_ptr<cpad::Node> start,
+		 shared_ptr<cpad::Node> end)
+  : Edge(0, start, end)
 {
   _has_delta_value = false;
-  m_nodes_ptr.first = (cpad::Node *)start;
-  m_nodes_ptr.second = (cpad::Node *)end;
+  m_nodes_ptr.first = start;
+  m_nodes_ptr.second = end;
+}
+
+cpad::Edge::Edge(cpad::Node const *start,
+		 cpad::Node const *end)
+  : Edge(0, shared_ptr<cpad::Node>((cpad::Node *)start), shared_ptr<cpad::Node>((cpad::Node *)end))
+{
+  _has_delta_value = false;
+  m_nodes_ptr.first = shared_ptr<cpad::Node>((cpad::Node *)start);
+  m_nodes_ptr.second = shared_ptr<cpad::Node>((cpad::Node *)end);
 }
 
 cpad::Edge::Edge()
-  : Edge(0, (cpad::Node const*)NULL, (cpad::Node const*)NULL)
+  : Edge(0, nullptr, nullptr)
 {
   _has_delta_value = false;
   _has_start_node = true;
   _has_end_node = true;
 }
 
-::cpad::Edge::Edge(Edge const&an_edge_to_copy)
+cpad::Edge::Edge(Edge const&an_edge_to_copy)
   : Edge(an_edge_to_copy.m_delta_value,
 	 an_edge_to_copy.m_nodes_ptr.first,
 	 an_edge_to_copy.m_nodes_ptr.second)
@@ -43,8 +52,12 @@ cpad::Edge::Edge()
   _has_end_node = an_edge_to_copy._has_end_node;
 }
 
-::cpad::Edge &
-::cpad::Edge::operator =(::cpad::Edge const &an_edge_to_affect)
+cpad::Edge::~Edge(void)
+{
+}
+
+cpad::Edge &
+cpad::Edge::operator =(::cpad::Edge const &an_edge_to_affect)
 {
   m_delta_value = an_edge_to_affect.m_delta_value;
   _has_delta_value = an_edge_to_affect._has_delta_value;
@@ -54,8 +67,27 @@ cpad::Edge::Edge()
   return (*this);
 }
 
-void
-cpad::Node::dump(std::ostream &os)
+int
+cpad::Edge::get_delta_value(void)
 {
-  os << "\tm_name [shape=record,style=filled,fillcolor=lightgrey,label=\"{ ADD " << m_add_value << " | " << m_name << " | " << " INC " << m_checkpoint << " }\";";
+  return m_delta_value;
+}
+
+std::pair<shared_ptr<cpad::Node>, shared_ptr<cpad::Node>>
+cpad::Edge::get_nodes(void)
+{
+  return m_nodes_ptr;
+}
+
+void
+cpad::Edge::dump(std::ostream &os)
+{
+  cerr << "Edge::dump\n";
+  shared_ptr<Node> start = m_nodes_ptr.first;
+  shared_ptr<Node> end = m_nodes_ptr.second;
+  if (start != nullptr && end != nullptr)
+    {
+      os << "        " << start->get_name() << ":s -> " << end->get_name() << ":n";
+      os << " [style=\"solid,bold\",color=black,weight=5,label=\"[" << m_delta_value << "]\"];\n";
+    }
 }

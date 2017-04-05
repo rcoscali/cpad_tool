@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "Func.h"
 #include "Edge.h"
 
 using namespace std;
@@ -14,35 +15,50 @@ using namespace std;
 namespace cpad
 {
   class Edge;
+  class Func;
   
   class Node
   {
   public:
-    Node(string, int, Edge const*, Edge const*);
-    Node(string);
+    Node();
+    Node(shared_ptr<Func>, string);
+    Node(shared_ptr<Func>, string, int, shared_ptr<Edge>, shared_ptr<Edge>);
     Node(Node const&);
     virtual ~Node();
     Node& operator = (Node const&);
 
     //const char *get_cunit_name(void);
     //const char *get_func_name(void);
+
     const char *get_name(void);
+
+    const int get_checkpoint(void);
+    void set_checkpoint(const int);
+
     bool has_add_value(void);
     int get_add_value(void);
     void set_add_value(int add_value);
-    bool has_an_edge(void);
-    pair<Edge *, Edge *> get_edges(void);
 
-    void add_default_edge(Edge const*); // default branch is first of pair
-    void add_fallback_edge(Edge const*); // fallback branch is second of pair
+    bool has_an_edge(void);
+    pair<shared_ptr<Edge>, shared_ptr<Edge>> get_edges(void);
+
+    void add_default_edge(shared_ptr<Edge>); // default branch is first of pair
+    void add_default_edge(Edge *&); // default branch is first of pair
+    void add_fallback_edge(shared_ptr<Edge>); // fallback branch is second of pair
+    void add_fallback_edge(Edge *&); // fallback branch is second of pair
+    void add_edge(shared_ptr<Edge>); // add default branch then fallback branch in pair
+    void add_edge(Edge *&); // add default branch then fallback branch in pair
     
-    void dump(std::ostream);
+    void dump(ostream &);
+    void dump_edges(ostream &);
 
   private:
+    shared_ptr<Func> m_back_func;
     string m_name;
+    int m_checkpoint;
     bool _has_add_value;
     int m_add_value;
-    pair<Edge *, Edge *> m_edges_ptr;
+    pair<shared_ptr<Edge>, shared_ptr<Edge>> m_edges_ptr;
     bool _has_edge_d;
     bool _has_edge_fb;
   };

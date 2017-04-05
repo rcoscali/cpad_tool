@@ -6,6 +6,7 @@
 #define CPAD__EDGE_H_
 
 #include <iostream>
+#include <memory>
 
 #include "Node.h"
 
@@ -18,22 +19,23 @@ namespace cpad
   class Edge
   {
   public:
-    Edge(int, Node const*, Node const*);
-    Edge(Node const*, Node const*);
+    Edge(int, shared_ptr<Node>, shared_ptr<Node>);
+    Edge(shared_ptr<Node>, shared_ptr<Node>);
+    Edge(Node const *, Node const *);
     Edge(void);
     Edge(Edge const&);
-    virtual ~Edge();
+    virtual ~Edge(void);
     Edge& operator = (Edge const&);
 
     int get_delta_value(void);
-    std::pair<Node *, Node *> get_nodes(void);
+    std::pair<shared_ptr<Node>, shared_ptr<Node>> get_nodes(void);
 
-    void dump();
+    void dump(ostream &);
     
   private:
     int m_delta_value;
     bool _has_delta_value;
-    std::pair<Node *, Node *> m_nodes_ptr;
+    std::pair<shared_ptr<Node>, shared_ptr<Node>> m_nodes_ptr;
     bool _has_start_node;
     bool _has_end_node;
   };

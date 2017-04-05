@@ -1,0 +1,49 @@
+digraph {
+    label="2ada2726-5d87-0d82-3144-cc20e33256f0";
+    subgraph "cluster_cunit_CUnit1" {
+        label="C Unit: CUnit1";
+        style="dashed";
+        color="black";
+        fillcolor="grey80";
+        labeljust=l;
+        penwidth=2;
+        subgraph cluster_func_foo {
+            style="filled";
+            color="darkred";
+            fillcolor="grey90";
+            label="C Unit: foo";
+            labeljust=l;
+            penwidth=3;
+            A [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | A |  INC 0 }";];
+            B [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | B |  INC 0 }";];
+            C [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | C |  INC 0 }";];
+        }
+        A:s -> B:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        A:s -> C:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        C:s -> D:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        C:s -> F:n [style="solid,bold",color=black,weight=5,label="[0]"];
+    }
+    subgraph "cluster_cunit_CUnit2" {
+        label="C Unit: CUnit2";
+        style="dashed";
+        color="black";
+        fillcolor="grey80";
+        labeljust=l;
+        penwidth=2;
+        subgraph cluster_func_bar {
+            style="filled";
+            color="darkred";
+            fillcolor="grey90";
+            label="C Unit: bar";
+            labeljust=l;
+            penwidth=3;
+            D [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | D |  INC 0 }";];
+            E [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | E |  INC 0 }";];
+            F [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | F |  INC 0 }";];
+        }
+        D:s -> E:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        D:s -> F:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        E:s -> A:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        F:s -> B:n [style="solid,bold",color=black,weight=5,label="[0]"];
+    }
+}
