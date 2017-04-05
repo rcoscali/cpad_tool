@@ -30,7 +30,8 @@ namespace cpad
     int get_delta_value(void);
     std::pair<shared_ptr<Node>, shared_ptr<Node>> get_nodes(void);
 
-    void dump(ostream &);
+    void dump_in(ostream &);
+    void dump_out(ostream &);
     
   private:
     int m_delta_value;

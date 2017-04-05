@@ -39,6 +39,34 @@ namespace cpad
     m_name = a_copy.m_name;
   }
 
+  bool
+  Func::operator ==(Func const& a_func)
+  {
+    return (m_back_cunit == a_func.m_back_cunit &&
+            m_name == a_func.m_name);
+  }
+  
+  bool
+  Func::operator ==(shared_ptr<Func> const a_func)
+  {
+    return (m_back_cunit == a_func->m_back_cunit &&
+            m_name == a_func->m_name);
+  }
+  
+  bool
+  Func::operator !=(Func const& a_func)
+  {
+    return (m_back_cunit != a_func.m_back_cunit ||
+            m_name != a_func.m_name);
+  }
+  
+  bool
+  Func::operator !=(shared_ptr<Func> const a_func)
+  {
+    return (m_back_cunit != a_func->m_back_cunit ||
+            m_name != a_func->m_name);
+  }
+  
   const char *
   Func::get_name(void)
   {
@@ -69,7 +97,7 @@ namespace cpad
     cerr << "Func::dump\n";
     os << "        subgraph cluster_func_" << m_name << " {\n";
     os << "            style=\"filled\";\n";
-    os << "            color=\"darkred\";\n";
+    os << "            color=\"#800000\";\n";
     os << "            fillcolor=\"grey90\";\n";
     os << "            label=\"C Unit: " << m_name << "\";\n";
     os << "            labeljust=l;\n";
@@ -81,13 +109,20 @@ namespace cpad
         shared_ptr<Node> node = *it;
         (*node).dump(os);
       }
-    os << "        }\n";
     for (vector<shared_ptr<Node>>::iterator it = m_nodes_ptr.begin();
          it != m_nodes_ptr.end();
          it++)
       {
         shared_ptr<Node> node = *it;
-        (*node).dump_edges(os);
+        (*node).dump_in_edges(os);
       }
+    for (vector<shared_ptr<Node>>::iterator it = m_nodes_ptr.begin();
+         it != m_nodes_ptr.end();
+         it++)
+      {
+        shared_ptr<Node> node = *it;
+        (*node).dump_out_edges(os);
+      }
+    os << "        }\n";
   }
 }

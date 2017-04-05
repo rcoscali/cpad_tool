@@ -80,14 +80,36 @@ cpad::Edge::get_nodes(void)
 }
 
 void
-cpad::Edge::dump(std::ostream &os)
+cpad::Edge::dump_in(std::ostream &os)
 {
-  cerr << "Edge::dump\n";
+  cerr << "Edge::dump_in\n";
   shared_ptr<Node> start = m_nodes_ptr.first;
   shared_ptr<Node> end = m_nodes_ptr.second;
-  if (start != nullptr && end != nullptr)
+  if (start != nullptr &&
+      end != nullptr &&
+      start->get_func() == end->get_func())
     {
-      os << "        " << start->get_name() << ":s -> " << end->get_name() << ":n";
+      os << "            func_" << start->get_func_name() << "_" << start->get_name();
+      os << ":s -> ";
+      os << "func_" << end->get_func_name() << "_" << end->get_name() << "";
       os << " [style=\"solid,bold\",color=black,weight=5,label=\"[" << m_delta_value << "]\"];\n";
     }
 }
+
+void
+cpad::Edge::dump_out(std::ostream &os)
+{
+  cerr << "Edge::dump_out\n";
+  shared_ptr<Node> start = m_nodes_ptr.first;
+  shared_ptr<Node> end = m_nodes_ptr.second;
+  if (start != nullptr &&
+      end != nullptr &&
+      start->get_func() != end->get_func())
+    {
+      os << "        func_" << start->get_func_name() << "_" << start->get_name();
+      os << ":s -> ";
+      os << "func_" << end->get_func_name() << "_" << end->get_name() << "";
+      os << " [style=\"solid,bold\",color=black,weight=5,label=\"[" << m_delta_value << "]\"];\n";
+    }
+}
+

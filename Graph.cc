@@ -66,6 +66,7 @@ cpad::Graph::dump(std::ostream &os)
           m_grid[5],  m_grid[4],  m_grid[3],  m_grid[2],  m_grid[1],  m_grid[0]);
   os << uuid;
   os << "\";\n";
+  os << "    labeljust=r;\n";
   for (vector<shared_ptr<CUnit>>::iterator it = m_cunits_ptr.begin();
        it != m_cunits_ptr.end();
        it++)

@@ -69,6 +69,19 @@ cpad::Node::operator = (cpad::Node const&a_node_to_affect)
   return (*this);
 }
 
+const char *
+cpad::Node::get_func_name(void)
+{
+  return m_back_func->get_name();
+}
+
+
+shared_ptr<cpad::Func>
+cpad::Node::get_func(void)
+{
+  return m_back_func;
+}
+
 const char*
 cpad::Node::get_name(void)
 {
@@ -210,16 +223,25 @@ void
 cpad::Node::dump(std::ostream &os)
 {
   cerr << "Node::dump\n";
-  os << "            " << m_name << " [shape=record,style=filled,fillcolor=lightgrey,";
+  os << "            func_" << get_func_name() << "_" << m_name << " [shape=record,style=filled,fillcolor=lightgrey,";
   os << "label=\"{ ADD " << m_add_value << " | " << m_name << " | " << " INC " << m_checkpoint << " }\";];\n";
 
 }
 
 void
-cpad::Node::dump_edges(std::ostream &os)
+cpad::Node::dump_in_edges(std::ostream &os)
 {
   if (m_edges_ptr.first != nullptr)
-    m_edges_ptr.first->dump(os);
+    m_edges_ptr.first->dump_in(os);
   if (m_edges_ptr.second != nullptr)
-    m_edges_ptr.second->dump(os);
+    m_edges_ptr.second->dump_in(os);
+}
+
+void
+cpad::Node::dump_out_edges(std::ostream &os)
+{
+  if (m_edges_ptr.first != nullptr)
+    m_edges_ptr.first->dump_out(os);
+  if (m_edges_ptr.second != nullptr)
+    m_edges_ptr.second->dump_out(os);
 }

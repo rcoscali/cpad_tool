@@ -27,7 +27,12 @@ namespace cpad
     CUnit(shared_ptr<Graph>, string);
     CUnit(const CUnit &);
     virtual ~CUnit();
-    CUnit& operator = (const CUnit &);
+    CUnit& operator = (CUnit const&);
+
+    bool operator == (CUnit const&);
+    bool operator == (shared_ptr<CUnit> const);
+    bool operator != (CUnit const&);
+    bool operator != (shared_ptr<CUnit> const);
 
     const char *get_filename(void);
     unsigned long get_length(void);

@@ -27,8 +27,8 @@ namespace cpad
     virtual ~Node();
     Node& operator = (Node const&);
 
-    //const char *get_cunit_name(void);
-    //const char *get_func_name(void);
+    const char *get_func_name(void);
+    shared_ptr<Func> get_func(void);
 
     const char *get_name(void);
 
@@ -51,6 +51,8 @@ namespace cpad
     
     void dump(ostream &);
     void dump_edges(ostream &);
+    void dump_in_edges(ostream &);
+    void dump_out_edges(ostream &);
 
   private:
     shared_ptr<Func> m_back_func;

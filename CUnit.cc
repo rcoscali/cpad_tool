@@ -61,6 +61,30 @@ cpad::CUnit::operator =(const CUnit &a_copy)
   return *this;
 }
 
+bool
+cpad::CUnit::operator == (cpad::CUnit const&a_cunit)
+{
+  return (m_filename == a_cunit.m_filename);
+}
+
+bool
+cpad::CUnit::operator == (shared_ptr<cpad::CUnit> const a_cunit)
+{
+  return (m_filename == a_cunit->m_filename);
+}
+
+bool
+cpad::CUnit::operator != (cpad::CUnit const& a_cunit)
+{
+  return (m_filename != a_cunit.m_filename);
+}
+
+bool
+cpad::CUnit::operator != (shared_ptr<cpad::CUnit> const a_cunit)
+{
+  return (m_filename != a_cunit->m_filename);
+}
+
 const char *
 cpad::CUnit::get_filename()
 {

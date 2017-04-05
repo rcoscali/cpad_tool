@@ -27,6 +27,10 @@ namespace cpad
     Func(Func const&);
     virtual ~Func(void);
     Func& operator =(Func const&);
+    bool operator ==(Func const&);
+    bool operator !=(Func const&);
+    bool operator ==(shared_ptr<Func>);
+    bool operator !=(shared_ptr<Func> );
     const char *get_name(void);
 
     void add_node(shared_ptr<Node>);
