@@ -87,12 +87,13 @@ cpad::Edge::dump_in(std::ostream &os)
   shared_ptr<Node> end = m_nodes_ptr.second;
   if (start != nullptr &&
       end != nullptr &&
+      start->get_func()->get_cunit() == end->get_func()->get_cunit() &&
       start->get_func() == end->get_func())
     {
       os << "            func_" << start->get_func_name() << "_" << start->get_name();
       os << ":s -> ";
-      os << "func_" << end->get_func_name() << "_" << end->get_name() << "";
-      os << " [style=\"solid,bold\",color=black,weight=5,label=\"[" << m_delta_value << "]\"];\n";
+      os << "func_" << end->get_func_name() << "_" << end->get_name() << ":n";
+      os << " [style=\"solid,bold\",color=black,weight=5,constraint=true,decorate=true,label=\"[" << m_delta_value << "]\"];\n";
     }
 }
 
@@ -104,12 +105,31 @@ cpad::Edge::dump_out(std::ostream &os)
   shared_ptr<Node> end = m_nodes_ptr.second;
   if (start != nullptr &&
       end != nullptr &&
+      start->get_func()->get_cunit() == end->get_func()->get_cunit() &&
       start->get_func() != end->get_func())
     {
       os << "        func_" << start->get_func_name() << "_" << start->get_name();
       os << ":s -> ";
-      os << "func_" << end->get_func_name() << "_" << end->get_name() << "";
-      os << " [style=\"solid,bold\",color=black,weight=5,label=\"[" << m_delta_value << "]\"];\n";
+      os << "func_" << end->get_func_name() << "_" << end->get_name() << ":n";
+      os << " [style=\"solid,bold\",color=green,weight=5,constraint=true,decorate=true,label=\"[" << m_delta_value << "]\"];\n";
+    }
+}
+
+void
+cpad::Edge::dump_outer(std::ostream &os)
+{
+  cerr << "Edge::dump_outer\n";
+  shared_ptr<Node> start = m_nodes_ptr.first;
+  shared_ptr<Node> end = m_nodes_ptr.second;
+  if (start != nullptr &&
+      end != nullptr &&
+      start->get_func()->get_cunit() != end->get_func()->get_cunit() &&
+      start->get_func() != end->get_func())
+    {
+      os << "    func_" << start->get_func_name() << "_" << start->get_name();
+      os << ":s -> ";
+      os << "func_" << end->get_func_name() << "_" << end->get_name() << ":n";
+      os << " [style=\"solid,bold\",color=blue,weight=5,constraint=true,decorate=true,label=\"[" << m_delta_value << "]\"];\n";
     }
 }
 

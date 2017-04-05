@@ -224,7 +224,7 @@ cpad::Node::dump(std::ostream &os)
 {
   cerr << "Node::dump\n";
   os << "            func_" << get_func_name() << "_" << m_name << " [shape=record,style=filled,fillcolor=lightgrey,";
-  os << "label=\"{ ADD " << m_add_value << " | " << m_name << " | " << " INC " << m_checkpoint << " }\";];\n";
+  os << "label=\"{ Add " << m_add_value << " | " << m_name << " | " << " Inc " << m_checkpoint << " }\"];\n";
 
 }
 
@@ -244,4 +244,13 @@ cpad::Node::dump_out_edges(std::ostream &os)
     m_edges_ptr.first->dump_out(os);
   if (m_edges_ptr.second != nullptr)
     m_edges_ptr.second->dump_out(os);
+}
+
+void
+cpad::Node::dump_outer_edges(std::ostream &os)
+{
+  if (m_edges_ptr.first != nullptr)
+    m_edges_ptr.first->dump_outer(os);
+  if (m_edges_ptr.second != nullptr)
+    m_edges_ptr.second->dump_outer(os);
 }

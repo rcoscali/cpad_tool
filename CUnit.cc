@@ -123,9 +123,12 @@ cpad::CUnit::dump(std::ostream &os)
   os << "        label=\"C Unit: " << m_filename << "\";\n";
   os << "        style=\"dashed\";\n";
   os << "        color=\"black\";\n";
-  os << "        fillcolor=\"grey80\";\n";
+  os << "        fillcolor=\"grey90\";\n";
   os << "        labeljust=l;\n";
-  os << "        penwidth=2;\n";
+  os << "        pencolor=\"#C0AF40\";\n";
+  os << "        labelfontsize=16.0;\n";
+  os << "        style=\"rounded\";\n";
+  os << "        penwidth=3;\n";
   
   for (vector<shared_ptr<cpad::Func>>::iterator it = m_funcs_ptr.begin();
        it != m_funcs_ptr.end();
@@ -135,4 +138,11 @@ cpad::CUnit::dump(std::ostream &os)
       (*func).dump(os);
     }
   os << "    }\n";
+  for (vector<shared_ptr<cpad::Func>>::iterator it = m_funcs_ptr.begin();
+       it != m_funcs_ptr.end();
+       it++)
+    {
+      shared_ptr<cpad::Func> func = *it;
+      (*func).dump_outer_edges(os);
+    }
 }

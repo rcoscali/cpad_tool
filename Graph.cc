@@ -55,17 +55,23 @@ void
 cpad::Graph::dump(std::ostream &os)
 {
   char uuid[50];
+  uuid_unparse_upper(m_grid, uuid);
+
   cerr << "Graph::dump\n";
   os << "digraph {\n";
-  os << "    label=\"";
-  sprintf(uuid, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-          m_grid[15], m_grid[14], m_grid[13], m_grid[12],
-          m_grid[11], m_grid[10],
-          m_grid[9],  m_grid[8],
-          m_grid[7],  m_grid[6],
-          m_grid[5],  m_grid[4],  m_grid[3],  m_grid[2],  m_grid[1],  m_grid[0]);
-  os << uuid;
-  os << "\";\n";
+  os << "    mode=\"ipsep\";\n";
+  os << "    sep=\"+20,10\";\n";
+  os << "    smoothing=\"spring\";\n";
+  os << "    clusterrank=\"local\";\n";
+  os << "    labelfontcolor=\"#FF0000\";\n";
+  os << "    labelfontname=\"mono:italic\";\n";
+  os << "    labelfontsize=20.0;\n";
+  os << "    gradientangle=45;\n";
+  os << "    labeldistance=30;\n";
+  os << "    labelangle=45;\n";
+  os << "    pencolor=\"#40FF40\";\n";
+  os << "    label=\"Compilation Graph ID: ";
+  os << uuid << "\";\n";
   os << "    labeljust=r;\n";
   for (vector<shared_ptr<CUnit>>::iterator it = m_cunits_ptr.begin();
        it != m_cunits_ptr.end();

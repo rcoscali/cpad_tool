@@ -66,6 +66,12 @@ namespace cpad
     return (m_back_cunit != a_func->m_back_cunit ||
             m_name != a_func->m_name);
   }
+
+  shared_ptr<cpad::CUnit>
+  Func::get_cunit(void)
+  {
+    return m_back_cunit;
+  }
   
   const char *
   Func::get_name(void)
@@ -97,11 +103,15 @@ namespace cpad
     cerr << "Func::dump\n";
     os << "        subgraph cluster_func_" << m_name << " {\n";
     os << "            style=\"filled\";\n";
-    os << "            color=\"#800000\";\n";
-    os << "            fillcolor=\"grey90\";\n";
+    os << "            color=\"#CFB0E0\";\n";
+    os << "            style=\"filled\";\n";
+    os << "            fillcolor=\"#CFB0E0\";\n";
     os << "            label=\"C Unit: " << m_name << "\";\n";
     os << "            labeljust=l;\n";
-    os << "            penwidth=3;\n";
+    os << "            pencolor=\"#AF40C0\";\n";
+    os << "            labelfontname=\"mono\";\n";
+    os << "            labelfontsize=12.0;\n";
+    os << "            penwidth=2;\n";
     for (vector<shared_ptr<Node>>::iterator it = m_nodes_ptr.begin();
          it != m_nodes_ptr.end();
          it++)
@@ -116,6 +126,7 @@ namespace cpad
         shared_ptr<Node> node = *it;
         (*node).dump_in_edges(os);
       }
+    os << "        }\n";
     for (vector<shared_ptr<Node>>::iterator it = m_nodes_ptr.begin();
          it != m_nodes_ptr.end();
          it++)
@@ -123,6 +134,17 @@ namespace cpad
         shared_ptr<Node> node = *it;
         (*node).dump_out_edges(os);
       }
-    os << "        }\n";
+  }
+
+  void
+  cpad::Func::dump_outer_edges(std::ostream &os)
+  {
+    for (vector<shared_ptr<Node>>::iterator it = m_nodes_ptr.begin();
+         it != m_nodes_ptr.end();
+         it++)
+      {
+        shared_ptr<Node> node = *it;
+        (*node).dump_outer_edges(os);
+      }
   }
 }

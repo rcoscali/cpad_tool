@@ -53,6 +53,7 @@ namespace cpad
     void dump_edges(ostream &);
     void dump_in_edges(ostream &);
     void dump_out_edges(ostream &);
+    void dump_outer_edges(ostream &);
 
   private:
     shared_ptr<Func> m_back_func;

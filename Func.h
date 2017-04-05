@@ -27,10 +27,14 @@ namespace cpad
     Func(Func const&);
     virtual ~Func(void);
     Func& operator =(Func const&);
+    
     bool operator ==(Func const&);
     bool operator !=(Func const&);
     bool operator ==(shared_ptr<Func>);
-    bool operator !=(shared_ptr<Func> );
+    bool operator !=(shared_ptr<Func>);
+
+    shared_ptr<CUnit> get_cunit(void);
+    
     const char *get_name(void);
 
     void add_node(shared_ptr<Node>);
@@ -38,6 +42,7 @@ namespace cpad
     vector<shared_ptr<Node>> get_nodes(void);
     
     void dump(ostream &);
+    void dump_outer_edges(ostream &);
     
   private:
     shared_ptr<CUnit> m_back_cunit;

@@ -32,6 +32,7 @@ namespace cpad
 
     void dump_in(ostream &);
     void dump_out(ostream &);
+    void dump_outer(ostream &);
     
   private:
     int m_delta_value;

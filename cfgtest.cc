@@ -81,6 +81,24 @@ main(int argc, char *argv[])
   c->add_fallback_edge(cf);
   Edge *fb = new Edge(shared_ptr<Node>(f), shared_ptr<Node>(b));
   f->add_default_edge(fb);
+
+  try
+    {
+      f->add_default_edge(fb);
+    }
+  catch (exception &e)
+    {
+      cerr << "Exception: " << e.what() << "\n";
+    }
+  
+  try
+    {
+      f->add_fallback_edge(fb);
+    }
+  catch (exception &e)
+    {
+      cerr << "Exception: " << e.what() << "\n";
+    }
   
   cerr << "edges\n";
 
