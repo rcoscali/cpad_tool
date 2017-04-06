@@ -18,12 +18,18 @@ main(int argc, char *argv[])
     {
       if (argc != 2)
         throw std::invalid_argument("Usage: cfgtest <initial_checkpoint>");
+
+      //
+      // Graph
+      //
       
       int initial_checkpoint = atoi(argv[1]);
       cerr << "initial checkpoint: " << initial_checkpoint << "\n";
       Graph *gr = new Graph(initial_checkpoint);
 
-      cerr << "graph\n";
+      //
+      // Compilation Units
+      //
 
       // Create first CUnit: CUnit1
       CUnit *cunit1 = new CUnit(shared_ptr<Graph>(gr), "CUnit1");
@@ -36,7 +42,9 @@ main(int argc, char *argv[])
       // Add it to the graph
       gr->add_cunit(cunit2);
       
-      cerr << "cunits\n";
+      //
+      // Funcs
+      //
       
       // Create first function: foo
       Func *func1 = new Func(shared_ptr<CUnit>(cunit1), "foo");
@@ -47,9 +55,14 @@ main(int argc, char *argv[])
       // Create second function: bar
       Func *func2 = new Func(shared_ptr<CUnit>(cunit2), "bar");
       // Add it to cunit2
-      cunit2->add_func(func2);
+      cunit2->add_func(func2);      
+      Func *func3 = new Func(shared_ptr<CUnit>(cunit2), "bar");
+      // Add it to cunit2
+      cunit2->add_func(func3);
       
-      cerr << "funcs\n";
+      //
+      // Nodes
+      //
       
       // Create Node A
       Node *a = new Node(shared_ptr<Func>(func1), "A");
@@ -70,10 +83,12 @@ main(int argc, char *argv[])
       func2->add_node(d);
       Node *e = new Node(shared_ptr<Func>(func2), "E");
       func2->add_node(e);
-      Node *f = new Node(shared_ptr<Func>(func2), "F");
-      func2->add_node(f);
-      
-      cerr << "nodes\n";
+      Node *f = new Node(shared_ptr<Func>(func3), "F");
+      func3->add_node(f);
+
+      //
+      // Edges
+      //
       
       Edge *ab = new Edge(shared_ptr<Node>(a), shared_ptr<Node>(b));
       a->add_default_edge(ab);
@@ -95,7 +110,8 @@ main(int argc, char *argv[])
       
       Edge *fb = new Edge(shared_ptr<Node>(f), shared_ptr<Node>(b));
       f->add_default_edge(fb);
-      
+
+      // Added the same edge a second time as default edge
       try
         {
           f->add_default_edge(fb);
@@ -105,6 +121,7 @@ main(int argc, char *argv[])
           cerr << "Exception: " << e.what() << "\n";
         }
       
+      // Added the same edge as fallback edge
       try
         {
           f->add_fallback_edge(fb);
@@ -114,6 +131,7 @@ main(int argc, char *argv[])
           cerr << "Exception: " << e.what() << "\n";
         }
       
+      // Added an edge as default edge but already have one
       Edge *fa = new Edge(shared_ptr<Node>(f), shared_ptr<Node>(a));
       try
         {
@@ -124,6 +142,7 @@ main(int argc, char *argv[])
           cerr << "Exception: " << e.what() << "\n";
         }
       
+      // Added an edge as fallback edge but already have one
       try
         {
           f->add_fallback_edge(fa);
@@ -133,15 +152,15 @@ main(int argc, char *argv[])
           cerr << "Exception: " << e.what() << "\n";
         }
       
-      cerr << "edges\n";
-      
+      // Dump as dot
       gr->dump(cout);
 
+      // Start apex allocation
       gr->allocate_cfi_apex();
     }
   catch (invalid_argument &ia)
     {
-      cerr << "Error: missing initial_checkpoint value";
+      cerr << "cfgtest: error: missing initial_checkpoint value\n";
       cerr << ia.what() << endl;
       return 1;
     }
