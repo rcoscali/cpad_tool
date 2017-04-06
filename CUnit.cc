@@ -1,4 +1,6 @@
-/*
+/**
+ * @file CUnit.cc
+ *
  * Copyright ©2017 NagraFrance
  */
 
@@ -9,6 +11,9 @@
 
 using namespace std;
 
+/**
+ *
+ */
 cpad::CUnit::CUnit()
   : cpad::CUnit(nullptr, "")
   {
@@ -17,6 +22,9 @@ cpad::CUnit::CUnit()
     _has_entry = false;
   }
   
+/**
+ *
+ */
 cpad::CUnit::CUnit(shared_ptr<Graph> the_graph, string filename)
   : ifstream(),
     m_entry(nullptr),
@@ -42,6 +50,9 @@ cpad::CUnit::CUnit(shared_ptr<Graph> the_graph, string filename)
     }
 }
 
+/**
+ *
+ */
 cpad::CUnit::CUnit(const CUnit &a_copy)
   : CUnit()
 {
@@ -53,12 +64,18 @@ cpad::CUnit::CUnit(const CUnit &a_copy)
   _opened = a_copy._opened;
 }
 
+/**
+ *
+ */
 cpad::CUnit::~CUnit()
 {
   if (_opened && rdbuf() && rdbuf()->is_open())
     rdbuf()->close();
 }
 
+/**
+ *
+ */
 cpad::CUnit &
 cpad::CUnit::operator =(const CUnit &a_copy)
 {
@@ -72,6 +89,9 @@ cpad::CUnit::operator =(const CUnit &a_copy)
   return (*this);
 }
 
+/**
+ *
+ */
 shared_ptr<cpad::Graph>
 cpad::CUnit::get_graph(void)
 {
@@ -80,42 +100,63 @@ cpad::CUnit::get_graph(void)
   return m_back_graph;
 }
 
+/**
+ *
+ */
 const char *
 cpad::CUnit::get_graph_name(const char **out)
 {
   return get_graph()->get_name(out);
 }
 
+/**
+ *
+ */
 bool
 cpad::CUnit::operator == (cpad::CUnit const&a_cunit)
 {
   return (m_filename == a_cunit.m_filename);
 }
 
+/**
+ *
+ */
 bool
 cpad::CUnit::operator == (shared_ptr<cpad::CUnit> const a_cunit)
 {
   return (m_filename == a_cunit->m_filename);
 }
 
+/**
+ *
+ */
 bool
 cpad::CUnit::operator != (cpad::CUnit const& a_cunit)
 {
   return (m_filename != a_cunit.m_filename);
 }
 
+/**
+ *
+ */
 bool
 cpad::CUnit::operator != (shared_ptr<cpad::CUnit> const a_cunit)
 {
   return (m_filename != a_cunit->m_filename);
 }
 
+/**
+ *
+ */
 const char *
 cpad::CUnit::get_name()
 {
   return get_filename();
 }
 
+/**
+ *
+ */
 const char *
 cpad::CUnit::get_cluster_name()
 {
@@ -124,28 +165,54 @@ cpad::CUnit::get_cluster_name()
   return m_cluster_name.c_str();
 }
 
+/**
+ *
+ */
 const char *
 cpad::CUnit::get_filename()
 {
   return m_filename.c_str();
 }
 
+/**
+ *
+ */
 unsigned long
 cpad::CUnit::get_length()
 {
   return m_length;
 }
 
+/**
+ * Add a function in this compilation unit. If a
+ * function with the same name is already added,
+ * cluster name is indexed for avoid problems in
+ * the dot dump.
+ *
+ * @param a_func  The function to add in this 
+ *                compilation unit
+ */
 void
 cpad::CUnit::add_func(shared_ptr<Func> a_func)
 {
+  for (auto itf : m_funcs_ptr)
+    if (string(itf->get_name()) == string(a_func->get_name()))
+      {
+        a_func->set_unique_cluster_name();
+        break;
+      }
   m_funcs_ptr.push_back(a_func);
 }
 
+/**
+ * Add a function using the shared_ptr one
+ *
+ * @param a_func  The function to add
+ */
 void
 cpad::CUnit::add_func(cpad::Func *&a_func)
 {
-  m_funcs_ptr.push_back(shared_ptr<cpad::Func>(a_func));
+  add_func(shared_ptr<cpad::Func>(a_func));
 }
 
 vector<shared_ptr<cpad::Func>>
@@ -184,17 +251,12 @@ cpad::CUnit::get_entry(void)
 void
 cpad::CUnit::dump(std::ostream &os)
 {
-  cerr << "CUnit::dump\n";
   os << "    subgraph \"" << get_cluster_name() << "\" {\n";
-  os << "        label=\"C Unit: " << m_filename << "\";\n";
-  os << "        style=\"dashed\";\n";
-  os << "        color=\"black\";\n";
-  os << "        fillcolor=\"grey90\";\n";
+  os << "        label=\"Compil. unit: " << m_filename << "\";\n";
   os << "        labeljust=l;\n";
   os << "        pencolor=\"#C0AF40\";\n";
-  os << "        labelfontsize=16.0;\n";
   os << "        style=\"rounded\";\n";
-  os << "        penwidth=3;\n";
+  os << "        penwidth=1;\n";
   
   for (vector<shared_ptr<cpad::Func>>::iterator it = m_funcs_ptr.begin();
        it != m_funcs_ptr.end();
