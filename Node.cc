@@ -300,11 +300,11 @@ cpad::Node::add_edge(cpad::Edge *&an_edge_ptr)
 void
 cpad::Node::dump(std::ostream &os)
 {
-  cerr << "Node::dump: " << get_cluster_name() << "\n";
-  cerr << "     orig: func_" << get_func_name() << "_" << m_name << "\n";
-  os << "            " << get_cluster_name() << " [shape=record,style=filled,fillcolor=lightgrey,";
-  os << "label=\"{ Add " << m_checkpoint << " + " << m_add_value << " | " << m_name << " | " << " Inc " << m_checkpoint << " + 1 }\"];\n";
-
+  os << "            " << get_cluster_name() << " [";
+  os << "label=<<TABLE BGCOLOR=\"white\" BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"><TR><TD><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New\">ChkAdd</FONT></TD><TD ";
+  os << "BGCOLOR=\"#c0c0c0\" PORT=\"here\"><FONT COLOR=\"red\" POINT-SIZE=\"12.0\">" << m_checkpoint << "</FONT></TD><TD>" << m_add_value << "</TD></TR><TR><TD ";
+  os << "COLSPAN=\"3\">" << m_name << "</TD></TR><TR><TD COLSPAN=\"2\"><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New,italic\">ChkInc</FONT></TD><TD BGCOLOR=\"#c0c0c0\"><FONT COLOR=\"red\">";
+  os << m_checkpoint << "</FONT></TD></TR></TABLE>>];\n";
 }
 
 void
