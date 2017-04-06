@@ -1,8 +1,13 @@
-/*
+/**
+ * @file Func.cc
+ *
  * Copyright ©2017 NagraFrance
  */
 
 #include <string>
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
 
 #include "Func.h"
 
@@ -116,6 +121,16 @@ namespace cpad
   }
 
   void
+  Func::set_unique_cluster_name(void)
+  {
+    char buf[33];
+    srand(time(0));
+    sprintf(buf, "%d", rand());
+    m_cluster_name = string("cluster_func_") + get_name() +
+      string(" (") + buf + string(")");
+  }
+
+  void
   cpad::Func::add_node(shared_ptr<cpad::Node> a_node)
   {
     m_nodes_ptr.push_back(a_node);
@@ -164,18 +179,13 @@ namespace cpad
   void
   cpad::Func::dump(std::ostream &os)
   {
-    cerr << "Func::dump\n";
     os << "        subgraph \"" << get_cluster_name() << "\" {\n";
     os << "            style=\"filled\";\n";
-    os << "            color=\"#CFB0E0\";\n";
-    os << "            style=\"filled\";\n";
     os << "            fillcolor=\"#CFB0E0\";\n";
-    os << "            label=\"C Unit: " << m_name << "\";\n";
+    os << "            label=\"Function: " << m_name << "\";\n";
     os << "            labeljust=l;\n";
     os << "            pencolor=\"#AF40C0\";\n";
-    os << "            labelfontname=\"mono\";\n";
-    os << "            labelfontsize=12.0;\n";
-    os << "            penwidth=2;\n";
+    os << "            penwidth=1;\n";
     for (vector<shared_ptr<Node>>::iterator it = m_nodes_ptr.begin();
          it != m_nodes_ptr.end();
          it++)

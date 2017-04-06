@@ -1,4 +1,6 @@
-/*
+/**
+ * @file Func.h
+ *
  * Copyright ©2017 NagraFrance
  */
 
@@ -42,6 +44,7 @@ namespace cpad
 
     const char *get_name(void);
     const char *get_cluster_name(void);
+    void set_unique_cluster_name(void);
 
     void add_node(shared_ptr<Node>);
     void add_node(Node *&);
