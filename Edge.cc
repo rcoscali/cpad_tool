@@ -110,7 +110,6 @@ cpad::Edge::get_nodes(void)
 void
 cpad::Edge::dump_in(std::ostream &os)
 {
-  cerr << "Edge::dump_in\n";
   shared_ptr<Node> start = m_nodes_ptr.first;
   shared_ptr<Node> end = m_nodes_ptr.second;
   if (start != nullptr &&
@@ -121,14 +120,13 @@ cpad::Edge::dump_in(std::ostream &os)
       os << "            func_" << start->get_func_name() << "_" << start->get_name();
       os << ":s -> ";
       os << "func_" << end->get_func_name() << "_" << end->get_name() << ":n";
-      os << " [style=\"solid,bold\",color=black,weight=5,constraint=true,decorate=true,label=\"[" << m_delta_value << "]\"];\n";
+      os << " [fontname=\"Kinnari\",color=black,weight=5,constraint=true,decorate=true,label=\"" << m_delta_value << "\"];\n";
     }
 }
 
 void
 cpad::Edge::dump_out(std::ostream &os)
 {
-  cerr << "Edge::dump_out\n";
   shared_ptr<Node> start = m_nodes_ptr.first;
   shared_ptr<Node> end = m_nodes_ptr.second;
   if (start != nullptr &&
@@ -139,14 +137,13 @@ cpad::Edge::dump_out(std::ostream &os)
       os << "        func_" << start->get_func_name() << "_" << start->get_name();
       os << ":s -> ";
       os << "func_" << end->get_func_name() << "_" << end->get_name() << ":n";
-      os << " [style=\"solid,bold\",color=green,weight=5,constraint=true,decorate=true,label=\"[" << m_delta_value << "]\"];\n";
+      os << " [fontname=\"Kinnari\",color=green,weight=5,constraint=true,decorate=true,label=\"" << m_delta_value << "\"];\n";
     }
 }
 
 void
 cpad::Edge::dump_outer(std::ostream &os)
 {
-  cerr << "Edge::dump_outer\n";
   shared_ptr<Node> start = m_nodes_ptr.first;
   shared_ptr<Node> end = m_nodes_ptr.second;
   if (start != nullptr &&
@@ -157,7 +154,7 @@ cpad::Edge::dump_outer(std::ostream &os)
       os << "    func_" << start->get_func_name() << "_" << start->get_name();
       os << ":s -> ";
       os << "func_" << end->get_func_name() << "_" << end->get_name() << ":n";
-      os << " [style=\"solid,bold\",color=blue,weight=5,constraint=true,decorate=true,label=\"[" << m_delta_value << "]\"];\n";
+      os << " [fontname=\"Kinnari\",color=blue,weight=5,constraint=true,decorate=true,label=\"" << m_delta_value << "\"];\n";
     }
 }
 

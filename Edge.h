@@ -1,4 +1,6 @@
-/*
+/**
+ * @file Edge.h
+ *
  * Copyright ©2017 NagraFrance
  */
 

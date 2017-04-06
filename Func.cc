@@ -4,6 +4,8 @@
  * Copyright ©2017 NagraFrance
  */
 
+#include <stdlib.h>
+
 #include <string>
 #include <cstdlib>
 #include <iostream>
