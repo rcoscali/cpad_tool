@@ -1,49 +1,85 @@
 digraph {
-    label="2ada2726-5d87-0d82-3144-cc20e33256f0";
+    mode="ipsep";
+    sep="+20,10";
+    smoothing="spring";
+    clusterrank="local";
+    labelfontcolor="#FF0000";
+    labelfontname="mono:italic";
+    labelfontsize=20.0;
+    gradientangle=45;
+    labeldistance=30;
+    labelangle=45;
+    pencolor="#40FF40";
+    label="Compilation Graph ID: 5E3110A3-8E54-46AD-B749-EFF34FC4F5A0";
+    labeljust=r;
+    comment="Entry point is in compilation unit 'CUnit1'";
+    comment="and in function 'foo'";
+    comment="and in basic_block 'A'";
+    
+    ENTRY [shape=circle,style=filled,fontcolor=white,color=black,fixedsize=true,fontsize=8,width=0.4,label="Entry"];
+    
     subgraph "cluster_cunit_CUnit1" {
         label="C Unit: CUnit1";
         style="dashed";
         color="black";
-        fillcolor="grey80";
+        fillcolor="grey90";
         labeljust=l;
-        penwidth=2;
-        subgraph cluster_func_foo {
+        pencolor="#C0AF40";
+        labelfontsize=16.0;
+        style="rounded";
+        penwidth=3;
+        subgraph "cluster_func_foo" {
             style="filled";
-            color="darkred";
-            fillcolor="grey90";
+            color="#CFB0E0";
+            style="filled";
+            fillcolor="#CFB0E0";
             label="C Unit: foo";
             labeljust=l;
-            penwidth=3;
-            A [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | A |  INC 0 }";];
-            B [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | B |  INC 0 }";];
-            C [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | C |  INC 0 }";];
+            pencolor="#AF40C0";
+            labelfontname="mono";
+            labelfontsize=12.0;
+            penwidth=2;
+            func_foo_A [shape=record,style=filled,fillcolor=lightgrey,label="{ Add 0 + 0 | A |  Inc 0 + 1 }"];
+            func_foo_B [shape=record,style=filled,fillcolor=lightgrey,label="{ Add 0 + 0 | B |  Inc 0 + 1 }"];
+            func_foo_C [shape=record,style=filled,fillcolor=lightgrey,label="{ Add 0 + 0 | C |  Inc 0 + 1 }"];
+            func_foo_A:s -> func_foo_B:n [style="solid,bold",color=black,weight=5,constraint=true,decorate=true,label="[0]"];
+            func_foo_A:s -> func_foo_C:n [style="solid,bold",color=black,weight=5,constraint=true,decorate=true,label="[0]"];
         }
-        A:s -> B:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        A:s -> C:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        C:s -> D:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        C:s -> F:n [style="solid,bold",color=black,weight=5,label="[0]"];
     }
+    func_foo_C:s -> func_bar_D:n [style="solid,bold",color=blue,weight=5,constraint=true,decorate=true,label="[0]"];
+    func_foo_C:s -> func_bar_F:n [style="solid,bold",color=blue,weight=5,constraint=true,decorate=true,label="[0]"];
     subgraph "cluster_cunit_CUnit2" {
         label="C Unit: CUnit2";
         style="dashed";
         color="black";
-        fillcolor="grey80";
+        fillcolor="grey90";
         labeljust=l;
-        penwidth=2;
-        subgraph cluster_func_bar {
+        pencolor="#C0AF40";
+        labelfontsize=16.0;
+        style="rounded";
+        penwidth=3;
+        subgraph "cluster_func_bar" {
             style="filled";
-            color="darkred";
-            fillcolor="grey90";
+            color="#CFB0E0";
+            style="filled";
+            fillcolor="#CFB0E0";
             label="C Unit: bar";
             labeljust=l;
-            penwidth=3;
-            D [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | D |  INC 0 }";];
-            E [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | E |  INC 0 }";];
-            F [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | F |  INC 0 }";];
+            pencolor="#AF40C0";
+            labelfontname="mono";
+            labelfontsize=12.0;
+            penwidth=2;
+            func_bar_D [shape=record,style=filled,fillcolor=lightgrey,label="{ Add 0 + 0 | D |  Inc 0 + 1 }"];
+            func_bar_E [shape=record,style=filled,fillcolor=lightgrey,label="{ Add 0 + 0 | E |  Inc 0 + 1 }"];
+            func_bar_F [shape=record,style=filled,fillcolor=lightgrey,label="{ Add 0 + 0 | F |  Inc 0 + 1 }"];
+            func_bar_D:s -> func_bar_E:n [style="solid,bold",color=black,weight=5,constraint=true,decorate=true,label="[0]"];
+            func_bar_D:s -> func_bar_F:n [style="solid,bold",color=black,weight=5,constraint=true,decorate=true,label="[0]"];
         }
-        D:s -> E:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        D:s -> F:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        E:s -> A:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        F:s -> B:n [style="solid,bold",color=black,weight=5,label="[0]"];
     }
+    func_bar_E:s -> func_foo_A:n [style="solid,bold",color=blue,weight=5,constraint=true,decorate=true,label="[0]"];
+    func_bar_F:s -> func_foo_B:n [style="solid,bold",color=blue,weight=5,constraint=true,decorate=true,label="[0]"];
+    func_bar_F:s -> func_foo_A:n [style="solid,bold",color=blue,weight=5,constraint=true,decorate=true,label="[0]"];
+    
+    ENTRY -> func_foo_A[style="dotted,bold",color=red,weight=3,constraint=false,decorate=false];
+    
 }
