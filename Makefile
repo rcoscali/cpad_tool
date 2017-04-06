@@ -37,9 +37,9 @@ CLT_LDLIBS := -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -l
 %.grpc.pb.cc %.grpc.pb.h %.pb.cc %.pb.h: %.proto
 	$(PROTOC) $(PROTOC_FLAGS) $< 
 
-.PHONY: all cls cpad clean cpad_srv cpad_clt cfgtest
+.PHONY: all cls clean
 
-all: cls cfgtest cpad
+all: cfgtest cpad
 
 cls:
 	clear || true
@@ -47,13 +47,13 @@ cls:
 cpad: cpad_srv cpad_clt $(CPAD_OBJS)
 	$(CXX) $(LDFLAGS) $(CPAD_OBJS) -o $@ $(CPAD_LDLIBS)
 
-cpad_srv: $(SRV_OBJS)
+cpad_srv: cls $(SRV_OBJS)
 	$(CXX) $(LDFLAGS) $(SRV_OBJS) -o $@ $(SRV_LDLIBS)
 
-cpad_clt: $(CLT_OBJS)
+cpad_clt: cls $(CLT_OBJS)
 	$(CXX) $(LDFLAGS) $(CLT_OBJS) -o $@ $(CLT_LDLIBS)
 
-cfgtest: $(CFG_OBJS)
+cfgtest: cls $(CFG_OBJS)
 	$(CXX) $(LDFLAGS) $(CFG_OBJS) -o $@ $(CFG_LDLIBS)
 
 clean:
