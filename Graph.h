@@ -62,6 +62,8 @@ namespace cpad
 
     void allocate_cfi_apex(void);
 
+    vector<weak_ptr<Node>> m_all_nodes;
+
   private:
 
     int m_checkpoint;
@@ -69,7 +71,6 @@ namespace cpad
     bool _has_entry;
     vector<shared_ptr<CUnit>> m_cunits_ptr;
     uuid_t m_grid;
-    vector<weak_ptr<Node>> m_all_nodes;
     
   }; // class Graph
 

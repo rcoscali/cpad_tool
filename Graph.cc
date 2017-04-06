@@ -182,7 +182,7 @@ cpad::Graph::add_node(const weak_ptr<cpad::Node> &a_weak_node_ptr)
 void
 cpad::Graph::add_node(cpad::Node * const &a_node_ptr)
 {
-  add_node(weak_ptr<cpad::Node>(shared_ptr<cpad::Node>(a_node_ptr)));
+  add_node(shared_ptr<cpad::Node>(a_node_ptr));
 }
 
 vector<weak_ptr<cpad::Node>>
@@ -196,28 +196,13 @@ cpad::Graph::allocate_cfi_apex(void)
 {
   cerr << "Starting APEX allocation: current checkpoint: " << get_current_checkpoint() << "\n";
 
-  cerr << "All nodes :";
-  for (vector<weak_ptr<Node>>::iterator it = m_all_nodes.begin();
-       it != m_all_nodes.end();
-       it++)
-    {
-      weak_ptr<cpad::Node> wnode = *it;
-      shared_ptr<cpad::Node> node_ptr;
-      if (node_ptr = wnode.lock())
-        cerr << " " << node_ptr->get_name();
-    }
-  cerr << "\n";
-  
   cerr << "Computing ancestors ...\n";
-  for (vector<weak_ptr<Node>>::iterator it = m_all_nodes.begin();
+  for (auto it = m_all_nodes.begin();
        it != m_all_nodes.end();
        it++)
     {
-      weak_ptr<cpad::Node> wnode = *it;
-      shared_ptr<cpad::Node> node_ptr;
-      if (node_ptr = wnode.lock())
+      if (auto node_ptr = (*it).lock())
         {
-          cerr << "For node " << node_ptr->get_name() << ":\n";
           node_ptr->compute_ancestors();
           node_ptr->dump_ancestors();
         }

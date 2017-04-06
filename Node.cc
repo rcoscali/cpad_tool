@@ -375,46 +375,31 @@ cpad::Node::has_ancestor(const weak_ptr<cpad::Node> &a_node_ptr)
 bool
 cpad::Node::has_ancestor(const shared_ptr<cpad::Node> &a_node_ptr)
 {
-  cpad::Node::HasNodeAsAncestor functor = std::for_each(m_ancestors.begin(),
-                                                        m_ancestors.end(),
-                                                        cpad::Node::HasNodeAsAncestor(a_node_ptr));
-
+  cpad::Node::HasNodeAsAncestor functor
+    = std::for_each(m_ancestors.begin(),
+                    m_ancestors.end(),
+                    cpad::Node::HasNodeAsAncestor(a_node_ptr));
   return functor.has_node_as_ancestor();
 }
 
 void
 cpad::Node::compute_ancestors()
 {
-  cerr << "Compute ancestors for node " << get_name() << "\n";
-  for (vector<weak_ptr<Node>>::iterator it = get_graph()->get_all_nodes().begin();
-       it != get_graph()->get_all_nodes().end();
+  for (auto it = get_graph()->m_all_nodes.begin();
+       it != get_graph()->m_all_nodes.end();
        it++)
     {
-      weak_ptr<cpad::Node> wnode = (*it);
-      shared_ptr<cpad::Node> node_ptr;
-      if (node_ptr = wnode.lock())
+      if (auto node_ptr = (*it).lock())
         {
-          int n_edges = 0;
-          cerr << "  Considering node " << node_ptr->get_name() << "\n";
-          if (node_ptr->m_edges_ptr.first != nullptr)
-            {
-              cerr << "    first has end = " << node_ptr->m_edges_ptr.first->get_nodes().second->get_name() << "\n";              
-              n_edges = 1;
-            }
-          if (node_ptr->m_edges_ptr.second != nullptr)
-            {
-              cerr << "    second has end = " << node_ptr->m_edges_ptr.second->get_nodes().second->get_name() << "\n";              
-              n_edges = 2;
-            }
-          cerr << "    having " << n_edges << " edges\n";
           if (node_ptr->m_edges_ptr.first != nullptr &&
               *this == *(node_ptr->m_edges_ptr.first->get_nodes().second) &&
-              !has_ancestor(node_ptr->m_edges_ptr.first->get_nodes().second))
-            add_ancestor(node_ptr->m_edges_ptr.first->get_nodes().second);
+              !has_ancestor(node_ptr->m_edges_ptr.first->get_nodes().first))
+            add_ancestor(node_ptr->m_edges_ptr.first->get_nodes().first);
+
           if (node_ptr->m_edges_ptr.second != nullptr &&
               *this == *(node_ptr->m_edges_ptr.second->get_nodes().second) &&
-              !has_ancestor(node_ptr->m_edges_ptr.second->get_nodes().second))
-            add_ancestor(node_ptr->m_edges_ptr.second->get_nodes().second);
+              !has_ancestor(node_ptr->m_edges_ptr.second->get_nodes().first))
+            add_ancestor(node_ptr->m_edges_ptr.second->get_nodes().first);
         }
     }
 }
@@ -422,14 +407,13 @@ cpad::Node::compute_ancestors()
 void
 cpad::Node::dump_ancestors(void)
 {
-  cerr << "Node " << get_name() << " has " << m_ancestors.size() << " ancestors:\n";
-  for (vector<weak_ptr<cpad::Node>>::iterator it = m_ancestors.begin();
+  cerr << "Node " << get_name() << " has " << m_ancestors.size() << " ancestors:";
+  for (auto it = m_ancestors.begin();
        it != m_ancestors.end();
        it++)
     {
       if (auto node = (*it).lock())
-        {
-          cerr << "    " << node->get_name() << "\n";
-        }
+        cerr << "  " << node->get_name();
     }
+  cerr << "\n";
 }

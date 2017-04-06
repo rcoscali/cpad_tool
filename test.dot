@@ -10,7 +10,7 @@ digraph {
     labeldistance=30;
     labelangle=45;
     pencolor="#40FF40";
-    label="Compilation Graph ID: 5E3110A3-8E54-46AD-B749-EFF34FC4F5A0";
+    label="Compilation Graph ID: 2C4CDB2A-7B18-4335-B3F0-BC0A9D4A73EB";
     labeljust=r;
     comment="Entry point is in compilation unit 'CUnit1'";
     comment="and in function 'foo'";
