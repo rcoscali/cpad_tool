@@ -107,21 +107,12 @@ cpad::Graph::dump(std::ostream &os)
   char uuid[50];
   uuid_unparse_upper(m_grid, uuid);
 
-  cerr << "Graph::dump\n";
   os << "digraph {\n";
-  os << "    mode=\"ipsep\";\n";
-  os << "    sep=\"+20,10\";\n";
-  os << "    smoothing=\"spring\";\n";
+  os << "    node [shape=plaintext];\n";
   os << "    clusterrank=\"local\";\n";
-  os << "    labelfontcolor=\"#FF0000\";\n";
-  os << "    labelfontname=\"mono:italic\";\n";
-  os << "    labelfontsize=20.0;\n";
-  os << "    gradientangle=45;\n";
-  os << "    labeldistance=30;\n";
-  os << "    labelangle=45;\n";
-  os << "    pencolor=\"#40FF40\";\n";
   os << "    label=\"Compilation Graph ID: " << uuid << "\";\n";
   os << "    labeljust=r;\n";
+  os << "    fontname=\"Terminus\";\n";
   if (_has_entry)
     {
       os << "    comment=\"Entry point is in compilation unit '" << get_entry()->get_filename() << "'\";\n";
@@ -145,11 +136,6 @@ cpad::Graph::dump(std::ostream &os)
       (*cunit).dump(os);
     }
 
-  cerr << "has entry?: " << _has_entry << "\n";
-  cerr << "entry: " << get_entry() << "\n";
-  cerr << "entry has entry?: " << get_entry()->has_entry() << "\n";
-  cerr << "entry(entry): " << get_entry()->get_entry() << "\n";
-  cerr << "entry(entry) has entry?: " << get_entry()->get_entry()->has_entry() << "\n";
   if (_has_entry && get_entry()->has_entry() && get_entry()->get_entry()->has_entry())
     {
       Func entry_func = *(get_entry()->get_entry());
