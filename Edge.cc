@@ -67,6 +67,34 @@ cpad::Edge::operator =(::cpad::Edge const &an_edge_to_affect)
   return (*this);
 }
 
+bool
+cpad::Edge::operator == (cpad::Edge const& right)
+{
+  return (*(m_nodes_ptr.first) == *(right.m_nodes_ptr.first) &&
+          *(m_nodes_ptr.second) == *(right.m_nodes_ptr.second));
+}
+
+bool
+cpad::Edge::operator != (Edge const& right)
+{
+  return (*(m_nodes_ptr.first) != *(right.m_nodes_ptr.first) ||
+          *(m_nodes_ptr.second) != *(right.m_nodes_ptr.second));
+}
+
+bool
+cpad::Edge::operator == (shared_ptr<Edge> right)
+{
+  return (*(m_nodes_ptr.first) == *(right->m_nodes_ptr.first) &&
+          *(m_nodes_ptr.second) == *(right->m_nodes_ptr.second));
+}
+
+bool
+cpad::Edge::operator != (shared_ptr<Edge> right)
+{
+  return (*(m_nodes_ptr.first) != *(right->m_nodes_ptr.first) ||
+          *(m_nodes_ptr.second) != *(right->m_nodes_ptr.second));
+}
+
 int
 cpad::Edge::get_delta_value(void)
 {
