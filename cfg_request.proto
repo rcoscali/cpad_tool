@@ -1,0 +1,119 @@
+//
+// CPAD server messaging
+// Phase 1: CFG consolidation
+//
+// Copyright © 2017 Nagravision
+//
+
+syntax = "proto3";
+
+package cpad_protobuf;
+
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ===============================
+// Compilation unit export
+// ===============================
+
+// CUnitRequest message is sent by plugin client at start of a compilation unit
+// processing.
+// Server respond with a CUnitResponse message
+message CompilationUnitStartRequest
+{
+  // Filename of the compilation unit (.o)
+  string filename = 10;
+}
+
+// VersionResponse message is sent back by server to plugin client in
+// response to a CUnitRequest message.
+message Response
+{
+  //  CUnitResponse is empty
+}
+
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ====================================
+// Function export messages
+// ====================================
+
+// FunctionRequest allows the plugin to send a new function when one is detected.
+// No request is needed to be unique. The server will aggaregated correctly several
+// request for the same function (it is up to the plugin to send it once or not).
+message FunctionRequest
+{
+  // Compilation unit name
+  string cunit_name = 10;
+  // Current function name
+  string cfun_name = 20;
+}
+
+// FunctionResponse is empty 
+message FunctionResponse
+{
+}
+
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ===================================
+// BasicBlockRequest
+// ===================================
+
+// This request allows the server to send all basic blocks from the CFG
+message BasicBlockRequest
+{
+  // The cunit containing the BB
+  string cunit_name = 10;
+  // The function containing the BB
+  string cfun_name = 20;
+  // The basic block name
+  string bb_name = 30;
+}
+
+// BasicBlockRespoonse
+message BasicBlockResponse
+{  
+  // empty
+}
+
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ===================================
+// EdgeRequest
+// ===================================
+
+enum EdgeKind
+{
+  // Edge for the default branch
+  EDGE_DEFAULT_BRANCH,
+
+  // Edge for the fallback branch
+  EDGE_FALLBACK_BRANCH
+}
+
+// This request allows the server to send all egdes from the CFG
+message EdgeRequest
+{
+  // The cunit containing the BB
+  string cunit_name = 10;
+  // The function containing the BB
+  string cfun_name = 20;
+  // The start basic block name
+  string start_bb_name = 30;
+  // The end basic block name
+  string end_bb_name = 40;
+  // Kind of edge
+  enum EdgeKind edge_branch;  
+}
+
+// EdgeRespoonse
+message EdgeResponse
+{  
+  // empty
+}
+
+// End of compilation unit may use the request from phase2 messages specs (plugin_request.proto)
