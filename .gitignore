@@ -26,6 +26,7 @@
 # Executables
 cpad_clt
 cpad_srv
+cfgtest
 *.exe
 *.out
 *.app
@@ -39,3 +40,8 @@ cpad_srv
 # Backups
 *~
 \#*\#
+
+# Eclipse project files
+.settings
+.project
+.cproject

@@ -69,6 +69,38 @@ cpad::Node::operator = (cpad::Node const&a_node_to_affect)
   return (*this);
 }
 
+bool
+cpad::Node::operator == (cpad::Node const& right)
+{
+  return (get_cunit() == ((cpad::Node &)right).get_cunit() &&
+          get_func() == ((cpad::Node &)right).get_func() &&
+          m_name == right.m_name);
+}
+
+bool
+cpad::Node::operator != (cpad::Node const& right)
+{
+  return (get_cunit() != ((cpad::Node &)right).get_cunit() ||
+          get_func() != ((cpad::Node &)right).get_func() ||
+          m_name != right.m_name);
+}
+
+bool
+cpad::Node::operator == (shared_ptr<cpad::Node> right)
+{
+  return (get_cunit() == right->get_cunit() &&
+          get_func() == right->get_func() &&
+          m_name == right->m_name);
+}
+
+bool
+cpad::Node::operator != (shared_ptr<cpad::Node> right)
+{
+  return (get_cunit() != right->get_cunit() ||
+          get_func() != right->get_func() ||
+          m_name != right->m_name);
+}
+
 const char *
 cpad::Node::get_func_name(void)
 {
@@ -79,13 +111,51 @@ cpad::Node::get_func_name(void)
 shared_ptr<cpad::Func>
 cpad::Node::get_func(void)
 {
+  if (m_back_func == nullptr)
+    throw std::logic_error("Node doesn't have owning function");
   return m_back_func;
+}
+
+const char *
+cpad::Node::get_cunit_name(void)
+{
+  if (get_func()->get_cunit() == nullptr)
+    throw std::logic_error("Node doesn't have owning compilation unit");
+  return get_func()->get_cunit()->get_name();
+}
+
+shared_ptr<cpad::CUnit>
+cpad::Node::get_cunit(void)
+{
+  return get_func()->get_cunit();
+}
+
+const char *
+cpad::Node::get_graph_name(const char **out)
+{
+  if (get_cunit()->get_graph() == nullptr)
+    throw std::logic_error("Node doesn't have owning graph");
+  return get_cunit()->get_graph()->get_name(out);
+}
+
+shared_ptr<cpad::Graph>
+cpad::Node::get_graph(void)
+{
+  return get_cunit()->get_graph();
 }
 
 const char*
 cpad::Node::get_name(void)
 {
   return m_name.c_str();
+}
+
+const char*
+cpad::Node::get_cluster_name(void)
+{
+  if (m_cluster_name.empty())
+    m_cluster_name = string("func_") + get_func_name() + string("_") + m_name;
+  return m_cluster_name.c_str();
 }
 
 const int
@@ -142,10 +212,13 @@ cpad::Node::add_default_edge(shared_ptr<cpad::Edge> an_edge_ptr)
 {
   if (_has_edge_fb)
     throw std::logic_error("Node already has fallback edge");
-  if (_has_edge_d)
+  else if (_has_edge_d)
     throw std::logic_error("Node already has a default edge");
-  m_edges_ptr.first = an_edge_ptr;
-  _has_edge_d = true;
+  else
+    {
+      m_edges_ptr.first = an_edge_ptr;
+      _has_edge_d = true;
+    }
 }
 
 void
@@ -153,10 +226,10 @@ cpad::Node::add_default_edge(cpad::Edge *&an_edge_ptr)
 {
   if (_has_edge_fb)
     throw std::logic_error("Node already has fallback edge");
-  if (_has_edge_d)
+  else if (_has_edge_d)
     throw std::logic_error("Node already has a default edge");
-  m_edges_ptr.first = shared_ptr<cpad::Edge>(an_edge_ptr);
-  _has_edge_d = true;
+  else
+    add_default_edge(shared_ptr<cpad::Edge>(an_edge_ptr));
 }
 
 void
@@ -164,10 +237,18 @@ cpad::Node::add_fallback_edge(shared_ptr<cpad::Edge> an_edge_ptr)
 {
   if (!_has_edge_d)
     throw std::logic_error("Node has no default edge");
-  if (_has_edge_fb)
+  else if (_has_edge_fb)
     throw std::logic_error("Node already has a fallback edge");
-  m_edges_ptr.second = an_edge_ptr;
-  _has_edge_fb = true;
+  else
+    {
+      if (*an_edge_ptr == *(m_edges_ptr.first))
+        throw std::invalid_argument("Node already has this edge as default edge");
+      else
+        {
+          m_edges_ptr.second = an_edge_ptr;
+          _has_edge_fb = true;
+        }
+    }
 }
 
 void
@@ -175,28 +256,29 @@ cpad::Node::add_fallback_edge(cpad::Edge *&an_edge_ptr)
 {
   if (!_has_edge_d)
     throw std::logic_error("Node has no default edge");
-  if (_has_edge_fb)
+  else if (_has_edge_fb)
     throw std::logic_error("Node already has a fallback edge");
-  m_edges_ptr.second = shared_ptr<cpad::Edge>(an_edge_ptr);
-  _has_edge_fb = true;
+  else
+    {
+      if (*an_edge_ptr == *(m_edges_ptr.first))
+        throw std::invalid_argument("Node already has this edge as default edge");
+      else
+        add_fallback_edge(shared_ptr<cpad::Edge>(an_edge_ptr));
+    }
 }
 
 void
 cpad::Node::add_edge(shared_ptr<cpad::Edge> an_edge_ptr)
 {
   if (!_has_edge_d && !_has_edge_fb)
-    {
-      m_edges_ptr.first = an_edge_ptr;
-      _has_edge_d = true;      
-    }
+    add_default_edge(an_edge_ptr);
+  
   else if (_has_edge_d && !_has_edge_fb)
-    {
-      m_edges_ptr.second = an_edge_ptr;
-      _has_edge_fb = true;      
-    }
+    add_fallback_edge(an_edge_ptr);
+  
   else if (_has_edge_d && _has_edge_fb)
     throw std::logic_error("Node already has both (default/fallback) edge");
-  else if (!_has_edge_d && _has_edge_fb)
+  else
     throw std::logic_error("Node edge inconsistency (has fallback without default)");
 }
 
@@ -204,28 +286,25 @@ void
 cpad::Node::add_edge(cpad::Edge *&an_edge_ptr)
 {
   if (!_has_edge_d && !_has_edge_fb)
-    {
-      m_edges_ptr.first = shared_ptr<cpad::Edge>(an_edge_ptr);
-      _has_edge_d = true;      
-    }
+    add_default_edge(shared_ptr<cpad::Edge>(an_edge_ptr));
+
   else if (_has_edge_d && !_has_edge_fb)
-    {
-      m_edges_ptr.second = shared_ptr<cpad::Edge>(an_edge_ptr);
-      _has_edge_fb = true;      
-    }
+    add_fallback_edge(shared_ptr<cpad::Edge>(an_edge_ptr));
+
   else if (_has_edge_d && _has_edge_fb)
     throw std::logic_error("Node already has both (default/fallback) edge");
-  else if (!_has_edge_d && _has_edge_fb)
+  else
     throw std::logic_error("Node edge inconsistency (has fallback without default)");
 }
 
 void
 cpad::Node::dump(std::ostream &os)
 {
-  cerr << "Node::dump\n";
-  os << "            func_" << get_func_name() << "_" << m_name << " [shape=record,style=filled,fillcolor=lightgrey,";
-  os << "label=\"{ Add " << m_add_value << " | " << m_name << " | " << " Inc " << m_checkpoint << " }\"];\n";
-
+  os << "            " << get_cluster_name() << " [";
+  os << "label=<<TABLE BGCOLOR=\"white\" BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"><TR><TD><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New\">ChkAdd</FONT></TD><TD ";
+  os << "BGCOLOR=\"#c0c0c0\" PORT=\"here\"><FONT COLOR=\"red\" POINT-SIZE=\"12.0\">" << m_checkpoint << "</FONT></TD><TD>" << m_add_value << "</TD></TR><TR><TD ";
+  os << "COLSPAN=\"3\">" << m_name << "</TD></TR><TR><TD COLSPAN=\"2\"><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New,italic\">ChkInc</FONT></TD><TD BGCOLOR=\"#c0c0c0\"><FONT COLOR=\"red\">";
+  os << m_checkpoint << "</FONT></TD></TR></TABLE>>];\n";
 }
 
 void
@@ -253,4 +332,88 @@ cpad::Node::dump_outer_edges(std::ostream &os)
     m_edges_ptr.first->dump_outer(os);
   if (m_edges_ptr.second != nullptr)
     m_edges_ptr.second->dump_outer(os);
+}
+
+void
+cpad::Node::add_ancestor(const weak_ptr<cpad::Node> &a_weak_node_ptr)
+{
+  m_ancestors.push_back(a_weak_node_ptr);
+}
+
+void
+cpad::Node::add_ancestor(const shared_ptr<cpad::Node> &a_shared_node_ptr)
+{
+  add_ancestor(weak_ptr<cpad::Node>(a_shared_node_ptr));
+}
+
+cpad::Node::HasNodeAsAncestor::HasNodeAsAncestor(shared_ptr<cpad::Node> the_node_ptr_to_check)
+  : has_node(false),
+    the_node_ptr(the_node_ptr_to_check)
+{
+};
+      
+void
+cpad::Node::HasNodeAsAncestor::operator ()(weak_ptr<cpad::Node> const &a_node_weak_ptr)
+{
+  if (!has_node)
+    {
+      auto a_node_ptr = a_node_weak_ptr.lock();
+      if (a_node_ptr != nullptr && *a_node_ptr == *the_node_ptr)
+        has_node = true;
+    }
+}
+
+bool
+cpad::Node::has_ancestor(const weak_ptr<cpad::Node> &a_node_ptr)
+{
+  auto a_shared_node_ptr = a_node_ptr.lock();
+  if (a_shared_node_ptr != nullptr)
+    return has_ancestor(a_shared_node_ptr);
+  return false;
+}
+
+bool
+cpad::Node::has_ancestor(const shared_ptr<cpad::Node> &a_node_ptr)
+{
+  cpad::Node::HasNodeAsAncestor functor
+    = std::for_each(m_ancestors.begin(),
+                    m_ancestors.end(),
+                    cpad::Node::HasNodeAsAncestor(a_node_ptr));
+  return functor.has_node_as_ancestor();
+}
+
+void
+cpad::Node::compute_ancestors()
+{
+  for (auto it = get_graph()->m_all_nodes.begin();
+       it != get_graph()->m_all_nodes.end();
+       it++)
+    {
+      if (auto node_ptr = (*it).lock())
+        {
+          if (node_ptr->m_edges_ptr.first != nullptr &&
+              *this == *(node_ptr->m_edges_ptr.first->get_nodes().second) &&
+              !has_ancestor(node_ptr->m_edges_ptr.first->get_nodes().first))
+            add_ancestor(node_ptr->m_edges_ptr.first->get_nodes().first);
+
+          if (node_ptr->m_edges_ptr.second != nullptr &&
+              *this == *(node_ptr->m_edges_ptr.second->get_nodes().second) &&
+              !has_ancestor(node_ptr->m_edges_ptr.second->get_nodes().first))
+            add_ancestor(node_ptr->m_edges_ptr.second->get_nodes().first);
+        }
+    }
+}
+
+void
+cpad::Node::dump_ancestors(void)
+{
+  cerr << "Node " << get_name() << " has " << m_ancestors.size() << " ancestors:";
+  for (auto it = m_ancestors.begin();
+       it != m_ancestors.end();
+       it++)
+    {
+      if (auto node = (*it).lock())
+        cerr << "  " << node->get_name();
+    }
+  cerr << "\n";
 }

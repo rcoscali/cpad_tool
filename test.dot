@@ -1,49 +1,69 @@
 digraph {
-    label="2ada2726-5d87-0d82-3144-cc20e33256f0";
+    node [shape=plaintext];
+    clusterrank="local";
+    label="Compilation Graph ID: CA568C36-9E1F-44E6-AFD0-80EA8F49591D";
+    labeljust=r;
+    fontname="Terminus";
+    comment="Entry point is in compilation unit 'CUnit1'";
+    comment="and in function 'foo'";
+    comment="and in basic_block 'A'";
+    
+    ENTRY [shape=circle,style=filled,fontcolor=white,color=black,fixedsize=true,fontsize=8,width=0.4,label="Entry"];
+    
     subgraph "cluster_cunit_CUnit1" {
-        label="C Unit: CUnit1";
-        style="dashed";
-        color="black";
-        fillcolor="grey80";
+        label="Compil. unit: CUnit1";
         labeljust=l;
-        penwidth=2;
-        subgraph cluster_func_foo {
+        pencolor="#C0AF40";
+        style="rounded";
+        penwidth=1;
+        subgraph "cluster_func_foo" {
             style="filled";
-            color="darkred";
-            fillcolor="grey90";
-            label="C Unit: foo";
+            fillcolor="#CFB0E0";
+            label="Function: foo";
             labeljust=l;
-            penwidth=3;
-            A [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | A |  INC 0 }";];
-            B [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | B |  INC 0 }";];
-            C [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | C |  INC 0 }";];
+            pencolor="#AF40C0";
+            penwidth=1;
+            func_foo_A [label=<<TABLE BGCOLOR="white" BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD><FONT POINT-SIZE="12.0" FACE="Courier New">ChkAdd</FONT></TD><TD BGCOLOR="#c0c0c0" PORT="here"><FONT COLOR="red" POINT-SIZE="12.0">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN="3">A</TD></TR><TR><TD COLSPAN="2"><FONT POINT-SIZE="12.0" FACE="Courier New,italic">ChkInc</FONT></TD><TD BGCOLOR="#c0c0c0"><FONT COLOR="red">0</FONT></TD></TR></TABLE>>];
+            func_foo_B [label=<<TABLE BGCOLOR="white" BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD><FONT POINT-SIZE="12.0" FACE="Courier New">ChkAdd</FONT></TD><TD BGCOLOR="#c0c0c0" PORT="here"><FONT COLOR="red" POINT-SIZE="12.0">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN="3">B</TD></TR><TR><TD COLSPAN="2"><FONT POINT-SIZE="12.0" FACE="Courier New,italic">ChkInc</FONT></TD><TD BGCOLOR="#c0c0c0"><FONT COLOR="red">0</FONT></TD></TR></TABLE>>];
+            func_foo_C [label=<<TABLE BGCOLOR="white" BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD><FONT POINT-SIZE="12.0" FACE="Courier New">ChkAdd</FONT></TD><TD BGCOLOR="#c0c0c0" PORT="here"><FONT COLOR="red" POINT-SIZE="12.0">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN="3">C</TD></TR><TR><TD COLSPAN="2"><FONT POINT-SIZE="12.0" FACE="Courier New,italic">ChkInc</FONT></TD><TD BGCOLOR="#c0c0c0"><FONT COLOR="red">0</FONT></TD></TR></TABLE>>];
+            func_foo_A:s -> func_foo_B:n [fontname="Kinnari",color=black,weight=5,constraint=true,decorate=true,label="0"];
+            func_foo_A:s -> func_foo_C:n [fontname="Kinnari",color=black,weight=5,constraint=true,decorate=true,label="0"];
         }
-        A:s -> B:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        A:s -> C:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        C:s -> D:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        C:s -> F:n [style="solid,bold",color=black,weight=5,label="[0]"];
     }
+    func_foo_C:s -> func_bar_D:n [fontname="Kinnari",color=blue,weight=5,constraint=true,decorate=true,label="0"];
+    func_foo_C:s -> func_bar_F:n [fontname="Kinnari",color=blue,weight=5,constraint=true,decorate=true,label="0"];
     subgraph "cluster_cunit_CUnit2" {
-        label="C Unit: CUnit2";
-        style="dashed";
-        color="black";
-        fillcolor="grey80";
+        label="Compil. unit: CUnit2";
         labeljust=l;
-        penwidth=2;
-        subgraph cluster_func_bar {
+        pencolor="#C0AF40";
+        style="rounded";
+        penwidth=1;
+        subgraph "cluster_func_bar" {
             style="filled";
-            color="darkred";
-            fillcolor="grey90";
-            label="C Unit: bar";
+            fillcolor="#CFB0E0";
+            label="Function: bar";
             labeljust=l;
-            penwidth=3;
-            D [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | D |  INC 0 }";];
-            E [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | E |  INC 0 }";];
-            F [shape=record,style=filled,fillcolor=lightgrey,label="{ ADD 0 | F |  INC 0 }";];
+            pencolor="#AF40C0";
+            penwidth=1;
+            func_bar_D [label=<<TABLE BGCOLOR="white" BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD><FONT POINT-SIZE="12.0" FACE="Courier New">ChkAdd</FONT></TD><TD BGCOLOR="#c0c0c0" PORT="here"><FONT COLOR="red" POINT-SIZE="12.0">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN="3">D</TD></TR><TR><TD COLSPAN="2"><FONT POINT-SIZE="12.0" FACE="Courier New,italic">ChkInc</FONT></TD><TD BGCOLOR="#c0c0c0"><FONT COLOR="red">0</FONT></TD></TR></TABLE>>];
+            func_bar_E [label=<<TABLE BGCOLOR="white" BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD><FONT POINT-SIZE="12.0" FACE="Courier New">ChkAdd</FONT></TD><TD BGCOLOR="#c0c0c0" PORT="here"><FONT COLOR="red" POINT-SIZE="12.0">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN="3">E</TD></TR><TR><TD COLSPAN="2"><FONT POINT-SIZE="12.0" FACE="Courier New,italic">ChkInc</FONT></TD><TD BGCOLOR="#c0c0c0"><FONT COLOR="red">0</FONT></TD></TR></TABLE>>];
+            func_bar_D:s -> func_bar_E:n [fontname="Kinnari",color=black,weight=5,constraint=true,decorate=true,label="0"];
         }
-        D:s -> E:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        D:s -> F:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        E:s -> A:n [style="solid,bold",color=black,weight=5,label="[0]"];
-        F:s -> B:n [style="solid,bold",color=black,weight=5,label="[0]"];
+        func_bar_D:s -> func_bar_F:n [fontname="Kinnari",color=green,weight=5,constraint=true,decorate=true,label="0"];
+        subgraph "cluster_func_bar (566130139)" {
+            style="filled";
+            fillcolor="#CFB0E0";
+            label="Function: bar";
+            labeljust=l;
+            pencolor="#AF40C0";
+            penwidth=1;
+            func_bar_F [label=<<TABLE BGCOLOR="white" BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD><FONT POINT-SIZE="12.0" FACE="Courier New">ChkAdd</FONT></TD><TD BGCOLOR="#c0c0c0" PORT="here"><FONT COLOR="red" POINT-SIZE="12.0">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN="3">F</TD></TR><TR><TD COLSPAN="2"><FONT POINT-SIZE="12.0" FACE="Courier New,italic">ChkInc</FONT></TD><TD BGCOLOR="#c0c0c0"><FONT COLOR="red">0</FONT></TD></TR></TABLE>>];
+        }
     }
+    func_bar_E:s -> func_foo_A:n [fontname="Kinnari",color=blue,weight=5,constraint=true,decorate=true,label="0"];
+    func_bar_F:s -> func_foo_B:n [fontname="Kinnari",color=blue,weight=5,constraint=true,decorate=true,label="0"];
+    func_bar_F:s -> func_foo_A:n [fontname="Kinnari",color=blue,weight=5,constraint=true,decorate=true,label="0"];
+    
+    ENTRY -> func_foo_A[style="dotted,bold",color=red,weight=3,constraint=false,decorate=false];
+    
 }

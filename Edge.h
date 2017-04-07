@@ -1,4 +1,6 @@
-/*
+/**
+ * @file Edge.h
+ *
  * Copyright ©2017 NagraFrance
  */
 
@@ -26,6 +28,11 @@ namespace cpad
     Edge(Edge const&);
     virtual ~Edge(void);
     Edge& operator = (Edge const&);
+
+    bool operator == (Edge const&);
+    bool operator != (Edge const&);
+    bool operator == (shared_ptr<Edge>);
+    bool operator != (shared_ptr<Edge>);
 
     int get_delta_value(void);
     std::pair<shared_ptr<Node>, shared_ptr<Node>> get_nodes(void);
