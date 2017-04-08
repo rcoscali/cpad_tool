@@ -39,6 +39,7 @@ cfgtest
 
 # Backups
 *~
+.\#*
 \#*\#
 
 # Eclipse project files
