@@ -1,4 +1,6 @@
-/*
+/**
+ * @file Graph.cc
+ *
  * Copyright ©2017 NagraFrance
  */
 

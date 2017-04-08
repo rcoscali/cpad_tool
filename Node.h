@@ -25,7 +25,11 @@ namespace cpad
   class Func;
   class CUnit;
   class Graph;
-  
+
+  /**
+   * class used for modeling a vertex of the control flow graph
+   *
+   */
   class Node
   {
   public:
@@ -41,6 +45,9 @@ namespace cpad
     bool operator == (shared_ptr<Node>);
     bool operator != (shared_ptr<Node>);
 
+    /**
+     * Class for searching ancestors
+     */
     class HasNodeAsAncestor
     {
     private:
