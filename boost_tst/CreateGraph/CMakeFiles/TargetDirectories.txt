@@ -1,3 +1,0 @@
-/usr/local/src2/Synopsys/build-toolchain-releases/cpad_tool/boost_tst/CreateGraph/CMakeFiles/edit_cache.dir
-/usr/local/src2/Synopsys/build-toolchain-releases/cpad_tool/boost_tst/CreateGraph/CMakeFiles/rebuild_cache.dir
-/usr/local/src2/Synopsys/build-toolchain-releases/cpad_tool/boost_tst/CreateGraph/CMakeFiles/CreateGraph.dir
