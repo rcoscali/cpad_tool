@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/usr/local/src2/Synopsys/build-toolchain-releases/cpad_tool/boost_tst/DirectedGraph/DirectedGraph.cpp
+iostream
+-
+boost/graph/graph_traits.hpp
+-
+boost/graph/adjacency_list.hpp
+-
+

@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/usr/local/src2/Synopsys/build-toolchain-releases/cpad_tool/boost_tst/EdgeExists/EdgeExists.cpp
+iostream
+-
+boost/graph/adjacency_list.hpp
+-
+
