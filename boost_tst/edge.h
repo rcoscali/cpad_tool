@@ -17,9 +17,6 @@ namespace cpad
   class edge_properties
   {
   public:
-    int m_delta;
-    bool m_is_fb;
-    
     edge_properties()
       : edge_properties(0)
     {};
@@ -38,22 +35,26 @@ namespace cpad
 	return (*this);
       };
 
-    int delta(void)
+    const int
+      delta(void) const
     {
       return get_delta();
     }
 
-    int get_delta(void)
+    const int
+      get_delta(void) const
     {
       return m_delta;
     }
 
-    void set_delta(int delta)
+    void
+      set_delta(const int delta)
     {
       m_delta = delta;
     }
 
-    bool is_fallback_branch(void)
+    const bool
+      is_fallback_branch(void) const
     {
       return m_is_fb;
     }
@@ -67,6 +68,25 @@ namespace cpad
     {
       m_is_fb = false;
     }
+
+    template <class Graph>
+      class edge_writer
+      {
+      public:
+      edge_writer(Graph _g) : m_g(_g) {}
+	template <class VertexOrEdge>
+	  void operator()(std::ostream& out, const VertexOrEdge& v) const
+	  {
+	    out << "[label=\"" << m_g[v].delta() << "\"]";
+	  }
+	
+      private:
+	Graph m_g;
+      };
+    
+  private:
+    int m_delta;
+    bool m_is_fb;    
 };
 }
 

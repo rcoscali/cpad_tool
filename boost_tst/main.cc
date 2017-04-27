@@ -3,6 +3,7 @@
  *
  */
 
+#include <stdio.h>
 #include <iostream>                         // for std::cout
 #include <utility>                          // for std::pair
 #include <algorithm>                        // for std::for_each
@@ -38,11 +39,11 @@ main(int argc, char **argv)
   cpad::graph g(gp);
 
   cpad::vertex vA = add_vertex(g);
-  cpad::vertex vB = add_vertex(vertex_properties(1, 110), g);
+  cpad::vertex vB = add_vertex(vertex_properties("vB"), g);
   cpad::vertex vC = add_vertex(vertex_properties(2, 120), g);
-  cpad::vertex vD = add_vertex(vertex_properties(3, 130), g);
-  cpad::vertex vE = add_vertex(vertex_properties(4, 140), g);
-  cpad::vertex vF = add_vertex(vertex_properties(5, 150), g);
+  cpad::vertex vD = add_vertex(vertex_properties(3, 130, "vD"), g);
+  cpad::vertex vE = add_vertex(vertex_properties(4, 140, "vE"), g);
+  cpad::vertex vF = add_vertex(vertex_properties(5, 150, "vF"), g);
 
   std::cout << "Vertex vA has valid id = " << (g[vA].has_id() ? "YES" : "NO") << std::endl; 
   std::cout << "Vertex vA id = " << g[vA].id() << std::endl; 
@@ -54,10 +55,11 @@ main(int argc, char **argv)
   std::cout << "Vertex vB label = " << g[vB].label() << std::endl; 
 
   std::cout << std::endl;
-  std::cout << "Setting vA id to 0 ..." << std::endl;
+  std::cout << "Setting vA (name = '" << g[vA].get_name() << "') id to 0 ..." << std::endl;
+  g[vA].set_name("vA");
   g[vA].set_id(0);
   
-  std::cout << "Now vA has valid id = " << (g[vA].has_id() ? "YES" : "NO") << std::endl; 
+  std::cout << "Now vA (name = '" << g[vA].get_name() << "') has valid id = " << (g[vA].has_id() ? "YES" : "NO") << std::endl; 
   std::cout << "Now vA id = ..." << g[vA].id() << std::endl;
   std::cout << "Now vA has valid label = " << (g[vA].has_label() ? "YES" : "NO") << std::endl; 
   std::cout << "Now vA label = ..." << g[vA].label() << std::endl;
@@ -77,12 +79,8 @@ main(int argc, char **argv)
 
   cpad::edge eAB;
   cpad::edge eAC;
-  cpad::edge eAD;
-  cpad::edge eAE;
   tie(eAB, success) = add_edge(vA, vB, g);
   tie(eAC, success) = add_edge(vA, vC, edge_properties(1), g);
-  tie(eAD, success) = add_edge(vA, vD, edge_properties(2, true), g);
-  tie(eAE, success) = add_edge(vA, vE, edge_properties(3), g);
   
   cpad::edge eBD;
   cpad::edge eBE;
@@ -127,8 +125,17 @@ main(int argc, char **argv)
       auto v = *vit;
       boost::graph_traits<cpad::graph>::vertex_descriptor v2 = *vit;
       cpad::vertex v3 = *vit;
+
+      if (g[v].get_name().length() == 0)
+	{
+	  cout << ">>> Setting name of vertex with id " << g[v].id() << " to v" << (char)('A' + g[v].id()) << std::endl;
+	  std::string newname = "v";
+	  newname += (char)('A' + g[v].id());
+	  g[v].set_name(newname);
+	  cout << ">>> Name of vertex with id " << g[v].id() << " set to " << g[v].name() << std::endl;
+	}
       
-      std::cout << "* Out degree of vertex id " << g[v].id() << " (" << g[v].label() << ") = " << boost::out_degree(v, g) << std::endl;
+      std::cout << "* Out degree of vertex " << g[v].get_name() << " id " << g[v].id() << " (" << g[v].label() << ") = " << boost::out_degree(v, g) << std::endl;
       // type for eit is: std::pair<boost::graph_traits<cpad::graph>::in_edge_iterator, boost::graph_traits<cpad::graph>::in_edge_iterator>
       auto edges = out_edges(v, g);
       for (auto eit = edges.first; eit != edges.second; eit++)
@@ -139,7 +146,21 @@ main(int argc, char **argv)
 	  cpad::edge e2 = *eit;
 	  cout << "    Edge with delta " << g[e].delta() << " go from vertex " << g[v].id() << " to vertex " << g[boost::target(e, g)].id() << "\n";
 	}
-    }  
+    }
+
+  std::cout << std::endl;
+
+  cpad::vertex_properties::vertex_writer<cpad::graph> vw(g);
+  cpad::edge_properties::edge_writer<cpad::graph> ew(g);
+  cpad::graph_properties::graph_writer<cpad::graph> gw(g);
+
+  ofstream outfgv("gv.dot");
+  ofstream outfgve("gve.dot");
+  ofstream outfgveg("gveg.dot");
+  
+  write_graphviz(outfgv, g, vw);
+  write_graphviz(outfgve, g, vw, ew);
+  //write_graphviz(outfgveg, g, vw, ew, gw);
 
   return(0);
 }
