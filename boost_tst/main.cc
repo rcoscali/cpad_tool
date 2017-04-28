@@ -33,10 +33,13 @@ main(int argc, char **argv)
     num_vertices
   };
 
+  cpad::graph g;
+
   uuid_t gid;
   uuid_generate_time(gid);
   graph_properties gp(gid);
-  cpad::graph g(gp);
+  get_property(g, graph_data) = gp;
+  get_property(g, graph_name) = "TestGraph";
 
   cpad::vertex vA = add_vertex(g);
   cpad::vertex vB = add_vertex(vertex_properties("vB"), g);
@@ -160,7 +163,7 @@ main(int argc, char **argv)
   
   write_graphviz(outfgv, g, vw);
   write_graphviz(outfgve, g, vw, ew);
-  //write_graphviz(outfgveg, g, vw, ew, gw);
+  write_graphviz(outfgveg, g, vw, ew, gw);
 
   return(0);
 }
