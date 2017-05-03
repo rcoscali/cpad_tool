@@ -5,17 +5,34 @@
 
 #include <stdio.h>
 #include <iostream>                         // for std::cout
+#include <fstream>
 #include <utility>                          // for std::pair
 #include <algorithm>                        // for std::for_each
 
 #include <boost/config.hpp>
 #include <boost/utility.hpp>                // for boost::tie
+
 #include <boost/graph/properties.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adj_list_serialize.hpp>
 #include <boost/graph/graphviz.hpp>
 
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/version.hpp>
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/split_member.hpp>
+
 #include "graph.h"
+
+#include <boost/serialization/export.hpp>
 
 using namespace cpad;
 
@@ -164,6 +181,13 @@ main(int argc, char **argv)
   write_graphviz(outfgv, g, vw);
   write_graphviz(outfgve, g, vw, ew);
   write_graphviz(outfgveg, g, vw, ew, gw);
+
+  std::ofstream oaf("archive.graph");
+  boost::archive::binary_oarchive oar(oaf);
+  
+  oar << g;
+
+  oaf.close();
 
   return(0);
 }

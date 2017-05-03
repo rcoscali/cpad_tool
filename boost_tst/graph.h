@@ -11,8 +11,20 @@
 #include <iostream>
 #include <utility>
 #include <algorithm>
+
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/version.hpp>
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/split_member.hpp>
+
 #include <boost/graph/properties.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adj_list_serialize.hpp>
 
 #include "vertex.h"
 #include "edge.h"
@@ -85,22 +97,42 @@ namespace cpad
 	  out << "edge [style=dashed]" << std::endl;
 	  out << "label=\"" << gname << "/" << gp.get_name(nstr) << "\"" << std::endl;
 	}
+
       private:
 	Graph m_g;
       };
-
+  
+    BOOST_SERIALIZATION_SPLIT_MEMBER ();
+    
   private:
+    friend class boost::serialization::access;
+
+    template <typename Archive>
+      void save(Archive &ar, const unsigned int version)
+      {
+	ar & version;
+	ar
+	  & m_id[ 5] & m_id[ 9] & m_id[ 4] & m_id[11] 
+	  & m_id[ 6] & m_id[15] & m_id[13] & m_id[ 3]
+	  & m_id[10] & m_id[ 8] & m_id[ 0] & m_id[ 7] 
+	  & m_id[12] & m_id[ 2] & m_id[14] & m_id[ 1]; 
+      }
+    
+    template <typename Archive>
+      void load(Archive &ar, const unsigned int version)
+      {
+      }
+    
     uuid_t m_id;    
   };
   
-
   using GraphProperties = boost::property<boost::graph_data_t, graph_properties>;
 
   typedef typename boost::adjacency_list<
     boost::vecS, boost::vecS, boost::bidirectionalS,
     cpad::vertex_properties,
     cpad::edge_properties,
-    boost::property<boost::graph_name_t, std::string, boost::property<boost::graph_data_t, graph_properties>>
+    boost::property<boost::graph_name_t, std::string, boost::property<boost::graph_data_t, graph_properties>/*>*/
     > graph;
   using vertex_t = boost::graph_traits<cpad::graph>::vertex_descriptor;
   typedef typename boost::graph_traits<cpad::graph>::vertex_descriptor vertex;
@@ -108,5 +140,7 @@ namespace cpad
   typedef typename std::pair<edge, bool> edge_pair;
 
 } // namespace cpad
+
+BOOST_CLASS_VERSION(cpad::graph_properties, 1);
 
 #endif /* !_GRAPH_H_ */

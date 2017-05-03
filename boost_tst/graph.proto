@@ -1,0 +1,108 @@
+/**
+ * @file graph.proto
+ *
+ * Graph, Vertex & Edge protobuf interface description files
+ */
+
+syntax = "proto3";
+
+package cpad_graph_protobuf;
+
+// ======================================
+// Control Flow Graph object
+// ======================================
+message CfgGraph
+{
+  // The graph name
+  string cfg_name = 1;
+
+  // List of CUnit subgraphes
+  repeated CUnitSubGraph cunits = 2;
+
+  // Number of compilation units
+  uint32 number_of_cunits = 3;
+}
+
+// ======================================
+// Compilation Unit object
+// ======================================
+message CUnitSubGraph
+{
+  // The name of the src/object file (without .c/.o)
+  string cunit_name = 1;
+
+  // List of functions
+  repeated FunctionSubGraph functions = 2;
+
+  // Number of functions
+  uint32 number_of_functions = 3;
+}
+
+// ======================================
+// Function object
+// ======================================
+message FunctionSubGraph
+{
+  // Name of the function
+  string function_name = 1;
+
+  // List of basic blocks
+  repeated BasicBlockVertex basic_blocks = 2;
+
+  // Number of basic blocks
+  uint32 number_of_basic_blocks = 3;
+}
+
+// ======================================
+// Function vertex object
+// ======================================
+message BasicBlockVertex
+{
+  // Name of basic block
+  string bb_name = 1;
+
+  // Checkpoint APEX value allocated
+  bool checkpoint_is_allocated = 2;
+
+  // Checkpoint value
+  uint32 bb_checkpoint = 3;
+
+  // Entry apex asm statement
+  string entry_apex_asm = 4;
+
+  // Has a default branch
+  bool has_a_default_branch = 5;
+
+  // Default Edge
+  BranchEdge default_branch = 6;
+
+  // Has a default branch
+  bool has_a_fallback_branch = 7;
+
+  // Fallback Edge
+  BranchEdge fallback_branch = 8;
+
+  // Exit apex asm statement
+  string exit_apex_asm = 9;
+}
+
+// ======================================
+// Branch edge object
+// ======================================
+message BranchEdge
+{
+  // Name (index) of the edge
+  string branch_name = 1;
+
+  // Delta APEX value allocated
+  bool delta_is_allocated = 2;
+
+  // Branch Delta value
+  int32 branch_delta = 3;
+
+  // Source BasicBlock
+  BasicBlockVertex source_bb = 4;
+
+  // Target BasicBlock
+  BasicBlockVertex target_bb = 5;
+}
