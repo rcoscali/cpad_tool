@@ -179,15 +179,28 @@ main(int argc, char **argv)
   ofstream outfgveg("gveg.dot");
   
   write_graphviz(outfgv, g, vw);
+  outfgv.close();
   write_graphviz(outfgve, g, vw, ew);
+  outfgve.close();
   write_graphviz(outfgveg, g, vw, ew, gw);
+  outfgveg.close();  
 
   std::ofstream oaf("archive.graph");
   boost::archive::binary_oarchive oar(oaf);
   
   oar << g;
-
   oaf.close();
+
+  cpad::graph restored_g;
+  std::ifstream iaf("archive.graph");
+  boost::archive::binary_iarchive iar(iaf);
+
+  iar >> restored_g;
+  iaf.close();
+
+  ofstream restored_outfgveg("restored_gveg.dot");
+  write_graphviz(restored_outfgveg, restored_g, vw, ew, gw);
+  restored_outfgveg.close();
 
   return(0);
 }
