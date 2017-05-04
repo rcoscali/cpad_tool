@@ -1,6 +1,6 @@
 CXXFLAGS = -std=c++11 -g -O3 -fpermissive 
-CPPFLAGS = -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_LOG_DYN_LINK -I/home/cohen/Sources/boost_1_64_0
-LDFLAGS = -L/home/cohen/Sources/boost_1_64_0/stage/lib
+CPPFLAGS = -DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_LOG_DYN_LINK
+LDFLAGS = 
 LIBS = -lprotobuf -lboost_graph -lboost_serialization -luuid
 
 PROTOC = protoc
@@ -8,7 +8,7 @@ PROTOC = protoc
 PROGRAMS = $(BOOST_TST)
 
 BOOST_TST = boost_tst
-BOOST_TST_PROTOS = graph.proto
+BOOST_TST_PROTOS = #graph.proto
 BOOST_TST_SRCS = main.cc $(patsubst %.proto, %.pb.cc, $(filter %.proto, $(BOOST_TST_PROTOS)))
 BOOST_TST_OBJS = $(patsubst %.cc, %.o, $(filter %.cc, $(BOOST_TST_SRCS)))
 
