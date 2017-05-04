@@ -23,6 +23,10 @@
 *.a
 *.lib
 
+# Dot and boost archives
+*.dot
+archive.graph
+
 # Executables
 boost_tst
 *.exe
