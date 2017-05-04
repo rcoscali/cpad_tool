@@ -1,0 +1,49 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Dot and boost archives
+archive.graph
+
+# Executables
+boost_tst
+*.exe
+*.out
+*.app
+
+# Generated sources
+*.grpc.pb.cc
+*.grpc.pb.h
+*.pb.cc
+*.pb.h
+
+# Backups
+*~
+.\#*
+\#*\#
+
+# Eclipse project files
+.settings
+.project
+.cproject

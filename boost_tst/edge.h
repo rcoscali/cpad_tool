@@ -116,9 +116,13 @@ namespace cpad
     template <typename Archive>
       void load(Archive &ar, const unsigned int version)
       {
-	ar & version;
-	ar & m_delta;
-	ar & m_is_fb;
+        unsigned int archive_version;
+	ar & archive_version;
+        if (version == archive_version)
+          {
+            ar & m_delta;
+            ar & m_is_fb;
+          }
       }
     
     int m_delta;
