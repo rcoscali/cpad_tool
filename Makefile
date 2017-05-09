@@ -1,3 +1,4 @@
+CXX = g++
 PROTOC ?= protoc
 GCC ?= gcc
 GXX ?= gxx
