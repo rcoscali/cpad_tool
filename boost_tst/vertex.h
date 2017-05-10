@@ -27,6 +27,11 @@
 using namespace std;
 using namespace boost;
 
+namespace boost {
+    enum vertex_data_t { vertex_data };
+    BOOST_INSTALL_PROPERTY(vertex, data);
+}
+
 namespace cpad
 {
   enum vertex_ids
@@ -163,7 +168,16 @@ namespace cpad
 	template <class VertexOrEdge>
 	  void operator()(std::ostream& out, const VertexOrEdge& v) const
 	  {
-	    out << "[label=<<TABLE BGCOLOR=\"white\" BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"><TR><TD><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New\">ChkAdd</FONT></TD><TD BGCOLOR=\"#c0c0c0\" PORT=\"here\"><FONT COLOR=\"red\" POINT-SIZE=\"12.0\">0</FONT></TD><TD>0</TD></TR><TR><TD COLSPAN=\"3\">" << m_g[v].name().c_str() << "</TD></TR><TR><TD COLSPAN=\"2\"><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New,italic\">ChkInc</FONT></TD><TD BGCOLOR=\"#c0c0c0\"><FONT COLOR=\"red\">0</FONT></TD></TR></TABLE>>]";
+	    auto vmap = get(vertex_data, m_g);
+	    
+	    out << "[label=<<TABLE BGCOLOR=\"white\" BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"><TR><TD>";
+	    out << "<FONT POINT-SIZE=\"12.0\" FACE=\"Courier New\">ChkAdd</FONT></TD>";
+	    out << "<TD BGCOLOR=\"#c0c0c0\" PORT=\"here\"><FONT COLOR=\"red\" POINT-SIZE=\"12.0\">0</FONT></TD>";
+	    out << "<TD>0</TD></TR><TR><TD COLSPAN=\"3\">";
+	    out << vmap[v].name().c_str();
+	    out << "</TD></TR>";
+	    out << "<TR><TD COLSPAN=\"2\"><FONT POINT-SIZE=\"12.0\" FACE=\"Courier New,italic\">ChkInc</FONT></TD>";
+	    out << "<TD BGCOLOR=\"#c0c0c0\"><FONT COLOR=\"red\">0</FONT></TD></TR></TABLE>>]";
 	  }
 	
       private:
@@ -176,7 +190,7 @@ namespace cpad
     friend class boost::serialization::access;
 
     template <typename Archive>
-      void save(Archive &ar, unsigned int version) 
+      void save(Archive &ar, const unsigned int version) const
       {
 	ar & version;
 	ar & m_id;

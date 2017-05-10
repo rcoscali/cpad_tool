@@ -8,6 +8,7 @@
 
 #include <uuid/uuid.h>
 
+#include <map>
 #include <iostream>
 #include <utility>
 #include <algorithm>
@@ -15,6 +16,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/string.hpp>
@@ -108,7 +110,7 @@ namespace cpad
     friend class boost::serialization::access;
 
     template <typename Archive>
-      void save(Archive &ar, const unsigned int version)
+      void save(Archive &ar, const unsigned int version) const
       {
 	ar & version;
 	ar
@@ -137,16 +139,35 @@ namespace cpad
   };
   
   using GraphProperties = boost::property<boost::graph_data_t, graph_properties>;
+  using GraphvizAttributes = std::map<std::string, std::string>;
 
   typedef typename boost::adjacency_list<
     boost::vecS, boost::vecS, boost::bidirectionalS,
-    cpad::vertex_properties,
-    cpad::edge_properties,
-    boost::property<boost::graph_name_t, std::string, boost::property<boost::graph_data_t, graph_properties>>
+    // Vertex Properties: graphviz attrs & our vertex properties
+    boost::property<boost::vertex_attribute_t, GraphvizAttributes,
+                    boost::property<boost::vertex_data_t, cpad::vertex_properties>
+                   >,
+    // Edge properties: edge index, graphviz attrs & our edge properties
+    boost::property<boost::edge_index_t, int,
+                    boost::property<boost::edge_attribute_t, cpad::GraphvizAttributes,
+                                    boost::property<boost::edge_data_t, cpad::edge_properties>
+                                   >
+                   >,
+    boost::property<boost::graph_name_t, std::string,
+                    boost::property<boost::graph_graph_attribute_t, cpad::GraphvizAttributes,
+                                    boost::property<boost::graph_vertex_attribute_t, cpad::GraphvizAttributes,
+					            boost::property<boost::graph_edge_attribute_t, cpad::GraphvizAttributes,
+                                                                    boost::property<boost::graph_data_t, cpad::graph_properties>
+                                                                   >
+                                                   >
+                                   >
+                   >
     > graph;
-  using vertex_t = boost::graph_traits<cpad::graph>::vertex_descriptor;
+  //using vertex_t = boost::graph_traits<cpad::graph>::vertex_descriptor;
   typedef typename boost::graph_traits<cpad::graph>::vertex_descriptor vertex;
+  typedef boost::property_map<cpad::graph, boost::vertex_data_t> vertex_properties_map_t;
   typedef typename boost::graph_traits<cpad::graph>::edge_descriptor edge;
+  typedef boost::property_map<cpad::graph, boost::edge_data_t> edge_properties_map_t;
   typedef typename std::pair<edge, bool> edge_pair;
 
 } // namespace cpad

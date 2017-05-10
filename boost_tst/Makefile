@@ -1,7 +1,18 @@
+#USE_BOOST = /home/cohen/Sources/boost_1_64_0
+USE_BOOST = 
+
+ifeq ($(USE_BOOST),)
+BOOST_CPPFLAGS = 
+BOOST_LDFLAGS =
+else
+BOOST_CPPFLAGS = -I$(USE_BOOST)
+BOOST_LDFLAGS = -L$(USE_BOOST)/stage/lib
+endif
+
 CXX = g++
 CXXFLAGS = -std=c++11 -g -O3 -fpermissive 
-CPPFLAGS = 
-LDFLAGS = 
+CPPFLAGS = $(BOOST_CPPFLAGS)
+LDFLAGS = $(BOOST_LDFLAGS)
 LIBS = -lboost_graph -lboost_serialization -luuid -lprotobuf 
 
 PROTOC = protoc
@@ -29,7 +40,7 @@ $(BOOST_TST): $(BOOST_TST_OBJS)
 
 clean:
 	rm -f *.pb.o *.pb.cc *.pb.h
-	rm -f boost_tst *.o *~
+	rm -f $(BOOST_TST) *.o *~
 
 .PHONY: all clean
 

@@ -28,6 +28,11 @@
 
 using namespace std;
 
+namespace boost {
+    enum edge_data_t { edge_data };
+    BOOST_INSTALL_PROPERTY(edge, data);
+}
+
 namespace cpad
 {
   class edge_properties
@@ -91,9 +96,13 @@ namespace cpad
       public:
       edge_writer(Graph _g) : m_g(_g) {}
 	template <class VertexOrEdge>
-	  void operator()(std::ostream& out, const VertexOrEdge& v) const
+	  void operator()(std::ostream& out, const VertexOrEdge& e) const
 	  {
-	    out << "[label=\"" << m_g[v].delta() << "\"]";
+	    auto emap = get(edge_data, m_g);
+	    
+	    out << "[label=\"";
+	    out << emap[e].delta();
+	    out << "\"]";
 	  }
 	
       private:
@@ -106,7 +115,7 @@ namespace cpad
     friend class boost::serialization::access;
 
     template <typename Archive>
-      void save(Archive &ar, const unsigned int version)
+      void save(Archive &ar, const unsigned int version) const
       {
 	ar & version;
 	ar & m_delta;
