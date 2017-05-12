@@ -25,6 +25,7 @@
 #include <boost/serialization/split_member.hpp>
 
 #include <boost/graph/properties.hpp>
+#include <boost/graph/subgraph.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/adj_list_serialize.hpp>
 
