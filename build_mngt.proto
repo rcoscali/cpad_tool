@@ -1,0 +1,78 @@
+//
+// CPAD server messaging
+// Build management
+//
+// Copyright © 2017 Nagravision
+//
+
+syntax = "proto3";
+
+package cpad_protobuf;
+
+/* --------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------- */
+
+// ====================================
+// Build management messages
+// ====================================
+
+// StartCfgCollectionRequest
+// This request is sent by a client command (independent from plugin) in
+// order to request the server to create a new CFG (i.e. a new build)
+message StartCfgCollectionRequest
+{
+  string build_name = 1;
+  uint32 number_cunits = 2;
+  string cpad_config = 3;
+}
+
+// StartCfgCollectionResponse
+// This response is sent by server to client command used for starting a new
+// build (a new CFG). A CFG unique id is returned
+message StartCfgCollectionResponse
+{
+  bool cpad_config_ok = 1;
+  bytes uuid = 2;
+}
+
+// EndCfgCollectionRequest
+message EndCfgCollectionRequest
+{
+}
+
+// EndCfgCollectionResponse
+message EndCfgCollectionResponse
+{
+  bool apex_allocation_status;
+}
+
+// StartCfgToolingRequest
+message StartCfgToolingRequest
+{
+}
+
+// StartCfgToolingResponse
+message StartCfgToolingResponse
+{
+}
+
+// EndCfgToolingRequest
+message EndCfgToolingRequest
+{
+}
+
+// EndCfgToolingResponse
+message EndCfgToolingResponse
+{
+  uint32 number_bb = 1;
+  uint32 number_modified_bb = 1;
+}
+
+
+service BuildMngtServices
+{
+  rpc StartCfgCollectionService (StartCfgCollectionRequest) returns (StartCfgCollectionResponse) {};
+  rpc EndCfgCollectionService (EndCfgCollectionRequest) returns (EndCfgCollectionResponse) {};
+  rpc StartCfgToolingService (StartCfgToolingRequest) returns (StartCfgToolingResponse) {};
+  rpc EndCfgToolingService (EndCfgToolingRequest) returns (EndCfgToolingResponse) {};
+}
