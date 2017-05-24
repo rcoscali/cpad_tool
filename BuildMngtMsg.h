@@ -14,7 +14,7 @@ namespace cpad
   //
   // StartCfgCollection Management
   //
-  class StartCfgCollectionRequestHelper : public ::cpad_protobuf::StartCfgCollectionRequest
+  class StartCfgCollectionRequestHelper : public ::cpad::build_mngt::StartCfgCollectionRequest
   {
   public:
     StartCfgCollectionRequestHelper(std::string, uint32_t, std::string);
@@ -28,7 +28,7 @@ namespace cpad
     void dump(void);
   };
 
-  class StartCfgCollectionResponseHelper : public ::cpad_protobuf::StartCfgCollectionResponse
+  class StartCfgCollectionResponseHelper : public ::cpad::build_mngt::StartCfgCollectionResponse
   {
   public:
     StartCfgCollectionResponseHelper(bool, std::string);
@@ -45,7 +45,7 @@ namespace cpad
   //
   // EndCfgCollection Management
   //
-  class EndCfgCollectionRequestHelper : public ::cpad_protobuf::EndCfgCollectionRequest
+  class EndCfgCollectionRequestHelper : public ::cpad::build_mngt::EndCfgCollectionRequest
   {
   public:
     EndCfgCollectionRequestHelper();
@@ -59,7 +59,7 @@ namespace cpad
     void dump(void);
   };
 
-  class EndCfgCollectionResponseHelper : public ::cpad_protobuf::EndCfgCollectionResponse
+  class EndCfgCollectionResponseHelper : public ::cpad::build_mngt::EndCfgCollectionResponse
   {
   public:
     EndCfgCollectionResponseHelper(bool);
@@ -76,7 +76,7 @@ namespace cpad
   //
   // StartCfgTooling Management
   //
-  class StartCfgToolingRequestHelper : public ::cpad_protobuf::StartCfgToolingRequest
+  class StartCfgToolingRequestHelper : public ::cpad::build_mngt::StartCfgToolingRequest
   {
   public:
     StartCfgToolingRequestHelper();
@@ -90,7 +90,7 @@ namespace cpad
     void dump(void);
   };
 
-  class StartCfgToolingResponseHelper : public ::cpad_protobuf::StartCfgToolingResponse
+  class StartCfgToolingResponseHelper : public ::cpad::build_mngt::StartCfgToolingResponse
   {
   public:
     StartCfgToolingResponseHelper();
@@ -107,7 +107,7 @@ namespace cpad
   //
   // EndCfgTooling Management
   //
-  class EndCfgToolingRequestHelper : public ::cpad_protobuf::EndCfgToolingRequest
+  class EndCfgToolingRequestHelper : public ::cpad::build_mngt::EndCfgToolingRequest
   {
   public:
     EndCfgToolingRequestHelper(uint32_t, uint32_t, std::string);
@@ -121,7 +121,7 @@ namespace cpad
     void dump(void);
   };
 
-  class EndCfgToolingResponseHelper : public ::cpad_protobuf::EndCfgToolingResponse
+  class EndCfgToolingResponseHelper : public ::cpad::build_mngt::EndCfgToolingResponse
   {
   public:
     EndCfgToolingResponseHelper(uint32_t, uint32_t);

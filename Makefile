@@ -9,14 +9,54 @@ BUILD_GXX ?= $(HOST_GXX)
 TARGET_GCC ?= $(BUILD_GCC)
 TARGET_GXX ?= $(BUILD_GXX)
 
-CPAD_SRCS = main.cc Filter.cc Cpad.cc CUnit.cc Func.cc 
-CFG_SRCS = cfgtest.cc Graph.cc Func.cc CUnit.cc Node.cc Edge.cc
-SRV_SRCS = srv_main.cc Server.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
-CLT_SRCS = clt_main.cc plugin_request.pb.cc VersionMsg.cc InsertionPointMsg.cc CUnitTerminateMsg.cc
+CPAD_SRCS = \
+	main.cc \
+	Filter.cc \
+	Cpad.cc \
+	CUnit.cc \
+	Func.cc 
+
+CPAD_CMD_SRCS = \
+	cpad_cmd.cc \
+	plugin_request.pb.cc \
+	build_mngt.pb.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc \
+	CUnitTerminateMsg.cc \
+	BuildMngtMsg.cc
+
+CFG_SRCS = \
+	cfgtest.cc \
+	Graph.cc \
+	Func.cc \
+	CUnit.cc \
+	Node.cc \
+	Edge.cc
+
+SRV_SRCS = \
+	srv_main.cc \
+	Server.cc \
+	plugin_request.pb.cc \
+	build_mngt.pb.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc \
+	CUnitTerminateMsg.cc \
+	BuildMngtMsg.cc
+
+CLT_SRCS = \
+	clt_main.cc \
+	plugin_request.pb.cc \
+	build_mngt.pb.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc \
+	CUnitTerminateMsg.cc \
+	BuildMngtMsg.cc
+
 CPAD_OBJS = $(CPAD_SRCS:%.cc=%.o)
 SRV_OBJS = $(SRV_SRCS:%.cc=%.o)
 CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
 CFG_OBJS = $(CFG_SRCS:%.cc=%.o)
+CPAD_CMD_OBJS = $(CPAD_CMD_SRCS:%.cc=%.o)
 
 CXXFLAGS = -g -O1 -std=c++11
 PROTOC := protoc
@@ -44,6 +84,8 @@ all: cfgtest cpad
 
 cls:
 	clear || true
+
+cpad_cmd: $(CPAD_CMD_OBJS)
 
 cpad: cpad_srv cpad_clt $(CPAD_OBJS)
 	$(CXX) $(LDFLAGS) $(CPAD_OBJS) -o $@ $(CPAD_LDLIBS)

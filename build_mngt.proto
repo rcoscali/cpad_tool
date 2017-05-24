@@ -7,16 +7,17 @@
 
 syntax = "proto3";
 
-package cpad_protobuf;
+package cpad.build_mngt;
 
 /* --------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------- */
 
-// ====================================
-// Build management messages
-// ====================================
+// ============================================
+// Build management message: StartCfgCollection
+// ============================================
 
 // StartCfgCollectionRequest
+// -------------------------
 // This request is sent by a client command (independent from plugin) in
 // order to request the server to create a new CFG (i.e. a new build)
 message StartCfgCollectionRequest
@@ -27,48 +28,101 @@ message StartCfgCollectionRequest
 }
 
 // StartCfgCollectionResponse
+// -------------------------
 // This response is sent by server to client command used for starting a new
-// build (a new CFG). A CFG unique id is returned
+// build (a new CFG). A CFG unique id (uuid) is allocated by the server for
+// uniquely identify this compilation and is then returned.
 message StartCfgCollectionResponse
 {
-  bool cpad_config_ok = 1;
+  enum CpadConfigStatus
+  {
+    //option allow_alias = true;
+    CPAD_CONFIG_ERROR = 0;
+    CPAD_CONFIG_OK = 1;
+  }
+  CpadConfigStatus cpad_config_status = 1;
   bytes uuid = 2;
 }
 
+// ============================================
+// Build management message: EndCfgCollection
+// ============================================
+
 // EndCfgCollectionRequest
+// -----------------------
+// This request is sent by a command for notifying the server that
+// the CFG collection has ended (all object files were compiled with
+// plugin in CFG collection mode -- phase)
+// This message contains the unique id that uniquely identify this
+// compilation and that was allocated by the server and provided back
+// through the StartCfgCollectionResponse
 message EndCfgCollectionRequest
 {
+  bytes uuid = 1;
 }
 
 // EndCfgCollectionResponse
+// ------------------------
+// This message is returned by server for providing the APEX allocation
+// status.
+// If APEX_ALLOCATION_ERROR is returned, the compilation process shall stop
+// In this case, a message is also provided in apex_allocation_message.
 message EndCfgCollectionResponse
 {
-  bool apex_allocation_status;
+  enum ApexAllocationStatus
+  {
+    APEX_ALLOCATION_ERROR = 0;
+    APEX_ALLOCATION_OK = 1;
+  }
+  ApexAllocationStatus apex_allocation_status = 1;
+  string apex_allocation_message = 2;
 }
 
 // StartCfgToolingRequest
+// ----------------------
+// A command is sending this request for notifying the server the tooling
+// phase is starting. All objects will be rebuilt again, but plugin is expecting
+// code to insert in responses (see plugin_request.proto).
+// Once all objects will be built, an EndCfgToolingRequest will be sent to server.
+// This message contains the unique identifier for the compilation (uuid).
 message StartCfgToolingRequest
 {
+  bytes uuid = 1;
 }
 
 // StartCfgToolingResponse
+// -----------------------
+// The server just ack by sending an empty response.
 message StartCfgToolingResponse
 {
 }
 
 // EndCfgToolingRequest
+// --------------------
+// All objects were processed, and code was inserted in each at plugin
+// requests (see plugin_request.proto). This message is sent by an independent
+// command for notifying the server the compilation process reach its end.
 message EndCfgToolingRequest
 {
+  bytes uuid = 1;
 }
 
 // EndCfgToolingResponse
+// ---------------------
+// The server will respond with a message containing some statistics on tooling
 message EndCfgToolingResponse
 {
-  uint32 number_bb = 1;
-  uint32 number_modified_bb = 1;
+  // We could send back a map with BB name as key and a stats struct
+  message BbStat
+  {
+    uint32 bb_original_length = 1;
+    uint32 bb_modified_length = 2;
+  }
+  map <string, BbStat> statistics = 3;
 }
 
-
+// All RPC services for build management
+// Client stubs and server skeleton code is generated thanks to gRPC.
 service BuildMngtServices
 {
   rpc StartCfgCollectionService (StartCfgCollectionRequest) returns (StartCfgCollectionResponse) {};
