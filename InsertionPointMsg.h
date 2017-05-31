@@ -11,37 +11,40 @@
 
 namespace cpad
 {
-  //
-  // InsertionPoint Management
-  //
-  class InsertionPointRequestHelper : public ::cpad_protobuf::InsertionPointRequest
+  namespace insns
   {
-  public:
-    InsertionPointRequestHelper(std::string,
-                                std::string,
-                                cpad_protobuf::InsertionLocation);
-    InsertionPointRequestHelper(const char *);
-    virtual ~InsertionPointRequestHelper();
-
-    InsertionPointRequestHelper(InsertionPointRequestHelper const&);
-    InsertionPointRequestHelper& operator =(InsertionPointRequestHelper const&);
-
-    size_t serialize(char *);
-    void dump(void);
-  };
-
-  class InsertionPointResponseHelper : public ::cpad_protobuf::InsertionPointResponse
-  {
-  public:
-    InsertionPointResponseHelper(bool, std::string);
-    InsertionPointResponseHelper(const char *);
-    virtual ~InsertionPointResponseHelper();
-
-    InsertionPointResponseHelper(InsertionPointResponseHelper const&);
-    InsertionPointResponseHelper& operator =(InsertionPointResponseHelper const&);
+    //
+    // InsertionPoint Management
+    //
+    class InsertionPointRequestHelper : public ::cpad::insns::InsertionPointRequest
+    {
+    public:
+      InsertionPointRequestHelper(std::string,
+                                  std::string,
+                                  cpad::insns::InsertionLocation);
+      InsertionPointRequestHelper(const char *);
+      virtual ~InsertionPointRequestHelper();
+      
+      InsertionPointRequestHelper(InsertionPointRequestHelper const&);
+      InsertionPointRequestHelper& operator =(InsertionPointRequestHelper const&);
+      
+      size_t serialize(char *);
+      void dump(std::ostream &osb = std::cout);
+    };
     
-    size_t serialize(char *);
-    void dump(void);
-  };
-    
+    class InsertionPointResponseHelper : public ::cpad::insns::InsertionPointResponse
+    {
+    public:
+      InsertionPointResponseHelper(bool, std::string);
+      InsertionPointResponseHelper(const char *);
+      virtual ~InsertionPointResponseHelper();
+      
+      InsertionPointResponseHelper(InsertionPointResponseHelper const&);
+      InsertionPointResponseHelper& operator =(InsertionPointResponseHelper const&);
+      
+      size_t serialize(char *);
+      void dump(std::ostream &osb = std::cout);
+    };
+
+  }
 }

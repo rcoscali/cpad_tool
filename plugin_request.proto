@@ -7,7 +7,7 @@
 
 syntax = "proto3";
 
-package cpad.plugin;
+package cpad.insns;
 
 /* --------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------- */
@@ -107,28 +107,6 @@ message InsertionPointResponse
 /* --------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------- */
 
-// ===================================
-// CUnit Terminate management messages
-// ===================================
-
-// CUnitTerminateRequest allows the client to notify the server that
-// the compilation unit is done. Server will then close the associated
-// session and release resources.
-message CUnitTerminateRequest
-{
-  string cunit_name = 10;
-}
-
-// CUnitTerminateResponse allows the server to acknowledge the
-// client CUnitTerminateRequest.
-message CUnitTerminateResponse
-{  
-  string cunit_name = 10;
-}
-
-/* --------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------- */
-
 // ============
 // RPC services
 // ============
@@ -144,5 +122,4 @@ service PluginServices
 {
   rpc VersionService (VersionRequest) returns (VersionResponse) {};
   rpc InsertionPointService (InsertionPointRequest) returns (InsertionPointResponse) {};
-  rpc CUnitTerminateService (CUnitTerminateRequest) returns (CUnitTerminateResponse) {};
 }

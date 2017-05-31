@@ -80,11 +80,11 @@ cpad::session::handle_read(const error_code& error,
       dump_data(bytes_transferred);
 
       // Create request from data
-      VersionRequestHelper req((const char *)m_data);
+      ::cpad::insns::VersionRequestHelper req((const char *)m_data);
       req.dump();
 
       // Create response
-      VersionResponseHelper resp(3, 4, "server");
+      ::cpad::insns::VersionResponseHelper resp(3, 4, "server");
       resp.dump();
 
       // Serialize response

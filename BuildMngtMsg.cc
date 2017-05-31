@@ -4,44 +4,44 @@
 
 #include "BuildMngtMsg.h"
 
-cpad::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(std::string build_name,
-								       uint32_t number_cunits,
-								       std::string cpad_config)
-  : ::cpad_protobuf::StartCfgCollectionRequest()
+cpad::build_mngt::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(std::string build_name,
+                                                                                   uint32_t number_cunits,
+                                                                                   std::string cpad_config)
+  : ::cpad::build_mngt::StartCfgCollectionRequest()
 {
-  set_build_name(minor);
-  set_number_cunits(major);
-  set_cpad_config(provider_name);
+  set_build_name(build_name);
+  set_number_cunits(number_cunits);
+  set_cpad_config(cpad_config);
 }
 
-cpad::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(const char *buffer)
-  : ::cpad_protobuf::StartCfgCollectionRequest()
+cpad::build_mngt::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(const char *buffer)
+  : ::cpad::build_mngt::StartCfgCollectionRequest()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::StartCfgCollectionRequestHelper::~StartCfgCollectionRequestHelper()
+cpad::build_mngt::StartCfgCollectionRequestHelper::~StartCfgCollectionRequestHelper()
 {
 }
 
-cpad::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(StartCfgCollectionRequestHelper const&a_copy)
-  : ::cpad::StartCfgCollectionRequestHelper(a_copy.build_name(),
-					    a_copy.number_cunits(),
-					    a_copy.cpad_config())
+cpad::build_mngt::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(StartCfgCollectionRequestHelper const&a_copy)
+  : ::cpad::build_mngt::StartCfgCollectionRequestHelper(a_copy.build_name(),
+                                                        a_copy.number_cunits(),
+                                                        a_copy.cpad_config())
 {
 }
 
-cpad::StartCfgCollectionRequestHelper&
-cpad::StartCfgCollectionRequestHelper::operator =(StartCfgCollectionRequestHelper const&a_copy)
+cpad::build_mngt::StartCfgCollectionRequestHelper&
+cpad::build_mngt::StartCfgCollectionRequestHelper::operator =(StartCfgCollectionRequestHelper const&a_copy)
 {
-  set_client_version_minor(a_copy.build_name());
-  set_client_version_major(a_copy.number_cunits());
-  set_client_provider_name(a_copy.cpad_config());
+  set_build_name(a_copy.build_name());
+  set_number_cunits(a_copy.number_cunits());
+  set_cpad_config(a_copy.cpad_config());
   return *this;
 }
 
 size_t
-cpad::StartCfgCollectionRequestHelper::serialize(char *buffer)
+cpad::build_mngt::StartCfgCollectionRequestHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -50,47 +50,48 @@ cpad::StartCfgCollectionRequestHelper::serialize(char *buffer)
 }
 
 void
-cpad::StartCfgCollectionRequestHelper::dump(void)
+cpad::build_mngt::StartCfgCollectionRequestHelper::dump(std::ostream &osb)
 {
-  std::cout << "build name: " << build_name() << std::endl;
-  std::cout << "number cunits: " << number_cunits() << std::endl;
-  std::cout << "cpad_config: " << cpad_config() << std::endl;
+  osb << "[StartCfgCollectionRequest]" << std::endl;
+  osb << "build name: " << build_name() << std::endl;
+  osb << "number cunits: " << number_cunits() << std::endl;
+  osb << "cpad_config: " << cpad_config() << std::endl;
 }
 
-cpad::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(bool cpad_config_ok,
-									 std::string uuid)
-  : ::cpad_protobuf::StartCfgCollectionResponse()
+cpad::build_mngt::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(::cpad::build_mngt::StartCfgCollectionResponse_CpadConfigStatus cpad_config_status,
+                                                                                     std::string uuid)
+  : ::cpad::build_mngt::StartCfgCollectionResponse()
 {
-  set_cpad_config_ok(cpad_config_ok);
+  set_cpad_config_status(cpad_config_status);
   set_uuid(uuid);
 }
 
-cpad::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(const char *buffer)
-  : ::cpad_protobuf::StartCfgCollectionResponse()
+cpad::build_mngt::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(const char *buffer)
+  : ::cpad::build_mngt::StartCfgCollectionResponse()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::StartCfgCollectionResponseHelper::~StartCfgCollectionResponseHelper()
+cpad::build_mngt::StartCfgCollectionResponseHelper::~StartCfgCollectionResponseHelper()
 {
 }
 
-cpad::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(StartCfgCollectionResponseHelper const&a_copy)
-  : ::cpad::StartCfgCollectionResponseHelper(a_copy.cpad_config_ok(),
-					     a_copy.uuid())
+cpad::build_mngt::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(StartCfgCollectionResponseHelper const&a_copy)
+  : ::cpad::build_mngt::StartCfgCollectionResponseHelper(a_copy.cpad_config_status(),
+                                                         a_copy.uuid())
 {
 }
 
-cpad::StartCfgCollectionResponseHelper&
-cpad::StartCfgCollectionResponseHelper::operator =(StartCfgCollectionResponseHelper const&a_copy)
+cpad::build_mngt::StartCfgCollectionResponseHelper&
+cpad::build_mngt::StartCfgCollectionResponseHelper::operator =(StartCfgCollectionResponseHelper const&a_copy)
 {
-  set_server_version_minor(a_copy.cpad_config_ok());
-  set_server_version_major(a_copy.uuid());
+  set_cpad_config_status(a_copy.cpad_config_status());
+  set_uuid(a_copy.uuid());
   return *this;
 }
 
 size_t
-cpad::StartCfgCollectionResponseHelper::serialize(char *buffer)
+cpad::build_mngt::StartCfgCollectionResponseHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -99,40 +100,43 @@ cpad::StartCfgCollectionResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::StartCfgCollectionResponseHelper::dump(void)
+cpad::build_mngt::StartCfgCollectionResponseHelper::dump(std::ostream &osb)
 {
-  std::cout << "cpad config ok: " << cpad_config_ok() << std::endl;
-  std::cout << "uuid: " << uuid() << std::endl;
+  osb << "[StartCfgCollectionResponse]" << std::endl;
+  osb << "cpad config status: " << cpad_config_status() << std::endl;
+  osb << "uuid: " << uuid() << std::endl;
 }
 
-cpad::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper()
-  : ::cpad_protobuf::EndCfgCollectionRequest()
+cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(std::string uuid)
+  : ::cpad::build_mngt::EndCfgCollectionRequest()
 {
+  set_uuid(uuid);
 }
 
-cpad::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(const char *buffer)
-  : ::cpad_protobuf::EndCfgCollectionRequest()
+cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(const char *buffer)
+  : ::cpad::build_mngt::EndCfgCollectionRequest()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::EndCfgCollectionRequestHelper::~EndCfgCollectionRequestHelper()
+cpad::build_mngt::EndCfgCollectionRequestHelper::~EndCfgCollectionRequestHelper()
 {
 }
 
-cpad::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(EndCfgCollectionRequestHelper const&a_copy)
-  : ::cpad::EndCfgCollectionRequestHelper()
+cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(EndCfgCollectionRequestHelper const&a_copy)
+  : ::cpad::build_mngt::EndCfgCollectionRequestHelper(a_copy.uuid())
 {
 }
 
-cpad::EndCfgCollectionRequestHelper&
-cpad::EndCfgCollectionRequestHelper::operator =(EndCfgCollectionRequestHelper const&a_copy)
+cpad::build_mngt::EndCfgCollectionRequestHelper&
+cpad::build_mngt::EndCfgCollectionRequestHelper::operator =(EndCfgCollectionRequestHelper const&a_copy)
 {
+  set_uuid(a_copy.uuid());
   return *this;
 }
 
 size_t
-cpad::EndCfgCollectionRequestHelper::serialize(char *buffer)
+cpad::build_mngt::EndCfgCollectionRequestHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -141,41 +145,46 @@ cpad::EndCfgCollectionRequestHelper::serialize(char *buffer)
 }
 
 void
-cpad::EndCfgCollectionRequestHelper::dump(void)
+cpad::build_mngt::EndCfgCollectionRequestHelper::dump(std::ostream &osb)
 {
-  std::cout << "no properties" << std::endl;
+  osb << "[EndCfgCollectionRequest]" << std::endl;
+  osb << "uuid: " << uuid() << std::endl;
 }
 
-cpad::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(bool apex_allocation_status)
-  : ::cpad_protobuf::EndCfgCollectionResponse()
+cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(::cpad::build_mngt::EndCfgCollectionResponse_ApexAllocationStatus apex_allocation_status,
+                                                                                 std::string apex_allocation_message)
+  : ::cpad::build_mngt::EndCfgCollectionResponse()
 {
   set_apex_allocation_status(apex_allocation_status);
+  set_apex_allocation_message(apex_allocation_message);
 }
 
-cpad::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(const char *buffer)
-  : ::cpad_protobuf::EndCfgCollectionResponse()
+cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(const char *buffer)
+  : ::cpad::build_mngt::EndCfgCollectionResponse()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::EndCfgCollectionResponseHelper::~EndCfgCollectionResponseHelper()
+cpad::build_mngt::EndCfgCollectionResponseHelper::~EndCfgCollectionResponseHelper()
 {
 }
 
-cpad::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(EndCfgCollectionResponseHelper const&a_copy)
-  : ::cpad::EndCfgCollectionResponseHelper(a_copy.apex_allocation_status())
+cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(EndCfgCollectionResponseHelper const&a_copy)
+  : ::cpad::build_mngt::EndCfgCollectionResponseHelper(a_copy.apex_allocation_status(),
+                                                       a_copy.apex_allocation_message())
 {
 }
 
-cpad::EndCfgCollectionResponseHelper&
-cpad::EndCfgCollectionResponseHelper::operator =(EndCfgCollectionResponseHelper const&a_copy)
+cpad::build_mngt::EndCfgCollectionResponseHelper&
+cpad::build_mngt::EndCfgCollectionResponseHelper::operator =(EndCfgCollectionResponseHelper const&a_copy)
 {
   set_apex_allocation_status(a_copy.apex_allocation_status());
+  set_apex_allocation_message(a_copy.apex_allocation_message());
   return *this;
 }
 
 size_t
-cpad::EndCfgCollectionResponseHelper::serialize(char *buffer)
+cpad::build_mngt::EndCfgCollectionResponseHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -184,39 +193,43 @@ cpad::EndCfgCollectionResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::EndCfgCollectionResponseHelper::dump(void)
+cpad::build_mngt::EndCfgCollectionResponseHelper::dump(std::ostream &osb)
 {
-  std::cout << "apex allocation status: " << apex_allocation_status() << std::endl;
+  osb << "[EndCfgCollectionResponse]" << std::endl;
+  osb << "apex allocation status: " << apex_allocation_status() << std::endl;
+  osb << "apex allocation message: " << apex_allocation_message() << std::endl;
 }
 
-cpad::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper()
-  : ::cpad_protobuf::StartCfgToolingRequest()
+cpad::build_mngt::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(std::string uuid)
+  : ::cpad::build_mngt::StartCfgToolingRequest()
 {
+  set_uuid(uuid);
 }
 
-cpad::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(const char *buffer)
-  : ::cpad_protobuf::StartCfgToolingRequest()
+cpad::build_mngt::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(const char *buffer)
+  : ::cpad::build_mngt::StartCfgToolingRequest()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::StartCfgToolingRequestHelper::~StartCfgToolingRequestHelper()
+cpad::build_mngt::StartCfgToolingRequestHelper::~StartCfgToolingRequestHelper()
 {
 }
 
-cpad::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(StartCfgToolingRequestHelper const&a_copy)
-  : ::cpad::StartCfgToolingRequestHelper()
+cpad::build_mngt::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(StartCfgToolingRequestHelper const&a_copy)
+  : ::cpad::build_mngt::StartCfgToolingRequestHelper(a_copy.uuid())
 {
 }
 
-cpad::StartCfgToolingRequestHelper&
-cpad::StartCfgToolingRequestHelper::operator =(StartCfgToolingRequestHelper const&a_copy)
+cpad::build_mngt::StartCfgToolingRequestHelper&
+cpad::build_mngt::StartCfgToolingRequestHelper::operator =(StartCfgToolingRequestHelper const&a_copy)
 {
+  set_uuid(a_copy.uuid());
   return *this;
 }
 
 size_t
-cpad::StartCfgToolingRequestHelper::serialize(char *buffer)
+cpad::build_mngt::StartCfgToolingRequestHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -225,39 +238,40 @@ cpad::StartCfgToolingRequestHelper::serialize(char *buffer)
 }
 
 void
-cpad::StartCfgToolingRequestHelper::dump(void)
+cpad::build_mngt::StartCfgToolingRequestHelper::dump(std::ostream &osb)
 {
-  std::cout << "no properties" << std::endl;
+  osb << "[StartCfgToolingRequest]" << std::endl;
+  osb << "uuid: " << uuid() << std::endl;
 }
 
-cpad::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper()
-  : ::cpad_protobuf::StartCfgToolingResponse()
+cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper()
+  : ::cpad::build_mngt::StartCfgToolingResponse()
 {
 }
 
-cpad::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper(const char *buffer)
-  : ::cpad_protobuf::StartCfgToolingResponse()
+cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper(const char *buffer)
+  : ::cpad::build_mngt::StartCfgToolingResponse()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::StartCfgToolingResponseHelper::~StartCfgToolingResponseHelper()
+cpad::build_mngt::StartCfgToolingResponseHelper::~StartCfgToolingResponseHelper()
 {
 }
 
-cpad::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper(StartCfgToolingResponseHelper const&a_copy)
-  : ::cpad::StartCfgToolingResponseHelper()
+cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper(StartCfgToolingResponseHelper const&a_copy)
+  : ::cpad::build_mngt::StartCfgToolingResponseHelper()
 {
 }
 
-cpad::StartCfgToolingResponseHelper&
-cpad::StartCfgToolingResponseHelper::operator =(StartCfgToolingResponseHelper const&a_copy)
+cpad::build_mngt::StartCfgToolingResponseHelper&
+cpad::build_mngt::StartCfgToolingResponseHelper::operator =(StartCfgToolingResponseHelper const&a_copy)
 {
   return *this;
 }
 
 size_t
-cpad::StartCfgToolingResponseHelper::serialize(char *buffer)
+cpad::build_mngt::StartCfgToolingResponseHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -266,39 +280,41 @@ cpad::StartCfgToolingResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::StartCfgToolingResponseHelper::dump(void)
+cpad::build_mngt::StartCfgToolingResponseHelper::dump(std::ostream &osb)
 {
-  std::cout << "no properties" << std::endl;
+  osb << "[StartCfgToolingResponse]" << std::endl;
 }
 
-cpad::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper()
-  : ::cpad_protobuf::EndCfgToolingRequest()
+cpad::build_mngt::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(std::string uuid)
+  : ::cpad::build_mngt::EndCfgToolingRequest()
 {
+  set_uuid(uuid);
 }
 
-cpad::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(const char *buffer)
-  : ::cpad_protobuf::EndCfgToolingRequest()
+cpad::build_mngt::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(const char *buffer)
+  : ::cpad::build_mngt::EndCfgToolingRequest()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::EndCfgToolingRequestHelper::~EndCfgToolingRequestHelper()
+cpad::build_mngt::EndCfgToolingRequestHelper::~EndCfgToolingRequestHelper()
 {
 }
 
-cpad::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(EndCfgToolingRequestHelper const&a_copy)
-  : ::cpad::EndCfgToolingRequestHelper()
+cpad::build_mngt::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(EndCfgToolingRequestHelper const&a_copy)
+  : ::cpad::build_mngt::EndCfgToolingRequestHelper(a_copy.uuid())
 {
 }
 
-cpad::EndCfgToolingRequestHelper&
-cpad::EndCfgToolingRequestHelper::operator =(EndCfgToolingRequestHelper const&a_copy)
+cpad::build_mngt::EndCfgToolingRequestHelper&
+cpad::build_mngt::EndCfgToolingRequestHelper::operator =(EndCfgToolingRequestHelper const&a_copy)
 {
+  set_uuid(a_copy.uuid());
   return *this;
 }
 
 size_t
-cpad::EndCfgToolingRequestHelper::serialize(char *buffer)
+cpad::build_mngt::EndCfgToolingRequestHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -307,45 +323,42 @@ cpad::EndCfgToolingRequestHelper::serialize(char *buffer)
 }
 
 void
-cpad::EndCfgToolingRequestHelper::dump(void)
+cpad::build_mngt::EndCfgToolingRequestHelper::dump(std::ostream &osb)
 {
-  std::cout << "no properties" << std::endl;
+  osb << "[EndCfgToolingRequest]" << std::endl;
+  osb << "uuid: " << uuid() << std::endl;
 }
 
-cpad::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(uint32_t number_bb,
-							       uint32_t number_modified_bb)
-  : ::cpad_protobuf::EndCfgToolingResponse()
+cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(::google::protobuf::Map< ::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> const& statistics)
+  : ::cpad::build_mngt::EndCfgToolingResponse()
 {
-  set_number_bb(number_bb);
-  set_number_modified_bb(number_modified_bb);
+  mutable_statistics()->insert(statistics.cbegin(), statistics.cend());
 }
 
-cpad::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(const char *buffer)
-  : ::cpad_protobuf::EndCfgToolingResponse()
+cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(const char *buffer)
+  : ::cpad::build_mngt::EndCfgToolingResponse()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::EndCfgToolingResponseHelper::~EndCfgToolingResponseHelper()
+cpad::build_mngt::EndCfgToolingResponseHelper::~EndCfgToolingResponseHelper()
 {
 }
 
-cpad::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(EndCfgToolingResponseHelper const&a_copy)
-  : ::cpad::EndCfgToolingResponseHelper(a_copy.number_bb(),
-					a_copy.number_modified_bb())
+cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(EndCfgToolingResponseHelper const&a_copy)
+  : ::cpad::build_mngt::EndCfgToolingResponseHelper(a_copy.statistics())
 {
 }
 
-cpad::EndCfgToolingResponseHelper&
-cpad::EndCfgToolingResponseHelper::operator =(EndCfgToolingResponseHelper const&a_copy)
+cpad::build_mngt::EndCfgToolingResponseHelper&
+cpad::build_mngt::EndCfgToolingResponseHelper::operator =(EndCfgToolingResponseHelper const&a_copy)
 {
-  set_server_version_minor(a_copy.number_bb());
-  set_server_version_major(a_copy.number_modified_bb());
+  mutable_statistics()->insert(a_copy.statistics().cbegin(), a_copy.statistics().cend());
   return *this;
 }
 
 size_t
-cpad::EndCfgToolingResponseHelper::serialize(char *buffer)
+cpad::build_mngt::EndCfgToolingResponseHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -354,9 +367,15 @@ cpad::EndCfgToolingResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::EndCfgToolingResponseHelper::dump(void)
+cpad::build_mngt::EndCfgToolingResponseHelper::dump(std::ostream &osb)
 {
-  std::cout << "number bb: " << server_number_bb() << std::endl;
-  std::cout << "server major: " << server_number_modified_bb() << std::endl;
+  osb << "[EndCfgToolingResponse]" << std::endl;
+  for (const auto& stat : statistics())
+    {
+      const auto& bb_stat = stat.second;
+      osb << "statistics for BB '" << stat.first << "' is: " << std::endl;
+      osb << "   original length:" << bb_stat.bb_original_length() << std::endl;
+      osb << "   modified length:" << bb_stat.bb_modified_length() << std::endl;
+    }
 }
 

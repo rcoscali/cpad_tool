@@ -2,37 +2,39 @@
 // Copyright ©2017 NagraFrance
 //
 
+#include <iostream>
+
 #include "VersionMsg.h"
 
-cpad::VersionRequestHelper::VersionRequestHelper(uint32_t minor,
+cpad::insns::VersionRequestHelper::VersionRequestHelper(uint32_t minor,
                                                  uint32_t major,
                                                  std::string provider_name)
-  : ::cpad_protobuf::VersionRequest()
+  : ::cpad::insns::VersionRequest()
 {
   set_client_version_minor(minor);
   set_client_version_major(major);
   set_client_provider_name(provider_name);
 }
 
-cpad::VersionRequestHelper::VersionRequestHelper(const char *buffer)
-  : ::cpad_protobuf::VersionRequest()
+cpad::insns::VersionRequestHelper::VersionRequestHelper(const char *buffer)
+  : ::cpad::insns::VersionRequest()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::VersionRequestHelper::~VersionRequestHelper()
+cpad::insns::VersionRequestHelper::~VersionRequestHelper()
 {
 }
 
-cpad::VersionRequestHelper::VersionRequestHelper(VersionRequestHelper const&a_copy)
-  : ::cpad::VersionRequestHelper(a_copy.client_version_minor(),
+cpad::insns::VersionRequestHelper::VersionRequestHelper(VersionRequestHelper const&a_copy)
+  : ::cpad::insns::VersionRequestHelper(a_copy.client_version_minor(),
                                  a_copy.client_version_major(),
                                  a_copy.client_provider_name())
 {
 }
 
-cpad::VersionRequestHelper&
-cpad::VersionRequestHelper::operator =(VersionRequestHelper const&a_copy)
+cpad::insns::VersionRequestHelper&
+cpad::insns::VersionRequestHelper::operator =(VersionRequestHelper const&a_copy)
 {
   set_client_version_minor(a_copy.client_version_minor());
   set_client_version_major(a_copy.client_version_major());
@@ -41,7 +43,7 @@ cpad::VersionRequestHelper::operator =(VersionRequestHelper const&a_copy)
 }
 
 size_t
-cpad::VersionRequestHelper::serialize(char *buffer)
+cpad::insns::VersionRequestHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -50,42 +52,43 @@ cpad::VersionRequestHelper::serialize(char *buffer)
 }
 
 void
-cpad::VersionRequestHelper::dump(void)
+cpad::insns::VersionRequestHelper::dump(std::ostream &osb)
 {
-  std::cout << "client minor: " << client_version_minor() << std::endl;
-  std::cout << "client major: " << client_version_major() << std::endl;
-  std::cout << "client provider: " << client_provider_name() << std::endl;
+  osb << "[VersionRequestHelper]" << std::endl;
+  osb << "client minor: " << client_version_minor() << std::endl;
+  osb << "client major: " << client_version_major() << std::endl;
+  osb << "client provider: " << client_provider_name() << std::endl;
 }
 
-cpad::VersionResponseHelper::VersionResponseHelper(uint32_t minor,
+cpad::insns::VersionResponseHelper::VersionResponseHelper(uint32_t minor,
                                                    uint32_t major,
                                                    std::string provider_name)
-  : ::cpad_protobuf::VersionResponse()
+  : ::cpad::insns::VersionResponse()
 {
   set_server_version_minor(minor);
   set_server_version_major(major);
   set_server_provider_name(provider_name);
 }
 
-cpad::VersionResponseHelper::VersionResponseHelper(const char *buffer)
-  : ::cpad_protobuf::VersionResponse()
+cpad::insns::VersionResponseHelper::VersionResponseHelper(const char *buffer)
+  : ::cpad::insns::VersionResponse()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::VersionResponseHelper::~VersionResponseHelper()
+cpad::insns::VersionResponseHelper::~VersionResponseHelper()
 {
 }
 
-cpad::VersionResponseHelper::VersionResponseHelper(VersionResponseHelper const&a_copy)
-  : ::cpad::VersionResponseHelper(a_copy.server_version_minor(),
+cpad::insns::VersionResponseHelper::VersionResponseHelper(VersionResponseHelper const&a_copy)
+  : ::cpad::insns::VersionResponseHelper(a_copy.server_version_minor(),
                                   a_copy.server_version_major(),
                                   a_copy.server_provider_name())
 {
 }
 
-cpad::VersionResponseHelper&
-cpad::VersionResponseHelper::operator =(VersionResponseHelper const&a_copy)
+cpad::insns::VersionResponseHelper&
+cpad::insns::VersionResponseHelper::operator =(VersionResponseHelper const&a_copy)
 {
   set_server_version_minor(a_copy.server_version_minor());
   set_server_version_major(a_copy.server_version_major());
@@ -94,7 +97,7 @@ cpad::VersionResponseHelper::operator =(VersionResponseHelper const&a_copy)
 }
 
 size_t
-cpad::VersionResponseHelper::serialize(char *buffer)
+cpad::insns::VersionResponseHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -103,10 +106,11 @@ cpad::VersionResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::VersionResponseHelper::dump(void)
+cpad::insns::VersionResponseHelper::dump(std::ostream &osb)
 {
-  std::cout << "server minor: " << server_version_minor() << std::endl;
-  std::cout << "server major: " << server_version_major() << std::endl;
-  std::cout << "server provider: " << server_provider_name() << std::endl;
+  osb << "[VersionResponseHelper]" << std::endl;
+  osb << "server minor: " << server_version_minor() << std::endl;
+  osb << "server major: " << server_version_major() << std::endl;
+  osb << "server provider: " << server_provider_name() << std::endl;
 }
 

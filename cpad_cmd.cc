@@ -51,7 +51,6 @@
 #include <boost/asio.hpp>
 
 #include "VersionMsg.h"
-#include "CUnitTerminateMsg.h"
 #include "BuildMngtMsg.h"
 
 using namespace boost;
@@ -119,7 +118,7 @@ main(int argc, char *argv[])
 	    
 	      if (vm.count("start") && vm.count("end"))
 		{
-		  cerr << "You cannot request both phase step (start & end) together\n";
+		  cerr << "You cannot request both phases steps (start & end) together\n";
 		  opt_err = 1;
 		}
 	      else if (vm.count("start") == 0 && vm.count("end") == 0)

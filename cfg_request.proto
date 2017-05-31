@@ -7,7 +7,7 @@
 
 syntax = "proto3";
 
-package cpad_protobuf;
+package cpad.cfg;
 
 /* --------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------- */
@@ -16,8 +16,8 @@ package cpad_protobuf;
 // Compilation unit export
 // ===============================
 
-// CUnitRequest message is sent by plugin client at start of a compilation unit
-// processing.
+// CompilationUnitStartRequest message is sent by plugin
+// client at start of a compilation unit processing.
 // Server respond with a CUnitResponse message
 message CompilationUnitStartRequest
 {
@@ -25,11 +25,28 @@ message CompilationUnitStartRequest
   string filename = 10;
 }
 
-// VersionResponse message is sent back by server to plugin client in
+// CompilationUnitStartResponse message is sent back
+// by server to plugin client in
 // response to a CUnitRequest message.
-message Response
+message CompilationUnitStartResponse
 {
-  //  CUnitResponse is empty
+  // CompilationUnitStartResponse  is empty
+}
+
+// CompilationUnitEndRequest message is sent by plugin
+// client at start of a compilation unit processing.
+// Server respond with a CUnitResponse message
+message CompilationUnitEndRequest
+{
+  // CompilationUnitEndRequest  is empty
+}
+
+// CompilationUnitEndResponse message is sent back
+// by server to plugin client in
+// response to a CUnitRequest message.
+message CompilationUnitEndResponse
+{
+  // CompilationUnitEndResponse  is empty
 }
 
 /* --------------------------------------------------------------------------- */
@@ -62,7 +79,9 @@ message FunctionResponse
 // BasicBlockRequest
 // ===================================
 
-// This request allows the server to send all basic blocks from the CFG
+// This request allows the server to send to the server
+// a basic block from the CFG. No Start/End: as soon as a
+// new BB is sent, the current one is closed.
 message BasicBlockRequest
 {
   // The cunit containing the BB
@@ -73,7 +92,7 @@ message BasicBlockRequest
   string bb_name = 30;
 }
 
-// BasicBlockRespoonse
+// BasicBlockResponse: ack
 message BasicBlockResponse
 {  
   // empty
@@ -89,13 +108,15 @@ message BasicBlockResponse
 enum EdgeKind
 {
   // Edge for the default branch
-  EDGE_DEFAULT_BRANCH,
+  EDGE_DEFAULT_BRANCH = 0;
 
   // Edge for the fallback branch
-  EDGE_FALLBACK_BRANCH
+  EDGE_FALLBACK_BRANCH =1;
 }
 
-// This request allows the server to send all egdes from the CFG
+// This request allows the server to send
+// to the server an egde from the CFG
+// No Start/End as for BB.
 message EdgeRequest
 {
   // The cunit containing the BB
@@ -107,10 +128,10 @@ message EdgeRequest
   // The end basic block name
   string end_bb_name = 40;
   // Kind of edge
-  enum EdgeKind edge_branch;  
+  EdgeKind edge_branch = 50;  
 }
 
-// EdgeRespoonse
+// EdgeRespoonse: ack
 message EdgeResponse
 {  
   // empty

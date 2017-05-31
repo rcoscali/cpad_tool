@@ -4,35 +4,35 @@
 
 #include "InsertionPointMsg.h"
 
-cpad::InsertionPointRequestHelper::InsertionPointRequestHelper(std::string cunit_name,
+cpad::insns::InsertionPointRequestHelper::InsertionPointRequestHelper(std::string cunit_name,
                                                                std::string cfun_name,
-                                                               cpad_protobuf::InsertionLocation location)
-  : ::cpad_protobuf::InsertionPointRequest()
+                                                               cpad::insns::InsertionLocation location)
+  : ::cpad::insns::InsertionPointRequest()
 {
   set_cunit_name(cunit_name);
   set_cfun_name(cfun_name);
   set_location(location);
 }
 
-cpad::InsertionPointRequestHelper::InsertionPointRequestHelper(const char *buffer)
-  : ::cpad_protobuf::InsertionPointRequest()
+cpad::insns::InsertionPointRequestHelper::InsertionPointRequestHelper(const char *buffer)
+  : ::cpad::insns::InsertionPointRequest()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::InsertionPointRequestHelper::~InsertionPointRequestHelper()
+cpad::insns::InsertionPointRequestHelper::~InsertionPointRequestHelper()
 {
 }
 
-cpad::InsertionPointRequestHelper::InsertionPointRequestHelper(cpad::InsertionPointRequestHelper const&a_copy)
-  : ::cpad::InsertionPointRequestHelper(a_copy.cunit_name(),
+cpad::insns::InsertionPointRequestHelper::InsertionPointRequestHelper(cpad::insns::InsertionPointRequestHelper const&a_copy)
+  : ::cpad::insns::InsertionPointRequestHelper(a_copy.cunit_name(),
                                         a_copy.cfun_name(),
                                         a_copy.location())
 {
 }
 
-cpad::InsertionPointRequestHelper&
-cpad::InsertionPointRequestHelper::operator =(cpad::InsertionPointRequestHelper const&a_copy)
+cpad::insns::InsertionPointRequestHelper&
+cpad::insns::InsertionPointRequestHelper::operator =(cpad::insns::InsertionPointRequestHelper const&a_copy)
 {
   set_cunit_name(a_copy.cunit_name());
   set_cfun_name(a_copy.cfun_name());
@@ -41,7 +41,7 @@ cpad::InsertionPointRequestHelper::operator =(cpad::InsertionPointRequestHelper 
 }
 
 size_t
-cpad::InsertionPointRequestHelper::serialize(char *buffer)
+cpad::insns::InsertionPointRequestHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -50,46 +50,47 @@ cpad::InsertionPointRequestHelper::serialize(char *buffer)
 }
 
 void
-cpad::InsertionPointRequestHelper::dump(void)
+cpad::insns::InsertionPointRequestHelper::dump(std::ostream &osb)
 {
-  std::cout << "cunit name : " << cunit_name() << std::endl;
-  std::cout << "cfun name: " << cfun_name() << std::endl;
-  std::cout << "location: " << location() << std::endl;
+  osb << "[InsertionPointRequestHelper]" << std::endl;
+  osb << "cunit name: " << cunit_name() << std::endl;
+  osb << "cfun name: " << cfun_name() << std::endl;
+  osb << "location: " << location() << std::endl;
 }
 
-cpad::InsertionPointResponseHelper::InsertionPointResponseHelper(bool insert_asm_statement,
+cpad::insns::InsertionPointResponseHelper::InsertionPointResponseHelper(bool insert_asm_statement,
                                                                  std::string asm_statement)
-  : ::cpad_protobuf::InsertionPointResponse()
+  : ::cpad::insns::InsertionPointResponse()
 {
   set_insert_asm_statement(insert_asm_statement);
   set_asm_statement(asm_statement);
 }
 
-cpad::InsertionPointResponseHelper::InsertionPointResponseHelper(const char *buffer)
-  : ::cpad_protobuf::InsertionPointResponse()
+cpad::insns::InsertionPointResponseHelper::InsertionPointResponseHelper(const char *buffer)
+  : ::cpad::insns::InsertionPointResponse()
 {
   ParseFromString(std::string(buffer));
 }
 
-cpad::InsertionPointResponseHelper::~InsertionPointResponseHelper()
+cpad::insns::InsertionPointResponseHelper::~InsertionPointResponseHelper()
 {
 }
 
-cpad::InsertionPointResponseHelper::InsertionPointResponseHelper(cpad::InsertionPointResponseHelper const&a_copy)
-  : ::cpad::InsertionPointResponseHelper(a_copy.insert_asm_statement(),
+cpad::insns::InsertionPointResponseHelper::InsertionPointResponseHelper(cpad::insns::InsertionPointResponseHelper const&a_copy)
+  : ::cpad::insns::InsertionPointResponseHelper(a_copy.insert_asm_statement(),
                                          a_copy.asm_statement())
 {
 }
 
-cpad::InsertionPointResponseHelper&
-cpad::InsertionPointResponseHelper::operator =(cpad::InsertionPointResponseHelper const&a_copy)
+cpad::insns::InsertionPointResponseHelper&
+cpad::insns::InsertionPointResponseHelper::operator =(cpad::insns::InsertionPointResponseHelper const&a_copy)
 {
   set_insert_asm_statement(a_copy.insert_asm_statement());
   set_asm_statement(a_copy.asm_statement());
 }
 
 size_t
-cpad::InsertionPointResponseHelper::serialize(char *buffer)
+cpad::insns::InsertionPointResponseHelper::serialize(char *buffer)
 {
   std::string local_buf;
   SerializeToString(&local_buf);
@@ -98,9 +99,10 @@ cpad::InsertionPointResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::InsertionPointResponseHelper::dump(void)
+cpad::insns::InsertionPointResponseHelper::dump(std::ostream &osb)
 {
-  std::cout << "insert asm statement : " << insert_asm_statement() << std::endl;
-  std::cout << "asm statement: " << asm_statement() << std::endl;
+  osb << "[InsertionPointResponseHelper]" << std::endl;
+  osb << "insert asm statement: " << insert_asm_statement() << std::endl;
+  osb << "asm statement: " << asm_statement() << std::endl;
 }
 
