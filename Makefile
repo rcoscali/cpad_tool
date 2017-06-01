@@ -1,3 +1,6 @@
+#SINGLE_TEST_EXE = no
+SINGLE_TEST_EXE = yes
+
 CXX = g++
 PROTOC ?= protoc
 GCC ?= gcc
@@ -72,7 +75,7 @@ MSG_TESTS_SRCS = \
 	tests/StartCfgToolingRequestTest.cc \
 	tests/StartCfgToolingResponseTest.cc \
 	tests/EndCfgToolingRequestTest.cc \
-#	tests/EndCfgToolingResponseTest.cc
+	tests/EndCfgToolingResponseTest.cc
 
 LIBCPAD_OBJS = \
 	plugin_request.pb.o \
@@ -91,9 +94,16 @@ CPAD_CMD_OBJS = $(CPAD_CMD_SRCS:%.cc=%.o)
 
 ALL_TESTS = \
 	$(MSG_TESTS_SRCS:%.cc=%)
+ALL_TESTS_OBJS = \
+	$(MSG_TESTS_SRCS:%.cc=%.o)
 
 GTEST_DIR = /usr/local/src/misc/googletest/googletest
+
+ifeq ($(SINGLE_TEST_EXE),no)
 GTEST_CPPFLAGS = -isystem $(GTEST_DIR)/include
+else
+GTEST_CPPFLAGS = -DSINGLE_TEST_EXE -isystem $(GTEST_DIR)/include
+endif
 
 CXXFLAGS = -g -O1 -std=c++11
 PROTOC := protoc
@@ -115,9 +125,6 @@ CLT_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf 
 %.grpc.pb.cc %.grpc.pb.h %.pb.cc %.pb.h: %.proto
 	$(PROTOC) $(PROTOC_FLAGS) $<
 
-tests/%: tests/%.cc
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $< libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
-
 .PHONY: all cls clean tests
 
 libgtest.a: 
@@ -127,10 +134,24 @@ libgtest.a:
 libcpad.a: $(LIBCPAD_OBJS)
 	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
 
+ifeq ($(SINGLE_TEST_EXE),no)
+tests/%: tests/%.cc
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $< libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
+
 tests: libgtest.a libcpad.a $(ALL_TESTS)
 	for t in $(ALL_TESTS); do \
 		./$$t; \
 	done
+else
+tests/%.o: tests/%.cc
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread -c $< -o $@
+
+tests/alltests: tests/alltests.o $(ALL_TESTS_OBJS)
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/*.o libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
+
+tests: libgtest.a libcpad.a tests/alltests
+	./tests/alltests
+endif
 
 all: cfgtest cpad
 
@@ -152,10 +173,10 @@ cfgtest: cls $(CFG_OBJS)
 	$(CXX) $(LDFLAGS) $(CFG_OBJS) -o $@ $(CFG_LDLIBS)
 
 clean:
-	rm -f *.o cpad
+	rm -f *.o cpad tests/*.o
 	rm -f *~ \#*\#
 	rm -f *.pb.cc *.pb.h
-	rm -f libgtest.a $(ALL_TESTS) libcpad.a
+	rm -f libgtest.a $(ALL_TESTS) tests/alltests libcpad.a
 
 Cpad.o : Cpad.cc Cpad.h CUnit.h Func.h Filter.h
 Filter.o: Filter.cc Filter.h
@@ -178,15 +199,40 @@ InsertionPointMsg.o: plugin_request.pb.cc plugin_request.pb.h InsertionPointMsg.
 ComplilationUnitMsg.o: cfg_request.pb.cc cfg_request.pb.h ComplilationUnitMsg.cc ComplilationUnitMsg.h
 cfgtest.o: cfgtest.cc Graph.h Func.h CUnit.h Node.h Edge.h
 cpad_cmd.o: plugin_request.pb.cc build_mngt.pb.cc
-tests/VersionRequestTest: VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
-tests/VersionResponseTest: VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
-tests/InsertionPointRequestTest: InsertionPointMsg.o InsertionPointMsg.h plugin_request.pb.cc plugin_request.pb.h
-tests/CompilationUnitStartRequestTest: CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
-tests/StartCfgCollectionRequestTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/StartCfgCollectionResponseTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/EndCfgCollectionRequestTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/EndCfgCollectionResponseTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/StartCfgToolingRequestTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/StartCfgToolingResponseTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/EndCfgToolingRequestTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
-tests/EndCfgToolingResponseTest: BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+ifeq ($(SINGLE_TEST_EXE),yes)
+tests/CompilationUnitEndRequestTest.o: tests/CompilationUnitEndRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/CompilationUnitEndResponseTest.o: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/CompilationUnitStartRequestTest.o: tests/CompilationUnitStartRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/CompilationUnitStartResponseTest.o: tests/CompilationUnitStartResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/EndCfgCollectionRequestTest.o: tests/EndCfgCollectionRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/EndCfgCollectionResponseTest.o: tests/EndCfgCollectionResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/EndCfgToolingRequestTest.o: tests/EndCfgToolingRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/EndCfgToolingResponseTest.o: tests/EndCfgToolingResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/InsertionPointRequestTest.o: tests/InsertionPointRequestTest.cc InsertionPointMsg.o InsertionPointMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/InsertionPointResponseTest.o: tests/InsertionPointResponseTest.cc InsertionPointMsg.o InsertionPointMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/StartCfgCollectionRequestTest.o: tests/StartCfgCollectionRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/StartCfgCollectionResponseTest.o: tests/StartCfgCollectionResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/StartCfgToolingRequestTest.o: tests/StartCfgToolingRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/StartCfgToolingResponseTest.o: tests/StartCfgToolingResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/VersionRequestTest.o: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/VersionResponseTest.o: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/alltests.o: tests/alltests.cc
+tests/alltests: tests/alltests.o
+else
+tests/CompilationUnitEndRequestTest: tests/CompilationUnitEndRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/CompilationUnitEndResponseTest: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/CompilationUnitStartRequestTest: tests/CompilationUnitStartRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/CompilationUnitStartResponseTest: tests/CompilationUnitStartResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/EndCfgCollectionRequestTest: tests/EndCfgCollectionRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/EndCfgCollectionResponseTest: tests/EndCfgCollectionResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/EndCfgToolingRequestTest: tests/EndCfgToolingRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/EndCfgToolingResponseTest: tests/EndCfgToolingResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/InsertionPointRequestTest: tests/InsertionPointRequestTest.cc InsertionPointMsg.o InsertionPointMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/InsertionPointResponseTest: tests/InsertionPointResponseTest.cc InsertionPointMsg.o InsertionPointMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/StartCfgCollectionRequestTest: tests/StartCfgCollectionRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/StartCfgCollectionResponseTest: tests/StartCfgCollectionResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/StartCfgToolingRequestTest: tests/StartCfgToolingRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/StartCfgToolingResponseTest: tests/StartCfgToolingResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
+tests/VersionRequestTest: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
+tests/VersionResponseTest: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
+endif

@@ -21,7 +21,7 @@ public:
   VersionResponseTests()
   {
     buffer = new char[128];
-    bzero(buffer, 128);
+    memset(buffer, 0, 128);
     vrh1 = new ::cpad::insns::VersionResponseHelper(2, 4, "testConstructor");
     osb = new std::ostream(&strbuf);
   }
@@ -78,7 +78,7 @@ TEST_F(VersionResponseTests, SerializeMethod)
 {
   ::cpad::insns::VersionResponseHelper vrh(2, 4, "testConstructor");
   char local_buffer[128];
-  bzero(local_buffer, 128);
+  memset(local_buffer, 0, 128);
   vrh.serialize(local_buffer);    
   EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
 }
@@ -89,7 +89,10 @@ TEST_F(VersionResponseTests, DumpMethod)
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
-int main(int argc, char** argv) {
+#ifndef SINGLE_TEST_EXE
+int main(int argc, char** argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#endif

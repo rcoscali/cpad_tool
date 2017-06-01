@@ -18,7 +18,7 @@ public:
   StartCfgToolingResponseTests()
   {
     buffer = new char[128];
-    bzero(buffer, 128);
+    memset(buffer, 0, 128);
     sctrh1 = new ::cpad::build_mngt::StartCfgToolingResponseHelper();
     osb = new std::ostream(&strbuf);
   }
@@ -44,7 +44,7 @@ public:
 // {
 //   ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh();
 //   char local_buffer[128];
-//   bzero(local_buffer, 128);
+//   memset(local_buffer, 0, 128);
 //   sctrh.serialize(local_buffer);    
 //   EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
 // }
@@ -55,8 +55,10 @@ TEST_F(StartCfgToolingResponseTests, DumpMethod)
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
+#ifndef SINGLE_TEST_EXE
 int main(int argc, char** argv)
 {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#endif

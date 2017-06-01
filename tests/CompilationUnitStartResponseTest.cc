@@ -18,7 +18,7 @@ public:
   CompilationUnitStartResponseTests()
   {
     buffer = new char[128];
-    bzero(buffer, 128);
+    memset(buffer, 0, 128);
     cusrh1 = new ::cpad::cfg::CompilationUnitStartResponseHelper();
     osb = new std::ostream(&strbuf);
   }
@@ -45,7 +45,10 @@ TEST_F(CompilationUnitStartResponseTests, DumpMethod)
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
-int main(int argc, char** argv) {
+#ifndef SINGLE_TEST_EXE
+int main(int argc, char** argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#endif

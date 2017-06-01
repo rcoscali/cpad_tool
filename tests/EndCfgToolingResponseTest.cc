@@ -6,33 +6,64 @@
 
 #include "BuildMngtMsg.h"
 
+#define SERIALIZE_BUFFER_SIZE 1024
+
 class EndCfgToolingResponseTests : public ::testing::Test
 {
 public:
+  ::google::protobuf::Map<::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> stat;
   char *buffer;
-  ::cpad::build_mngt::EndCfgToolingResponseHelper *sccrh1;
+  ::cpad::build_mngt::EndCfgToolingResponseHelper *ectrh1;
   std::stringbuf strbuf;
   std::ostream *osb;
-  std::string dumpval = "[EndCfgToolingResponse]\n"       \
-    "build name: abuild\n";
+  std::string dumpval = "[EndCfgToolingResponse]\n"	\
+    "statistics for BB 'BB1' is: \n"			\
+    "   original length: 10\n"				\
+    "   modified length: 15\n"				\
+    "statistics for BB 'BB2' is: \n"			\
+    "   original length: 12\n"				\
+    "   modified length: 19\n"				\
+    "statistics for BB 'BB3' is: \n"			\
+    "   original length: 14\n"				\
+    "   modified length: 17\n"				\
+    "statistics for BB 'BB4' is: \n"			\
+    "   original length: 34\n"				\
+    "   modified length: 65\n"                          \
+    ;
   
   EndCfgToolingResponseTests()
   {
-    buffer = new char[128];
-    bzero(buffer, 128);
-    sccrh1 = new ::cpad::build_mngt::EndCfgToolingResponseHelper();
+    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb1stat;
+    bb1stat.set_bb_original_length(10);
+    bb1stat.set_bb_modified_length(15);
+    stat[std::string("BB1")] = bb1stat;
+    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb2stat;
+    bb2stat.set_bb_original_length(12);
+    bb2stat.set_bb_modified_length(19);
+    stat[std::string("BB2")] = bb2stat;
+    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb3stat;
+    bb3stat.set_bb_original_length(14);
+    bb3stat.set_bb_modified_length(17);
+    stat[std::string("BB3")] = bb3stat;
+    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb4stat;
+    bb4stat.set_bb_original_length(34);
+    bb4stat.set_bb_modified_length(65);
+    stat[std::string("BB4")] = bb4stat;
+    buffer = new char[SERIALIZE_BUFFER_SIZE];
+    memset(buffer, 0, SERIALIZE_BUFFER_SIZE);
+    ectrh1 = new ::cpad::build_mngt::EndCfgToolingResponseHelper(stat);
     osb = new std::ostream(&strbuf);
   }
 
   virtual ~EndCfgToolingResponseTests()
   {
     delete buffer;
-    delete sccrh1;
+    delete ectrh1;
   }
 
   virtual void SetUp(void)
   {
-    sccrh1->serialize(buffer);    
+    ectrh1->serialize(buffer);    
   }
 
   virtual void TearDown(void)
@@ -42,56 +73,83 @@ public:
 
 TEST_F(EndCfgToolingResponseTests, DefaultConstructor)
 {
-  ::cpad::build_mngt::EndCfgToolingResponseHelper sccrh(std::string("abuild"),
-                                                            10,
-                                                            std::string("<cpad_config></cpad_config>"));
-  EXPECT_STREQ(sccrh.build_name().c_str(), "abuild");
-  EXPECT_EQ(sccrh.number_cunits(), 10);
-  EXPECT_STREQ(sccrh.cpad_config().c_str(), "<cpad_config></cpad_config>");
+  ::cpad::build_mngt::EndCfgToolingResponseHelper ectrh(stat);
+  auto lstat = ectrh.statistics();
+  EXPECT_EQ(lstat["BB1"].bb_original_length(), 10);
+  EXPECT_EQ(lstat["BB1"].bb_modified_length(), 15);
+  EXPECT_EQ(lstat["BB2"].bb_original_length(), 12);
+  EXPECT_EQ(lstat["BB2"].bb_modified_length(), 19);
+  EXPECT_EQ(lstat["BB3"].bb_original_length(), 14);
+  EXPECT_EQ(lstat["BB3"].bb_modified_length(), 17);
+  EXPECT_EQ(lstat["BB4"].bb_original_length(), 34);
+  EXPECT_EQ(lstat["BB4"].bb_modified_length(), 65);
 }
 
 TEST_F(EndCfgToolingResponseTests, DeserializeConstructor)
 {
-  ::cpad::build_mngt::EndCfgToolingResponseHelper sccrh2(buffer);
-  EXPECT_STREQ(sccrh2.build_name().c_str(), "abuild");
-  EXPECT_EQ(sccrh2.number_cunits(), 10);
-  EXPECT_STREQ(sccrh2.cpad_config().c_str(), "<cpad_config></cpad_config>");
+  ::cpad::build_mngt::EndCfgToolingResponseHelper ectrh2(buffer);
+  auto lstat = ectrh2.statistics();
+  EXPECT_EQ(lstat["BB1"].bb_original_length(), 10);
+  EXPECT_EQ(lstat["BB1"].bb_modified_length(), 15);
+  EXPECT_EQ(lstat["BB2"].bb_original_length(), 12);
+  EXPECT_EQ(lstat["BB2"].bb_modified_length(), 19);
+  EXPECT_EQ(lstat["BB3"].bb_original_length(), 14);
+  EXPECT_EQ(lstat["BB3"].bb_modified_length(), 17);
+  EXPECT_EQ(lstat["BB4"].bb_original_length(), 34);
+  EXPECT_EQ(lstat["BB4"].bb_modified_length(), 65);
 }
 
 TEST_F(EndCfgToolingResponseTests, DeserializeConstructorFromEmptyString)
 {
-  ::cpad::build_mngt::EndCfgToolingResponseHelper sccrh2("");
-  EXPECT_STREQ(sccrh2.build_name().c_str(), "");
-  EXPECT_EQ(sccrh2.number_cunits(), 0);
-  EXPECT_STREQ(sccrh2.cpad_config().c_str(), "");
+  ::cpad::build_mngt::EndCfgToolingResponseHelper ectrh2("");
+  auto lstat = ectrh2.statistics();
+  EXPECT_TRUE(lstat.empty());
 }
 
 TEST_F(EndCfgToolingResponseTests, CopyConstructor)
 {
-  ::cpad::build_mngt::EndCfgToolingResponseHelper sccrh2(*sccrh1);
-  EXPECT_STREQ(sccrh2.build_name().c_str(), sccrh1->build_name().c_str());
-  EXPECT_EQ(sccrh2.number_cunits(), sccrh1->number_cunits());
-  EXPECT_STREQ(sccrh2.cpad_config().c_str(), sccrh1->cpad_config().c_str());
+  ::cpad::build_mngt::EndCfgToolingResponseHelper ectrh2(*ectrh1);
+  auto lstat1 = ectrh2.statistics();
+  auto lstat2 = ectrh1->statistics();
+  EXPECT_EQ(lstat1["BB1"].bb_original_length(), lstat2["BB1"].bb_original_length());
+  EXPECT_EQ(lstat1["BB1"].bb_modified_length(), lstat2["BB1"].bb_modified_length());
+  EXPECT_EQ(lstat1["BB2"].bb_original_length(), lstat2["BB2"].bb_original_length());
+  EXPECT_EQ(lstat1["BB2"].bb_modified_length(), lstat2["BB2"].bb_modified_length());
+  EXPECT_EQ(lstat1["BB3"].bb_original_length(), lstat2["BB3"].bb_original_length());
+  EXPECT_EQ(lstat1["BB3"].bb_modified_length(), lstat2["BB3"].bb_modified_length());
+  EXPECT_EQ(lstat1["BB4"].bb_original_length(), lstat2["BB4"].bb_original_length());
+  EXPECT_EQ(lstat1["BB4"].bb_modified_length(), lstat2["BB4"].bb_modified_length());
 }
 
 TEST_F(EndCfgToolingResponseTests, SerializeMethod)
 {
-  ::cpad::build_mngt::EndCfgToolingResponseHelper sccrh(std::string("abuild"),
-                                                            10,
-                                                            std::string("<cpad_config></cpad_config>"));
-  char local_buffer[128];
-  bzero(local_buffer, 128);
-  sccrh.serialize(local_buffer);    
-  EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
+  ::cpad::build_mngt::EndCfgToolingResponseHelper ectrh(stat);
+  char local_buffer[SERIALIZE_BUFFER_SIZE];
+  bzero(local_buffer, SERIALIZE_BUFFER_SIZE);
+  ectrh.serialize(local_buffer);    
+  ::cpad::build_mngt::EndCfgToolingResponseHelper ectrh2(buffer);
+  auto lstat = ectrh2.statistics();
+  EXPECT_EQ(stat["BB1"].bb_original_length(), lstat["BB1"].bb_original_length());
+  EXPECT_EQ(stat["BB1"].bb_modified_length(), lstat["BB1"].bb_modified_length());
+  EXPECT_EQ(stat["BB2"].bb_original_length(), lstat["BB2"].bb_original_length());
+  EXPECT_EQ(stat["BB2"].bb_modified_length(), lstat["BB2"].bb_modified_length());
+  EXPECT_EQ(stat["BB3"].bb_original_length(), lstat["BB3"].bb_original_length());
+  EXPECT_EQ(stat["BB3"].bb_modified_length(), lstat["BB3"].bb_modified_length());
+  EXPECT_EQ(stat["BB4"].bb_original_length(), lstat["BB4"].bb_original_length());
+  EXPECT_EQ(stat["BB4"].bb_modified_length(), lstat["BB4"].bb_modified_length());
+
 }
 
 TEST_F(EndCfgToolingResponseTests, DumpMethod)
 {
-  sccrh1->dump(*osb);
+  ectrh1->dump(*osb);
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
-int main(int argc, char** argv) {
+#ifndef SINGLE_TEST_EXE
+int main(int argc, char** argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#endif

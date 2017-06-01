@@ -369,13 +369,15 @@ cpad::build_mngt::EndCfgToolingResponseHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgToolingResponseHelper::dump(std::ostream &osb)
 {
+  auto& stats = statistics();
+  std::map<std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> ordered_map(stats.begin(), stats.end());
   osb << "[EndCfgToolingResponse]" << std::endl;
-  for (const auto& stat : statistics())
+  for (const auto& stat : ordered_map)
     {
       const auto& bb_stat = stat.second;
       osb << "statistics for BB '" << stat.first << "' is: " << std::endl;
-      osb << "   original length:" << bb_stat.bb_original_length() << std::endl;
-      osb << "   modified length:" << bb_stat.bb_modified_length() << std::endl;
+      osb << "   original length: " << bb_stat.bb_original_length() << std::endl;
+      osb << "   modified length: " << bb_stat.bb_modified_length() << std::endl;
     }
 }
 

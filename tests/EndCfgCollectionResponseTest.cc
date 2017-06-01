@@ -20,7 +20,7 @@ public:
   EndCfgCollectionResponseTests()
   {
     buffer = new char[128];
-    bzero(buffer, 128);
+    memset(buffer, 0, 128);
     eccrh1 = new ::cpad::build_mngt::EndCfgCollectionResponseHelper(cpad::build_mngt::EndCfgCollectionResponse::APEX_ALLOCATION_OK,
                                                                     std::string("APEX allocated successfully!"));
     osb = new std::ostream(&strbuf);
@@ -77,7 +77,7 @@ TEST_F(EndCfgCollectionResponseTests, SerializeMethod)
   ::cpad::build_mngt::EndCfgCollectionResponseHelper eccrh(cpad::build_mngt::EndCfgCollectionResponse::APEX_ALLOCATION_OK,
                                                            std::string("APEX allocated successfully!"));
   char local_buffer[128];
-  bzero(local_buffer, 128);
+  memset(local_buffer, 0, 128);
   eccrh.serialize(local_buffer);    
   EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
 }
@@ -88,7 +88,10 @@ TEST_F(EndCfgCollectionResponseTests, DumpMethod)
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
-int main(int argc, char** argv) {
+#ifndef SINGLE_TEST_EXE
+int main(int argc, char** argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#endif

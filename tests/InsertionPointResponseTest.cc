@@ -20,7 +20,7 @@ public:
   InsertionPointResponseTests()
   {
     buffer = new char[128];
-    bzero(buffer, 128);
+    memset(buffer, 0, 128);
     iprh1 = new ::cpad::insns::InsertionPointResponseHelper(true, "foobarnop");
     osb = new std::ostream(&strbuf);
   }
@@ -73,7 +73,7 @@ TEST_F(InsertionPointResponseTests, SerializeMethod)
 {
   ::cpad::insns::InsertionPointResponseHelper iprh(true, "foobarnop");
   char local_buffer[128];
-  bzero(local_buffer, 128);
+  memset(local_buffer, 0, 128);
   iprh.serialize(local_buffer);    
   EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
 }
@@ -84,7 +84,10 @@ TEST_F(InsertionPointResponseTests, DumpMethod)
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
-int main(int argc, char** argv) {
+#ifndef SINGLE_TEST_EXE
+int main(int argc, char** argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+#endif
