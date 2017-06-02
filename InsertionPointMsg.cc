@@ -57,14 +57,38 @@ cpad::insns::InsertionPointRequestHelper::serialize(char *buffer)
 void
 cpad::insns::InsertionPointRequestHelper::dump(std::ostream &osb)
 {
-  osb << "[InsertionPointRequestHelper]" << std::endl;
+  osb << "[InsertionPointRequest]" << std::endl;
   osb << "cunit name: " << cunit_name() << std::endl;
   osb << "cfun name: " << cfun_name() << std::endl;
-  osb << "location: " << location() << std::endl;
+  osb << "location: ";
+  switch (location())
+    {
+    case ::cpad::insns::FUNCTION_ENTRY_BLOCK:
+      osb << "::cpad::insns::FUNCTION_ENTRY_BLOCK";
+      break;
+    case ::cpad::insns::FUNCTION_BEFORE_CALL:
+      osb << "::cpad::insns::FUNCTION_BEFORE_CALL";
+      break;
+    case ::cpad::insns::FUNCTION_AFTER_CALL:
+      osb << "::cpad::insns::FUNCTION_AFTER_CALL";
+      break;
+    case ::cpad::insns::FUNCTION_EXIT_BLOCK:
+      osb << "::cpad::insns::FUNCTION_EXIT_BLOCK";
+      break;
+    case ::cpad::insns::BASIC_BLOCK_ENTRY:
+      osb << "::cpad::insns::BASIC_BLOCK_ENTRY";
+      break;
+    case ::cpad::insns::BASIC_BLOCK_EXIT:
+      osb << "::cpad::insns::BASIC_BLOCK_EXIT";
+      break;
+    default:
+      osb << "Unknown";
+    }
+  osb << " (" << location() << ")" << std::endl;
 }
 
 cpad::insns::InsertionPointResponseHelper::InsertionPointResponseHelper(bool insert_asm_statement,
-                                                                 std::string asm_statement)
+                                                                        std::string asm_statement)
   : ::cpad::insns::InsertionPointResponse()
 {
   set_insert_asm_statement(insert_asm_statement);
@@ -111,7 +135,7 @@ cpad::insns::InsertionPointResponseHelper::serialize(char *buffer)
 void
 cpad::insns::InsertionPointResponseHelper::dump(std::ostream &osb)
 {
-  osb << "[InsertionPointResponseHelper]" << std::endl;
+  osb << "[InsertionPointResponse]" << std::endl;
   osb << "insert asm statement: " << insert_asm_statement() << std::endl;
   osb << "asm statement: " << asm_statement() << std::endl;
 }

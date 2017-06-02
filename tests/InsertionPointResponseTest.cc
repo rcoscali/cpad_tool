@@ -13,7 +13,7 @@ public:
   ::cpad::insns::InsertionPointResponseHelper *iprh1;
   std::stringbuf strbuf;
   std::ostream *osb;
-  std::string dumpval = "[InsertionPointResponseHelper]\n"       \
+  std::string dumpval = "[InsertionPointResponse]\n"             \
     "insert asm statement: 1\n"                                  \
     "asm statement: foobarnop\n";
 
