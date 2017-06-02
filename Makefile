@@ -77,6 +77,20 @@ MSG_TESTS_SRCS = \
 	tests/EndCfgToolingRequestTest.cc \
 	tests/EndCfgToolingResponseTest.cc
 
+GRPC_SRV_PLUGIN_SERVICES_SRCS = \
+	PluginServices.cc \
+	plugin_request.pb.cc \
+	plugin_request.grpc.pb.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc
+
+GRPC_CLT_PLUGIN_SERVICES_SRCS = \
+	PluginServicesClient.cc \
+	plugin_request.pb.cc \
+	plugin_request.grpc.pb.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc
+
 LIBCPAD_OBJS = \
 	plugin_request.pb.o \
 	VersionMsg.o \
@@ -91,6 +105,8 @@ SRV_OBJS = $(SRV_SRCS:%.cc=%.o)
 CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
 CFG_OBJS = $(CFG_SRCS:%.cc=%.o)
 CPAD_CMD_OBJS = $(CPAD_CMD_SRCS:%.cc=%.o)
+GRPC_SRV_PLUGIN_SERVICES_OBJS = $(GRPC_SRV_PLUGIN_SERVICES_SRCS:%.cc=%.o)
+GRPC_CLT_PLUGIN_SERVICES_OBJS = $(GRPC_CLT_PLUGIN_SERVICES_SRCS:%.cc=%.o)
 
 ALL_TESTS = \
 	$(MSG_TESTS_SRCS:%.cc=%)
@@ -125,7 +141,23 @@ CLT_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf 
 %.grpc.pb.cc %.grpc.pb.h %.pb.cc %.pb.h: %.proto
 	$(PROTOC) $(PROTOC_FLAGS) $<
 
+ifeq ($(SINGLE_TEST_EXE),no)
+tests/%: tests/%.cc
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $< libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
+else
+tests/%.o: tests/%.cc
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread -c $< -o $@
+endif
+
 .PHONY: all cls clean tests
+
+all: cfgtest cpad tests PluginServicesSrv
+
+PluginServicesSrv: $(GRPC_SRV_PLUGIN_SERVICES_OBJS)
+	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+
+PluginServicesClt: $(GRPC_CLT_PLUGIN_SERVICES_OBJS)
+	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 libgtest.a: 
 	$(CXX) -isystem $(GTEST_DIR)/include -I$(GTEST_DIR) -pthread -c $(GTEST_DIR)/src/gtest-all.cc
@@ -135,25 +167,17 @@ libcpad.a: $(LIBCPAD_OBJS)
 	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
 
 ifeq ($(SINGLE_TEST_EXE),no)
-tests/%: tests/%.cc
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $< libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
-
 tests: libgtest.a libcpad.a $(ALL_TESTS)
 	for t in $(ALL_TESTS); do \
 		./$$t; \
 	done
 else
-tests/%.o: tests/%.cc
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread -c $< -o $@
-
 tests/alltests: tests/alltests.o $(ALL_TESTS_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/*.o libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
 
 tests: libgtest.a libcpad.a tests/alltests
 	./tests/alltests
 endif
-
-all: cfgtest cpad
 
 cls:
 	clear || true
@@ -236,3 +260,5 @@ tests/StartCfgToolingResponseTest: tests/StartCfgToolingResponseTest.cc BuildMng
 tests/VersionRequestTest: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 tests/VersionResponseTest: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 endif
+PluginServices.o: PluginServices.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
+PluginServicesClient.o: PluginServicesClient.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
