@@ -27,7 +27,15 @@ cpad::cfg::CompilationUnitStartRequestHelper::CompilationUnitStartRequestHelper(
 }
 
 /**
- * Default constructor
+ * Constructor from request
+ */
+cpad::cfg::CompilationUnitStartRequestHelper::CompilationUnitStartRequestHelper(const ::cpad::cfg::CompilationUnitStartRequest* request)
+  : ::cpad::cfg::CompilationUnitStartRequest(*request)
+{
+}
+
+/**
+ * Desctructor
  */
 cpad::cfg::CompilationUnitStartRequestHelper::~CompilationUnitStartRequestHelper()
 {
@@ -84,6 +92,11 @@ cpad::cfg::CompilationUnitStartResponseHelper::CompilationUnitStartResponseHelpe
   ParseFromString(std::string(buffer));
 }
 
+cpad::cfg::CompilationUnitStartResponseHelper::CompilationUnitStartResponseHelper(const ::cpad::cfg::CompilationUnitStartResponse* response)
+  : ::cpad::cfg::CompilationUnitStartResponse(*response)
+{
+}
+
 cpad::cfg::CompilationUnitStartResponseHelper::~CompilationUnitStartResponseHelper()
 {
 }
@@ -129,6 +142,11 @@ cpad::cfg::CompilationUnitEndRequestHelper::CompilationUnitEndRequestHelper(cons
   ParseFromString(std::string(buffer));
 }
 
+cpad::cfg::CompilationUnitEndRequestHelper::CompilationUnitEndRequestHelper(const ::cpad::cfg::CompilationUnitEndRequest* request)
+  : ::cpad::cfg::CompilationUnitEndRequest(*request)
+{
+}
+
 cpad::cfg::CompilationUnitEndRequestHelper::~CompilationUnitEndRequestHelper()
 {
 }
@@ -168,6 +186,11 @@ cpad::cfg::CompilationUnitEndResponseHelper::CompilationUnitEndResponseHelper(co
   : ::cpad::cfg::CompilationUnitEndResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::cfg::CompilationUnitEndResponseHelper::CompilationUnitEndResponseHelper(const ::cpad::cfg::CompilationUnitEndResponse* response)
+  : ::cpad::cfg::CompilationUnitEndResponse(*response)
+{
 }
 
 cpad::cfg::CompilationUnitEndResponseHelper::~CompilationUnitEndResponseHelper()

@@ -137,4 +137,12 @@ message EdgeResponse
   // empty
 }
 
-// End of compilation unit may use the request from phase2 messages specs (plugin_request.proto)
+service CfgCollectionServices
+{
+  rpc CompilationUnitStartService (CompilationUnitStartRequest) returns (CompilationUnitStartResponse) {};
+  rpc CompilationUnitEndService (CompilationUnitEndRequest) returns (CompilationUnitEndResponse) {};
+  rpc FunctionService (FunctionRequest) returns (FunctionResponse) {};
+  rpc BasicBlockService (BasicBlockRequest) returns (BasicBlockResponse) {};
+  rpc EdgeService (EdgeRequest) returns (EdgeResponse) {};
+}
+

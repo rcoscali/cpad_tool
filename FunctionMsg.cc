@@ -26,6 +26,11 @@ cpad::cfg::FunctionRequestHelper::FunctionRequestHelper(const char *buffer)
   ParseFromString(std::string(buffer));
 }
 
+cpad::cfg::FunctionRequestHelper::FunctionRequestHelper(const ::cpad::cfg::FunctionRequest* request)
+  : ::cpad::cfg::FunctionRequest(*request)
+{
+}
+
 /**
  * Default constructor
  */
@@ -67,7 +72,7 @@ cpad::cfg::FunctionRequestHelper::serialize(char *buffer)
  * Dump helper method
  */
 void
-cpad::cfg::FunctionRequestHelper::dump(void)
+cpad::cfg::FunctionRequestHelper::dump(std::ostream& osb)
 {
   std::cout << "[FunctionRequest]" << std::endl;
   std::cout << "CUnit filename : " << filename() << std::endl;
@@ -83,6 +88,11 @@ cpad::cfg::FunctionResponseHelper::FunctionResponseHelper(const char *buffer)
   : ::cpad::cfg::FunctionResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::cfg::FunctionResponseHelper::FunctionResponseHelper(const ::cpad::cfg::FunctionResponse* response)
+  : ::cpad::cfg::FunctionResponse(*response)
+{
 }
 
 cpad::cfg::FunctionResponseHelper::~FunctionResponseHelper()
@@ -111,7 +121,7 @@ cpad::cfg::FunctionResponseHelper::serialize(char *buffer)
 }
 
 void
-cpad::cfg::FunctionResponseHelper::dump(void)
+cpad::cfg::FunctionResponseHelper::dump(std::ostream& osb)
 {
   std::cout << "[FunctionResponse]" << std::endl;
 }

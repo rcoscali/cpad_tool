@@ -21,6 +21,7 @@ namespace cpad
     public:
       CompilationUnitStartRequestHelper(std::string);
       CompilationUnitStartRequestHelper(const char *);
+      CompilationUnitStartRequestHelper(const ::cpad::cfg::CompilationUnitStartRequest*);
       virtual ~CompilationUnitStartRequestHelper();
       
       CompilationUnitStartRequestHelper(CompilationUnitStartRequestHelper const&);
@@ -35,6 +36,7 @@ namespace cpad
     public:
       CompilationUnitStartResponseHelper();
       CompilationUnitStartResponseHelper(const char *);
+      CompilationUnitStartResponseHelper(::cpad::CompilationUnitStartResponse*);
       virtual ~CompilationUnitStartResponseHelper();
       
       CompilationUnitStartResponseHelper(CompilationUnitStartResponseHelper const&);
@@ -52,6 +54,7 @@ namespace cpad
     public:
       CompilationUnitEndRequestHelper();
       CompilationUnitEndRequestHelper(const char *);
+      CompilationUnitEndRequestHelper(const ::cpad::cfg::CompilationUnitEndRequest*);
       virtual ~CompilationUnitEndRequestHelper();
       
       CompilationUnitEndRequestHelper(CompilationUnitEndRequestHelper const&);
@@ -66,6 +69,7 @@ namespace cpad
     public:
       CompilationUnitEndResponseHelper();
       CompilationUnitEndResponseHelper(const char *);
+      CompilationUnitEndResponseHelper(const ::cpad::cfg::CompilationUnitEndResponse*);
       virtual ~CompilationUnitEndResponseHelper();
       
       CompilationUnitEndResponseHelper(CompilationUnitEndResponseHelper const&);

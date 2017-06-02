@@ -48,6 +48,9 @@ SRV_SRCS = \
 	VersionMsg.cc \
 	InsertionPointMsg.cc \
 	CompilationUnitMsg.cc \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc \
 	BuildMngtMsg.cc
 
 CLT_SRCS = \
@@ -57,6 +60,9 @@ CLT_SRCS = \
 	VersionMsg.cc \
 	InsertionPointMsg.cc \
 	CompilationUnitMsg.cc \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc \
 	BuildMngtMsg.cc
 
 MSG_TESTS_SRCS = \
@@ -97,6 +103,9 @@ LIBCPAD_OBJS = \
 	InsertionPointMsg.o \
 	cfg_request.pb.o \
 	CompilationUnitMsg.o \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc \
 	build_mngt.pb.o \
 	BuildMngtMsg.o
 
@@ -220,7 +229,10 @@ cfg_request.pb.cc: cfg_request.proto
 cfg_request.pb.h: cfg_request.proto
 VersionMsg.o: plugin_request.pb.cc plugin_request.pb.h
 InsertionPointMsg.o: plugin_request.pb.cc plugin_request.pb.h InsertionPointMsg.cc InsertionPointMsg.h
-ComplilationUnitMsg.o: cfg_request.pb.cc cfg_request.pb.h ComplilationUnitMsg.cc ComplilationUnitMsg.h
+CompilationUnitMsg.o: cfg_request.pb.cc cfg_request.pb.h CompilationUnitMsg.cc CompilationUnitMsg.h
+FunctionMsg.o: cfg_request.pb.cc cfg_request.pb.h FunctionMsg.cc FunctionMsg.h
+BasicBlockMsg.o: cfg_request.pb.cc cfg_request.pb.h BasicBlockMsg.cc BasicBlockMsg.h
+EdgeMsg.o: cfg_request.pb.cc cfg_request.pb.h EdgeMsg.cc EdgeMsg.h
 cfgtest.o: cfgtest.cc Graph.h Func.h CUnit.h Node.h Edge.h
 cpad_cmd.o: plugin_request.pb.cc build_mngt.pb.cc
 ifeq ($(SINGLE_TEST_EXE),yes)
@@ -228,6 +240,12 @@ tests/CompilationUnitEndRequestTest.o: tests/CompilationUnitEndRequestTest.cc Co
 tests/CompilationUnitEndResponseTest.o: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitStartRequestTest.o: tests/CompilationUnitStartRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitStartResponseTest.o: tests/CompilationUnitStartResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/FunctionRequestTest.o: tests/FunctionRequestTest.cc FunctionMsg.o FunctionMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/FunctionResponseTest.o: tests/FunctionResponseTest.cc FunctionMsg.o FunctionMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/BasicBlockRequestTest.o: tests/BasicBlockRequestTest.cc BasicBlockMsg.o BasicBlockMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/BasicBlockResponseTest.o: tests/BasicBlockResponseTest.cc BasicBlockMsg.o BasicBlockMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/EdgeRequestTest.o: tests/EdgeRequestTest.cc EdgeMsg.o EdgeMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/EdgeResponseTest.o: tests/EdgeResponseTest.cc EdgeMsg.o EdgeMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/EndCfgCollectionRequestTest.o: tests/EndCfgCollectionRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
 tests/EndCfgCollectionResponseTest.o: tests/EndCfgCollectionResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
 tests/EndCfgToolingRequestTest.o: tests/EndCfgToolingRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
@@ -247,6 +265,12 @@ tests/CompilationUnitEndRequestTest: tests/CompilationUnitEndRequestTest.cc Comp
 tests/CompilationUnitEndResponseTest: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitStartRequestTest: tests/CompilationUnitStartRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitStartResponseTest: tests/CompilationUnitStartResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/FunctionRequestTest: tests/FunctionRequestTest.cc FunctionMsg.o FunctionMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/FunctionResponseTest: tests/FunctionResponseTest.cc FunctionMsg.o FunctionMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/BasicBlockRequestTest: tests/BasicBlockRequestTest.cc BasicBlockMsg.o BasicBlockMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/BasicBlockResponseTest: tests/BasicBlockResponseTest.cc BasicBlockMsg.o BasicBlockMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/EdgeRequestTest: tests/EdgeRequestTest.cc EdgeMsg.o EdgeMsg.h cfg_request.pb.cc cfg_request.pb.h
+tests/EdgeResponseTest: tests/EdgeResponseTest.cc EdgeMsg.o EdgeMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/EndCfgCollectionRequestTest: tests/EndCfgCollectionRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
 tests/EndCfgCollectionResponseTest: tests/EndCfgCollectionResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
 tests/EndCfgToolingRequestTest: tests/EndCfgToolingRequestTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
@@ -262,3 +286,5 @@ tests/VersionResponseTest: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.
 endif
 PluginServices.o: PluginServices.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
 PluginServicesClient.o: PluginServicesClient.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
+CfgCollectionServices.o: CfgCollectionServices.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
+CfgCollectionServicesClient.o: CfgCollectionServicesClient.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
