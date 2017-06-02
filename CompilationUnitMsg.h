@@ -36,7 +36,7 @@ namespace cpad
     public:
       CompilationUnitStartResponseHelper();
       CompilationUnitStartResponseHelper(const char *);
-      CompilationUnitStartResponseHelper(::cpad::CompilationUnitStartResponse*);
+      CompilationUnitStartResponseHelper(const ::cpad::cfg::CompilationUnitStartResponse *);
       virtual ~CompilationUnitStartResponseHelper();
       
       CompilationUnitStartResponseHelper(CompilationUnitStartResponseHelper const&);
