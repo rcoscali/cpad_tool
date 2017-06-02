@@ -23,6 +23,7 @@ namespace cpad
     public:
       VersionRequestHelper(uint32_t, uint32_t, std::string);
       VersionRequestHelper(const char *);
+      VersionRequestHelper(const ::cpad::insns::VersionRequest*);
       virtual ~VersionRequestHelper(void);
       
       VersionRequestHelper(VersionRequestHelper const&);
@@ -37,6 +38,7 @@ namespace cpad
     public:
       VersionResponseHelper(uint32_t, uint32_t, std::string);
       VersionResponseHelper(const char *);
+      VersionResponseHelper(const ::cpad::insns::VersionResponse*);
       virtual ~VersionResponseHelper(void);
       
       VersionResponseHelper(VersionResponseHelper const&);
