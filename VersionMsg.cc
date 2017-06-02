@@ -7,8 +7,8 @@
 #include "VersionMsg.h"
 
 cpad::insns::VersionRequestHelper::VersionRequestHelper(uint32_t minor,
-                                                 uint32_t major,
-                                                 std::string provider_name)
+                                                        uint32_t major,
+                                                        std::string provider_name)
   : ::cpad::insns::VersionRequest()
 {
   set_client_version_minor(minor);
@@ -20,6 +20,11 @@ cpad::insns::VersionRequestHelper::VersionRequestHelper(const char *buffer)
   : ::cpad::insns::VersionRequest()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::insns::VersionRequestHelper::VersionRequestHelper(const ::cpad::insns::VersionRequest* request)
+  : ::cpad::insns::VersionRequest(*request)
+{
 }
 
 cpad::insns::VersionRequestHelper::~VersionRequestHelper()
@@ -74,6 +79,11 @@ cpad::insns::VersionResponseHelper::VersionResponseHelper(const char *buffer)
   : ::cpad::insns::VersionResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::insns::VersionResponseHelper::VersionResponseHelper(const ::cpad::insns::VersionResponse* response)
+  : ::cpad::insns::VersionResponse(*response)
+{
 }
 
 cpad::insns::VersionResponseHelper::~VersionResponseHelper()
