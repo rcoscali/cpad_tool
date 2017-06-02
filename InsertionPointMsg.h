@@ -23,6 +23,7 @@ namespace cpad
                                   std::string,
                                   cpad::insns::InsertionLocation);
       InsertionPointRequestHelper(const char *);
+      InsertionPointRequestHelper(const ::cpad::insns::InsertionPointRequest*);
       virtual ~InsertionPointRequestHelper();
       
       InsertionPointRequestHelper(InsertionPointRequestHelper const&);
@@ -37,6 +38,7 @@ namespace cpad
     public:
       InsertionPointResponseHelper(bool, std::string);
       InsertionPointResponseHelper(const char *);
+      InsertionPointResponseHelper(const ::cpad::insns::InsertionPointResponse*);
       virtual ~InsertionPointResponseHelper();
       
       InsertionPointResponseHelper(InsertionPointResponseHelper const&);
