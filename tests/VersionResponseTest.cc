@@ -13,7 +13,7 @@ public:
   ::cpad::insns::VersionResponseHelper *vrh1;
   std::stringbuf strbuf;
   std::ostream *osb;
-  std::string dumpval = "[VersionResponseHelper]\n" \
+  std::string dumpval = "[VersionResponse]\n"      \
     "server minor: 2\n"                            \
     "server major: 4\n"                            \
     "server provider: testConstructor\n";

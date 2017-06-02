@@ -59,7 +59,7 @@ cpad::insns::VersionRequestHelper::serialize(char *buffer)
 void
 cpad::insns::VersionRequestHelper::dump(std::ostream &osb)
 {
-  osb << "[VersionRequestHelper]" << std::endl;
+  osb << "[VersionRequest]" << std::endl;
   osb << "client minor: " << client_version_minor() << std::endl;
   osb << "client major: " << client_version_major() << std::endl;
   osb << "client provider: " << client_provider_name() << std::endl;
@@ -118,7 +118,7 @@ cpad::insns::VersionResponseHelper::serialize(char *buffer)
 void
 cpad::insns::VersionResponseHelper::dump(std::ostream &osb)
 {
-  osb << "[VersionResponseHelper]" << std::endl;
+  osb << "[VersionResponse]" << std::endl;
   osb << "server minor: " << server_version_minor() << std::endl;
   osb << "server major: " << server_version_major() << std::endl;
   osb << "server provider: " << server_provider_name() << std::endl;

@@ -13,10 +13,10 @@ public:
   ::cpad::insns::InsertionPointRequestHelper *iprh1;
   std::stringbuf strbuf;
   std::ostream *osb;
-  std::string dumpval = "[InsertionPointRequestHelper]\n"       \
+  std::string dumpval = "[InsertionPointRequest]\n"             \
     "cunit name: foobar.c\n"                                    \
     "cfun name: foo\n"                                          \
-    "location: 5\n";
+    "location: ::cpad::insns::FUNCTION_BEFORE_CALL (5)\n";
 
   InsertionPointRequestTests()
   {

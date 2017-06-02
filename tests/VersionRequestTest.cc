@@ -13,7 +13,7 @@ public:
   ::cpad::insns::VersionRequestHelper *vrh1;
   std::stringbuf strbuf;
   std::ostream *osb;
-  std::string dumpval = "[VersionRequestHelper]\n" \
+  std::string dumpval = "[VersionRequest]\n"       \
     "client minor: 2\n"                            \
     "client major: 4\n"                            \
     "client provider: testConstructor\n";
