@@ -90,12 +90,30 @@ GRPC_SRV_PLUGIN_SERVICES_SRCS = \
 	VersionMsg.cc \
 	InsertionPointMsg.cc
 
+GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS = \
+	CfgCollectionServices.cc \
+	cfg_request.pb.cc \
+	cfg_request.grpc.pb.cc \
+	CompilationUnitMsg.cc \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc
+
 GRPC_CLT_PLUGIN_SERVICES_SRCS = \
 	PluginServicesClient.cc \
 	plugin_request.pb.cc \
 	plugin_request.grpc.pb.cc \
 	VersionMsg.cc \
 	InsertionPointMsg.cc
+
+GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS = \
+	CfgCollectionServicesClient.cc \
+	cfg_request.pb.cc \
+	cfg_request.grpc.pb.cc \
+	CompilationUnitMsg.cc \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc
 
 LIBCPAD_OBJS = \
 	plugin_request.pb.o \
@@ -116,6 +134,8 @@ CFG_OBJS = $(CFG_SRCS:%.cc=%.o)
 CPAD_CMD_OBJS = $(CPAD_CMD_SRCS:%.cc=%.o)
 GRPC_SRV_PLUGIN_SERVICES_OBJS = $(GRPC_SRV_PLUGIN_SERVICES_SRCS:%.cc=%.o)
 GRPC_CLT_PLUGIN_SERVICES_OBJS = $(GRPC_CLT_PLUGIN_SERVICES_SRCS:%.cc=%.o)
+GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
+GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
 
 ALL_TESTS = \
 	$(MSG_TESTS_SRCS:%.cc=%)
@@ -166,6 +186,12 @@ PluginServicesSrv: $(GRPC_SRV_PLUGIN_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 PluginServicesClt: $(GRPC_CLT_PLUGIN_SERVICES_OBJS)
+	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+
+CfgCollectionServicesSrv: $(GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS)
+	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+
+CfgCollectionServicesClt: $(GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 libgtest.a: 
