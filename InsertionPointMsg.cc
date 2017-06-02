@@ -20,6 +20,11 @@ cpad::insns::InsertionPointRequestHelper::InsertionPointRequestHelper(const char
   ParseFromString(std::string(buffer));
 }
 
+cpad::insns::InsertionPointRequestHelper::InsertionPointRequestHelper(const ::cpad::insns::InsertionPointRequest *request)
+  : ::cpad::insns::InsertionPointRequest(*request)
+{
+}
+
 cpad::insns::InsertionPointRequestHelper::~InsertionPointRequestHelper()
 {
 }
@@ -70,6 +75,11 @@ cpad::insns::InsertionPointResponseHelper::InsertionPointResponseHelper(const ch
   : ::cpad::insns::InsertionPointResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::insns::InsertionPointResponseHelper::InsertionPointResponseHelper(const ::cpad::insns::InsertionPointResponse *response)
+  : ::cpad::insns::InsertionPointResponse(*response)
+{
 }
 
 cpad::insns::InsertionPointResponseHelper::~InsertionPointResponseHelper()
