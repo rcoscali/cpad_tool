@@ -6,6 +6,8 @@
 
 #include "BuildMngtMsg.h"
 
+#define TEST_UUID_VALUE "\x80\x0c\x0d\xf3\x9f\xd5\x46\x62\x85\xe4\x93\x7d\x6f\xd6\x7f\xf2"
+
 class StartCfgToolingRequestTests : public ::testing::Test
 {
 public:
@@ -20,7 +22,7 @@ public:
   {
     buffer = new char[128];
     memset(buffer, 0, 128);
-    sccrh1 = new ::cpad::build_mngt::StartCfgToolingRequestHelper(std::string("800c0df3-9fd5-4662-85e4-937d6fd67ff2"));
+    sccrh1 = new ::cpad::build_mngt::StartCfgToolingRequestHelper(std::string(TEST_UUID_VALUE));
     osb = new std::ostream(&strbuf);
   }
 
@@ -42,14 +44,14 @@ public:
 
 TEST_F(StartCfgToolingRequestTests, DefaultConstructor)
 {
-  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(std::string("800c0df3-9fd5-4662-85e4-937d6fd67ff2"));
-  EXPECT_STREQ(sccrh.uuid().c_str(), "800c0df3-9fd5-4662-85e4-937d6fd67ff2");
+  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(std::string(TEST_UUID_VALUE));
+  EXPECT_STREQ(sccrh.uuid().c_str(), TEST_UUID_VALUE);
 }
 
 TEST_F(StartCfgToolingRequestTests, DeserializeConstructor)
 {
   ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh2(buffer);
-  EXPECT_STREQ(sccrh2.uuid().c_str(), "800c0df3-9fd5-4662-85e4-937d6fd67ff2");
+  EXPECT_STREQ(sccrh2.uuid().c_str(), TEST_UUID_VALUE);
 }
 
 TEST_F(StartCfgToolingRequestTests, DeserializeConstructorFromEmptyString)
@@ -66,7 +68,7 @@ TEST_F(StartCfgToolingRequestTests, CopyConstructor)
 
 TEST_F(StartCfgToolingRequestTests, SerializeMethod)
 {
-  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(std::string("800c0df3-9fd5-4662-85e4-937d6fd67ff2"));
+  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(std::string(TEST_UUID_VALUE));
   char local_buffer[128];
   memset(local_buffer, 0, 128);
   sccrh.serialize(local_buffer);    

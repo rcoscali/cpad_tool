@@ -6,6 +6,8 @@
 
 #include "BuildMngtMsg.h"
 
+#define TEST_UUID_VALUE "\x80\x0c\x0d\xf3\x9f\xd5\x46\x62\x85\xe4\x93\x7d\x6f\xd6\x7f\xf2"
+
 class StartCfgCollectionResponseTests : public ::testing::Test
 {
 public:
@@ -22,7 +24,7 @@ public:
     buffer = new char[128];
     memset(buffer, 0, 128);
     sccrh1 = new ::cpad::build_mngt::StartCfgCollectionResponseHelper(cpad::build_mngt::StartCfgCollectionResponse::CPAD_CONFIG_OK,
-                                                                      std::string("800c0df3-9fd5-4662-85e4-937d6fd67ff2"));
+                                                                      std::string(TEST_UUID_VALUE));
     osb = new std::ostream(&strbuf);
   }
 
@@ -45,16 +47,16 @@ public:
 TEST_F(StartCfgCollectionResponseTests, DefaultConstructor)
 {
   ::cpad::build_mngt::StartCfgCollectionResponseHelper sccrh(cpad::build_mngt::StartCfgCollectionResponse::CPAD_CONFIG_OK,
-                                                             std::string("800c0df3-9fd5-4662-85e4-937d6fd67ff2"));
+                                                             std::string(TEST_UUID_VALUE));
   EXPECT_EQ(sccrh.cpad_config_status(), cpad::build_mngt::StartCfgCollectionResponse::CPAD_CONFIG_OK);
-  EXPECT_STREQ(sccrh.uuid().c_str(), "800c0df3-9fd5-4662-85e4-937d6fd67ff2");
+  EXPECT_STREQ(sccrh.uuid().c_str(), TEST_UUID_VALUE);
 }
 
 TEST_F(StartCfgCollectionResponseTests, DeserializeConstructor)
 {
   ::cpad::build_mngt::StartCfgCollectionResponseHelper sccrh2(buffer);
   EXPECT_EQ(sccrh2.cpad_config_status(), cpad::build_mngt::StartCfgCollectionResponse::CPAD_CONFIG_OK);
-  EXPECT_STREQ(sccrh2.uuid().c_str(), "800c0df3-9fd5-4662-85e4-937d6fd67ff2");
+  EXPECT_STREQ(sccrh2.uuid().c_str(), TEST_UUID_VALUE);
 }
 
 TEST_F(StartCfgCollectionResponseTests, DeserializeConstructorFromEmptyString)
@@ -75,7 +77,7 @@ TEST_F(StartCfgCollectionResponseTests, CopyConstructor)
 TEST_F(StartCfgCollectionResponseTests, SerializeMethod)
 {
   ::cpad::build_mngt::StartCfgCollectionResponseHelper sccrh(cpad::build_mngt::StartCfgCollectionResponse::CPAD_CONFIG_OK,
-                                                             std::string("800c0df3-9fd5-4662-85e4-937d6fd67ff2"));
+                                                             std::string(TEST_UUID_VALUE));
   char local_buffer[128];
   memset(local_buffer, 0, 128);
   sccrh.serialize(local_buffer);    

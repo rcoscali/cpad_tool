@@ -6,7 +6,7 @@
 
 #include "BuildMngtMsg.h"
 
-#define TEST_UUID_VALUE  "800c0df3-9fd5-4662-85e4-937d6fd67ff2"
+#define TEST_UUID_VALUE  "\x80\x0c\x0d\xf3\x9f\xd5\x46\x62\x85\xe4\x93\x7d\x6f\xd6\x7f\xf2"
 
 class EndCfgToolingRequestTests : public ::testing::Test
 {
@@ -16,7 +16,7 @@ public:
   std::stringbuf strbuf;
   std::ostream *osb;
   std::string dumpval = "[EndCfgToolingRequest]\n"       \
-    "uuid: " TEST_UUID_VALUE "\n";
+    "uuid: 800c0df3-9fd5-4662-85e4-937d6fd67ff2\n";
   
   EndCfgToolingRequestTests()
   {
