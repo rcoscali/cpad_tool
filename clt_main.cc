@@ -9,9 +9,13 @@
 #include <boost/asio.hpp>
 
 #include "VersionMsg.h"
-#include "CUnitTerminateMsg.h"
+#include "CompilationUnitMsg.h"
 
 using boost::asio::ip::tcp;
+using cpad::insns::VersionRequestHelper;
+using cpad::insns::VersionResponseHelper;
+using cpad::cfg::CompilationUnitStartRequestHelper;
+using cpad::cfg::CompilationUnitStartResponseHelper;
 
 enum { max_length = 1024 };
 
@@ -42,7 +46,7 @@ main(int argc, char* argv[])
     boost::asio::connect(s, iterator);
 
     // Create version request
-    cpad::VersionRequestHelper req(1, 2, "client");
+    VersionRequestHelper req(1, 2, "client");
 
     // Serialize and send
     char request[max_length];    
@@ -58,12 +62,12 @@ main(int argc, char* argv[])
                                                                 request_length));
 
     // Display unserialized response
-    cpad::VersionResponseHelper resp((const char *)reply);
+    VersionResponseHelper resp((const char *)reply);
     std::cout << "Reply is: " << std::endl;
     resp.dump();
 
     // Create Terminate request
-    cpad::CUnitTerminateRequestHelper req2(std::string("clt_main.cc"));
+    CompilationUnitStartRequestHelper req2(std::string("clt_main.cc"));
     request_length = req.serialize(request);
     boost::asio::write(s,
                        boost::asio::buffer(request,
@@ -75,7 +79,7 @@ main(int argc, char* argv[])
                                                          request_length));
     
     // Display unserialized response
-    cpad::CUnitTerminateResponseHelper resp2((const char *)reply);
+    CompilationUnitStartResponseHelper resp2((const char *)reply);
     std::cout << "Reply is: " << std::endl;
     resp2.dump();
   }
