@@ -11,10 +11,11 @@
 /**
  * Constructor
  */
-cpad::cfg::FunctionRequestHelper::FunctionRequestHelper(std::string filename)
+cpad::cfg::FunctionRequestHelper::FunctionRequestHelper(std::string cunit_name, std::string cfun_name)
   : ::cpad::cfg::FunctionRequest()
 {
-  set_filename(filename);
+  set_cunit_name(cunit_name);
+  set_cfun_name(cfun_name);
 }
 
 /**
@@ -42,7 +43,8 @@ cpad::cfg::FunctionRequestHelper::~FunctionRequestHelper()
  * Copy constructor
  */
 cpad::cfg::FunctionRequestHelper::FunctionRequestHelper(cpad::cfg::FunctionRequestHelper const&a_copy)
-  : cpad::cfg::FunctionRequestHelper(a_copy.filename())
+  : cpad::cfg::FunctionRequestHelper(a_copy.cunit_name(),
+                                     a_copy.cfun_name())
 {
 }
 
@@ -52,7 +54,8 @@ cpad::cfg::FunctionRequestHelper::FunctionRequestHelper(cpad::cfg::FunctionReque
 cpad::cfg::FunctionRequestHelper&
 cpad::cfg::FunctionRequestHelper::operator =(cpad::cfg::FunctionRequestHelper const&a_copy)
 {
-  set_filename(a_copy.filename());
+  set_cunit_name(a_copy.cunit_name());
+  set_cfun_name(a_copy.cfun_name());
   return *this;
 }
 
@@ -74,14 +77,14 @@ cpad::cfg::FunctionRequestHelper::serialize(char *buffer)
 void
 cpad::cfg::FunctionRequestHelper::dump(std::ostream& osb)
 {
-  std::cout << "[FunctionRequest]" << std::endl;
-  std::cout << "CUnit filename : " << filename() << std::endl;
+  osb << "[FunctionRequest]" << std::endl;
+  osb << "  CUnit name: " << cunit_name() << std::endl;
+  osb << "  CFun name: " << cfun_name() << std::endl;
 }
 
-cpad::cfg::FunctionResponseHelper::FunctionResponseHelper(std::string filename)
+cpad::cfg::FunctionResponseHelper::FunctionResponseHelper()
   : ::cpad::cfg::FunctionResponse()
 {
-  set_filename(filename);
 }
 
 cpad::cfg::FunctionResponseHelper::FunctionResponseHelper(const char *buffer)
@@ -100,14 +103,13 @@ cpad::cfg::FunctionResponseHelper::~FunctionResponseHelper()
 }
 
 cpad::cfg::FunctionResponseHelper::FunctionResponseHelper(cpad::cfg::FunctionResponseHelper const&a_copy)
-  : cpad::cfg::FunctionResponseHelper(a_copy.cunit_name())
+  : cpad::cfg::FunctionResponseHelper()
 {
 }
 
 cpad::cfg::FunctionResponseHelper&
 cpad::cfg::FunctionResponseHelper::operator =(cpad::cfg::FunctionResponseHelper const&a_copy)
 {
-  set_cunit_name(a_copy.cunit_name());
   return *this;
 }
 
@@ -123,6 +125,6 @@ cpad::cfg::FunctionResponseHelper::serialize(char *buffer)
 void
 cpad::cfg::FunctionResponseHelper::dump(std::ostream& osb)
 {
-  std::cout << "[FunctionResponse]" << std::endl;
+  osb << "[FunctionResponse]" << std::endl;
 }
 

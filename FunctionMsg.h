@@ -19,7 +19,7 @@ namespace cpad
     class FunctionRequestHelper : public ::cpad::cfg::FunctionRequest
     {
     public:
-      FunctionRequestHelper(std::string);
+      FunctionRequestHelper(std::string, std::string);
       FunctionRequestHelper(const char *);
       FunctionRequestHelper(const ::cpad::cfg::FunctionRequest*);
       virtual ~FunctionRequestHelper();
@@ -34,9 +34,9 @@ namespace cpad
     class FunctionResponseHelper : public ::cpad::cfg::FunctionResponse
     {
     public:
-      FunctionResponseHelper(std::string);
+      FunctionResponseHelper();
       FunctionResponseHelper(const char *);
-      FunctionResponseHelper(::cpad::cfg::FunctionResponse*);
+      FunctionResponseHelper(const ::cpad::cfg::FunctionResponse*);
       virtual ~FunctionResponseHelper();
 
       FunctionResponseHelper(FunctionResponseHelper const&);
