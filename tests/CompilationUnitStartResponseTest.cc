@@ -39,6 +39,35 @@ public:
   }
 };
 
+TEST_F(CompilationUnitStartResponseTests, DefaultConstructor)
+{
+  ::cpad::cfg::CompilationUnitStartResponseHelper cusrh();
+}
+
+TEST_F(CompilationUnitStartResponseTests, DeserializeConstructor)
+{
+  ::cpad::cfg::CompilationUnitStartResponseHelper cusrh2(buffer);
+}
+
+TEST_F(CompilationUnitStartResponseTests, DeserializeConstructorFromEmptyString)
+{
+  ::cpad::cfg::CompilationUnitStartResponseHelper cusrh2("");
+}
+
+TEST_F(CompilationUnitStartResponseTests, CopyConstructor)
+{
+  ::cpad::cfg::CompilationUnitStartResponseHelper cusrh2(*cusrh1);
+}
+
+TEST_F(CompilationUnitStartResponseTests, SerializeMethod)
+{
+  ::cpad::cfg::CompilationUnitStartResponseHelper cusrh;
+  char local_buffer[128];
+  memset(local_buffer, 0, 128);
+  cusrh.serialize(local_buffer);    
+  EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
+}
+
 TEST_F(CompilationUnitStartResponseTests, DumpMethod)
 {
   cusrh1->dump(*osb);

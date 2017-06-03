@@ -39,15 +39,34 @@ public:
   }
 };
 
+TEST_F(StartCfgToolingResponseTests, DefaultConstructor)
+{
+  ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh();
+}
 
-// TEST_F(StartCfgToolingResponseTests, SerializeMethod)
-// {
-//   ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh();
-//   char local_buffer[128];
-//   memset(local_buffer, 0, 128);
-//   sctrh.serialize(local_buffer);    
-//   EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
-// }
+TEST_F(StartCfgToolingResponseTests, DeserializeConstructor)
+{
+  ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh2(buffer);
+}
+
+TEST_F(StartCfgToolingResponseTests, DeserializeConstructorFromEmptyString)
+{
+  ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh2("");
+}
+
+TEST_F(StartCfgToolingResponseTests, CopyConstructor)
+{
+  ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh2(*sctrh1);
+}
+
+TEST_F(StartCfgToolingResponseTests, SerializeMethod)
+{
+  ::cpad::build_mngt::StartCfgToolingResponseHelper sctrh;
+  char local_buffer[128];
+  memset(local_buffer, 0, 128);
+  sctrh.serialize(local_buffer);    
+  EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
+}
 
 TEST_F(StartCfgToolingResponseTests, DumpMethod)
 {

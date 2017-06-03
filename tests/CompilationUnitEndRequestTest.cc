@@ -10,7 +10,7 @@ class CompilationUnitEndRequestTests : public ::testing::Test
 {
 public:
   char *buffer;
-  ::cpad::cfg::CompilationUnitEndRequestHelper *cusrh1;
+  ::cpad::cfg::CompilationUnitEndRequestHelper *cuerh1;
   std::stringbuf strbuf;
   std::ostream *osb;
   std::string dumpval = "[CompilationUnitEndRequest]\n";
@@ -19,14 +19,14 @@ public:
   {
     buffer = new char[128];
     memset(buffer, 0, 128);
-    cusrh1 = new ::cpad::cfg::CompilationUnitEndRequestHelper();
+    cuerh1 = new ::cpad::cfg::CompilationUnitEndRequestHelper();
     osb = new std::ostream(&strbuf);
   }
 
   virtual ~CompilationUnitEndRequestTests()
   {
     delete buffer;
-    delete cusrh1;
+    delete cuerh1;
     delete osb;
   }
 
@@ -39,9 +39,38 @@ public:
   }
 };
 
+TEST_F(CompilationUnitEndRequestTests, DefaultConstructor)
+{
+  ::cpad::cfg::CompilationUnitEndRequestHelper cuerh();
+}
+
+TEST_F(CompilationUnitEndRequestTests, DeserializeConstructor)
+{
+  ::cpad::cfg::CompilationUnitEndRequestHelper cuerh2(buffer);
+}
+
+TEST_F(CompilationUnitEndRequestTests, DeserializeConstructorFromEmptyString)
+{
+  ::cpad::cfg::CompilationUnitEndRequestHelper cuerh2("");
+}
+
+TEST_F(CompilationUnitEndRequestTests, CopyConstructor)
+{
+  ::cpad::cfg::CompilationUnitEndRequestHelper cuerh2(*cuerh1);
+}
+
+TEST_F(CompilationUnitEndRequestTests, SerializeMethod)
+{
+  ::cpad::cfg::CompilationUnitEndRequestHelper cuerh;
+  char local_buffer[128];
+  memset(local_buffer, 0, 128);
+  cuerh.serialize(local_buffer);    
+  EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
+}
+
 TEST_F(CompilationUnitEndRequestTests, DumpMethod)
 {
-  cusrh1->dump(*osb);
+  cuerh1->dump(*osb);
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
