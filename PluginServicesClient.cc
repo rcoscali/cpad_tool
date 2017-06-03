@@ -36,7 +36,7 @@ using cpad::insns::InsertionPointRequestHelper;
 using cpad::insns::InsertionPointResponse;
 using cpad::insns::InsertionPointResponseHelper;
 
-static unsigned char verbose_option = 0;
+static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
@@ -113,7 +113,7 @@ main(int argc, char** argv)
   po::options_description desc("Options allowed for test gRPC PluginServices client.");  
   desc.add_options()
     ("help,h", "Produce help message.")
-    ("verbose,v", po::value<unsigned char>(&verbose_option)->default_value(0)->implicit_value(1), "Set verbosity level.")
+    ("verbose,v", po::value<unsigned int>(&verbose_option)->default_value(0)->implicit_value(1), "Set verbosity level.")
     ("hostname", po::value<std::string>()->default_value("localhost"), "Set server hostname. Default: localhost.")
     ("port,p", po::value<unsigned int>(&port_option)->default_value(50051), "Set server port. Default: 50051.")
     ;
