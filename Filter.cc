@@ -5,8 +5,8 @@
 
 #include "Filter.h"
 
-use namespace std;
-use namespace cpad;
+using namespace std;
+using namespace cpad;
 
 cpad::Filter::Filter(enum FilterType type)
 {

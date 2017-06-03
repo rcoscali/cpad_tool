@@ -30,7 +30,7 @@ namespace cpad
     APPLYON_MDATE     = 7,
     APPLYON_CDATE     = 8,
     APPLYON_NUMBERS   = 9    
-  }
+  };
 
   const char *FilterApplyOn_str[cpad::APPLYON_NUMBERS+1] =
     {
@@ -61,7 +61,7 @@ namespace cpad
     enum FilterType get_type();
     const char *get_expr();
     string get_applyon();
-    set_applyon(string applyon);
+    void set_applyon(string applyon);
     
     private:
       enum FilterType m_type;
