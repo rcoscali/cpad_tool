@@ -119,16 +119,22 @@ enum EdgeKind
 // No Start/End as for BB.
 message EdgeRequest
 {
-  // The cunit containing the BB
-  string cunit_name = 10;
-  // The function containing the BB
-  string cfun_name = 20;
+  // The cunit containing the start BB
+  string start_cunit_name = 10;
+  // The function containing the start BB
+  string start_cfun_name = 20;
   // The start basic block name
   string start_bb_name = 30;
+
+  // The cunit containing the end BB
+  string end_cunit_name = 50;
+  // The function containing the end BB
+  string end_cfun_name = 60;
   // The end basic block name
-  string end_bb_name = 40;
+  string end_bb_name = 70;
+
   // Kind of edge
-  EdgeKind edge_branch = 50;  
+  EdgeKind edge_branch = 100;  
 }
 
 // EdgeRespoonse: ack
