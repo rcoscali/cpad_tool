@@ -10,29 +10,33 @@ class BasicBlockRequestTests : public ::testing::Test
 {
 public:
   char *buffer;
-  ::cpad::cfg::BasicBlockRequestHelper *cusrh1;
+  ::cpad::cfg::BasicBlockRequestHelper *bbrh1;
   std::stringbuf strbuf;
   std::ostream *osb;
-  std::string dumpval = "[BasicBlockRequest]\n"       \
-    "CUnit filename: foobar.c\n";
+  std::string dumpval = "[BasicBlockRequest]\n" \
+    "  CUnit name: foobar.c\n"                  \
+    "  CFun name: bar\n"                        \
+    "  BB name: BB1\n";
 
   BasicBlockRequestTests()
   {
     buffer = new char[128];
     memset(buffer, 0, 128);
-    cusrh1 = new ::cpad::cfg::BasicBlockRequestHelper(std::string("foobar.c"));
+    bbrh1 = new ::cpad::cfg::BasicBlockRequestHelper(std::string("foobar.c"),
+                                                      std::string("bar"),
+                                                      std::string("BB1"));
     osb = new std::ostream(&strbuf);
   }
 
   virtual ~BasicBlockRequestTests()
   {
     delete buffer;
-    delete cusrh1;
+    delete bbrh1;
   }
 
   virtual void SetUp(void)
   {
-    cusrh1->serialize(buffer);    
+    bbrh1->serialize(buffer);    
   }
 
   virtual void TearDown(void)
@@ -42,40 +46,52 @@ public:
 
 TEST_F(BasicBlockRequestTests, DefaultConstructor)
 {
-  ::cpad::cfg::BasicBlockRequestHelper cusrh(std::string("foobar.c"));
-  EXPECT_STREQ(cusrh.filename().c_str(), "foobar.c");
+  ::cpad::cfg::BasicBlockRequestHelper bbrh(std::string("foobar.c"),
+                                             std::string("bar"),
+                                             std::string("BB1"));
+  EXPECT_STREQ(bbrh.cunit_name().c_str(), "foobar.c");
+  EXPECT_STREQ(bbrh.cfun_name().c_str(), "bar");
+  EXPECT_STREQ(bbrh.bb_name().c_str(), "BB1");
 }
 
 TEST_F(BasicBlockRequestTests, DeserializeConstructor)
 {
-  ::cpad::cfg::BasicBlockRequestHelper cusrh2(buffer);
-  EXPECT_STREQ(cusrh1->filename().c_str(), "foobar.c");
+  ::cpad::cfg::BasicBlockRequestHelper bbrh2(buffer);
+  EXPECT_STREQ(bbrh1->cunit_name().c_str(), "foobar.c");
+  EXPECT_STREQ(bbrh1->cfun_name().c_str(), "bar");
+  EXPECT_STREQ(bbrh1->bb_name().c_str(), "BB1");
 }
 
 TEST_F(BasicBlockRequestTests, DeserializeConstructorFromEmptyString)
 {
-  ::cpad::cfg::BasicBlockRequestHelper cusrh2("");
-  EXPECT_STREQ(cusrh2.filename().c_str(), "");
+  ::cpad::cfg::BasicBlockRequestHelper bbrh2("");
+  EXPECT_STREQ(bbrh2.cunit_name().c_str(), "");
+  EXPECT_STREQ(bbrh2.cfun_name().c_str(), "");
+  EXPECT_STREQ(bbrh2.bb_name().c_str(), "");
 }
 
 TEST_F(BasicBlockRequestTests, CopyConstructor)
 {
-  ::cpad::cfg::BasicBlockRequestHelper cusrh2(*cusrh1);
-  EXPECT_STREQ(cusrh2.filename().c_str(), cusrh1->filename().c_str());
+  ::cpad::cfg::BasicBlockRequestHelper bbrh2(*bbrh1);
+  EXPECT_STREQ(bbrh2.cunit_name().c_str(), bbrh1->cunit_name().c_str());
+  EXPECT_STREQ(bbrh2.cfun_name().c_str(), bbrh1->cfun_name().c_str());
+  EXPECT_STREQ(bbrh2.bb_name().c_str(), bbrh1->bb_name().c_str());
 }
 
 TEST_F(BasicBlockRequestTests, SerializeMethod)
 {
-  ::cpad::cfg::BasicBlockRequestHelper cusrh(std::string("foobar.c"));
+  ::cpad::cfg::BasicBlockRequestHelper bbrh(std::string("foobar.c"),
+                                             std::string("bar"),
+                                             std::string("BB1"));
   char local_buffer[128];
   memset(local_buffer, 0, 128);
-  cusrh.serialize(local_buffer);    
+  bbrh.serialize(local_buffer);    
   EXPECT_TRUE(memcmp(buffer, local_buffer, 128) == 0);
 }
 
 TEST_F(BasicBlockRequestTests, DumpMethod)
 {
-  cusrh1->dump(*osb);
+  bbrh1->dump(*osb);
   EXPECT_STREQ(dumpval.c_str(), strbuf.str().c_str());
 }
 
