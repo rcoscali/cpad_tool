@@ -21,6 +21,7 @@ namespace cpad
     public:
       StartCfgCollectionRequestHelper(std::string, uint32_t, std::string);
       StartCfgCollectionRequestHelper(const char *);
+      StartCfgCollectionRequestHelper(const ::cpad::build_mngt::StartCfgCollectionRequest *);
       virtual ~StartCfgCollectionRequestHelper(void);
 
       StartCfgCollectionRequestHelper(StartCfgCollectionRequestHelper const&);
@@ -35,6 +36,7 @@ namespace cpad
     public:
       StartCfgCollectionResponseHelper(StartCfgCollectionResponse_CpadConfigStatus, std::string);
       StartCfgCollectionResponseHelper(const char *);
+      StartCfgCollectionResponseHelper(const ::cpad::build_mngt::StartCfgCollectionResponse *);
       virtual ~StartCfgCollectionResponseHelper(void);
 
       StartCfgCollectionResponseHelper(StartCfgCollectionResponseHelper const&);
@@ -52,6 +54,7 @@ namespace cpad
     public:
       EndCfgCollectionRequestHelper(std::string);
       EndCfgCollectionRequestHelper(const char *);
+      EndCfgCollectionRequestHelper(const ::cpad::build_mngt::EndCfgCollectionRequest *);
       virtual ~EndCfgCollectionRequestHelper(void);
 
       EndCfgCollectionRequestHelper(EndCfgCollectionRequestHelper const&);
@@ -66,6 +69,7 @@ namespace cpad
     public:
       EndCfgCollectionResponseHelper(EndCfgCollectionResponse_ApexAllocationStatus, std::string);
       EndCfgCollectionResponseHelper(const char *);
+      EndCfgCollectionResponseHelper(const ::cpad::build_mngt::EndCfgCollectionResponse *);
       virtual ~EndCfgCollectionResponseHelper(void);
 
       EndCfgCollectionResponseHelper(EndCfgCollectionResponseHelper const&);
@@ -83,6 +87,7 @@ namespace cpad
     public:
       StartCfgToolingRequestHelper(std::string);
       StartCfgToolingRequestHelper(const char *);
+      StartCfgToolingRequestHelper(const ::cpad::build_mngt::StartCfgToolingRequest *);
       virtual ~StartCfgToolingRequestHelper(void);
 
       StartCfgToolingRequestHelper(StartCfgToolingRequestHelper const&);
@@ -97,6 +102,7 @@ namespace cpad
     public:
       StartCfgToolingResponseHelper();
       StartCfgToolingResponseHelper(const char *);
+      StartCfgToolingResponseHelper(const ::cpad::build_mngt::StartCfgToolingResponse *);
       virtual ~StartCfgToolingResponseHelper(void);
 
       StartCfgToolingResponseHelper(StartCfgToolingResponseHelper const&);
@@ -114,6 +120,7 @@ namespace cpad
     public:
       EndCfgToolingRequestHelper(std::string);
       EndCfgToolingRequestHelper(const char *);
+      EndCfgToolingRequestHelper(const ::cpad::build_mngt::EndCfgToolingRequest *);
       virtual ~EndCfgToolingRequestHelper(void);
 
       EndCfgToolingRequestHelper(EndCfgToolingRequestHelper const&);
@@ -128,6 +135,7 @@ namespace cpad
     public:
       EndCfgToolingResponseHelper(::google::protobuf::Map< ::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> const&);
       EndCfgToolingResponseHelper(const char *);
+      EndCfgToolingResponseHelper(const ::cpad::build_mngt::EndCfgToolingResponse *);
       virtual ~EndCfgToolingResponseHelper(void);
 
       EndCfgToolingResponseHelper(EndCfgToolingResponseHelper const&);
