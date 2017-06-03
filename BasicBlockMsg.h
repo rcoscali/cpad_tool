@@ -19,7 +19,7 @@ namespace cpad
     class BasicBlockRequestHelper : public ::cpad::cfg::BasicBlockRequest
     {
     public:
-      BasicBlockRequestHelper(std::string);
+      BasicBlockRequestHelper(std::string, std::string, std::string);
       BasicBlockRequestHelper(const char *);
       BasicBlockRequestHelper(const ::cpad::cfg::BasicBlockRequest*);
       virtual ~BasicBlockRequestHelper();
@@ -34,9 +34,9 @@ namespace cpad
     class BasicBlockResponseHelper : public ::cpad::cfg::BasicBlockResponse
     {
     public:
-      BasicBlockResponseHelper(std::string);
+      BasicBlockResponseHelper();
       BasicBlockResponseHelper(const char *);
-      BasicBlockResponseHelper(::cpad::cfg::BasicBlockResponse*);
+      BasicBlockResponseHelper(const ::cpad::cfg::BasicBlockResponse*);
       virtual ~BasicBlockResponseHelper();
 
       BasicBlockResponseHelper(BasicBlockResponseHelper const&);

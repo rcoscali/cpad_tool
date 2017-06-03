@@ -11,10 +11,14 @@
 /**
  * Constructor
  */
-cpad::cfg::BasicBlockRequestHelper::BasicBlockRequestHelper(std::string filename)
+cpad::cfg::BasicBlockRequestHelper::BasicBlockRequestHelper(std::string cunit_name,
+                                                            std::string cfun_name,
+                                                            std::string bb_name)
   : ::cpad::cfg::BasicBlockRequest()
 {
-  set_filename(filename);
+  set_cunit_name(cunit_name);
+  set_cfun_name(cfun_name);
+  set_bb_name(bb_name);
 }
 
 /**
@@ -42,7 +46,9 @@ cpad::cfg::BasicBlockRequestHelper::~BasicBlockRequestHelper()
  * Copy constructor
  */
 cpad::cfg::BasicBlockRequestHelper::BasicBlockRequestHelper(cpad::cfg::BasicBlockRequestHelper const&a_copy)
-  : cpad::cfg::BasicBlockRequestHelper(a_copy.filename())
+  : cpad::cfg::BasicBlockRequestHelper(a_copy.cunit_name(),
+                                       a_copy.cfun_name(),
+                                       a_copy.bb_name())
 {
 }
 
@@ -52,7 +58,9 @@ cpad::cfg::BasicBlockRequestHelper::BasicBlockRequestHelper(cpad::cfg::BasicBloc
 cpad::cfg::BasicBlockRequestHelper&
 cpad::cfg::BasicBlockRequestHelper::operator =(cpad::cfg::BasicBlockRequestHelper const&a_copy)
 {
-  set_filename(a_copy.filename());
+  set_cunit_name(a_copy.cunit_name());
+  set_cfun_name(a_copy.cfun_name());
+  set_bb_name(a_copy.bb_name());
   return *this;
 }
 
@@ -74,14 +82,15 @@ cpad::cfg::BasicBlockRequestHelper::serialize(char *buffer)
 void
 cpad::cfg::BasicBlockRequestHelper::dump(std::ostream& osb)
 {
-  std::cout << "[BasicBlockRequest]" << std::endl;
-  std::cout << "CUnit filename : " << filename() << std::endl;
+  osb << "[BasicBlockRequest]" << std::endl;
+  osb << "  CUnit name: " << cunit_name() << std::endl;
+  osb << "  CFun name: " << cfun_name() << std::endl;
+  osb << "  BB name: " << bb_name() << std::endl;
 }
 
-cpad::cfg::BasicBlockResponseHelper::BasicBlockResponseHelper(std::string filename)
+cpad::cfg::BasicBlockResponseHelper::BasicBlockResponseHelper()
   : ::cpad::cfg::BasicBlockResponse()
 {
-  set_filename(filename);
 }
 
 cpad::cfg::BasicBlockResponseHelper::BasicBlockResponseHelper(const char *buffer)
@@ -100,14 +109,13 @@ cpad::cfg::BasicBlockResponseHelper::~BasicBlockResponseHelper()
 }
 
 cpad::cfg::BasicBlockResponseHelper::BasicBlockResponseHelper(cpad::cfg::BasicBlockResponseHelper const&a_copy)
-  : cpad::cfg::BasicBlockResponseHelper(a_copy.cunit_name())
+  : cpad::cfg::BasicBlockResponseHelper()
 {
 }
 
 cpad::cfg::BasicBlockResponseHelper&
 cpad::cfg::BasicBlockResponseHelper::operator =(cpad::cfg::BasicBlockResponseHelper const&a_copy)
 {
-  set_cunit_name(a_copy.cunit_name());
   return *this;
 }
 
@@ -123,6 +131,6 @@ cpad::cfg::BasicBlockResponseHelper::serialize(char *buffer)
 void
 cpad::cfg::BasicBlockResponseHelper::dump(std::ostream& osb)
 {
-  std::cout << "[BasicBlockResponse]" << std::endl;
+  osb << "[BasicBlockResponse]" << std::endl;
 }
 
