@@ -28,11 +28,33 @@ using grpc::ServerReaderWriter;
 using grpc::ServerWriter;
 using grpc::Status;
 
-static unsigned char verbose_option = 0;
+using cpad::cfg::CfgCollectionServices;
+using cpad::cfg::CompilationUnitStartRequest;
+using cpad::cfg::CompilationUnitStartRequestHelper;
+using cpad::cfg::CompilationUnitStartResponse;
+using cpad::cfg::CompilationUnitStartResponseHelper;
+using cpad::cfg::CompilationUnitEndRequest;
+using cpad::cfg::CompilationUnitEndRequestHelper;
+using cpad::cfg::CompilationUnitEndResponse;
+using cpad::cfg::CompilationUnitEndResponseHelper;
+using cpad::cfg::FunctionRequest;
+using cpad::cfg::FunctionRequestHelper;
+using cpad::cfg::FunctionResponse;
+using cpad::cfg::FunctionResponseHelper;
+using cpad::cfg::BasicBlockRequest;
+using cpad::cfg::BasicBlockRequestHelper;
+using cpad::cfg::BasicBlockResponse;
+using cpad::cfg::BasicBlockResponseHelper;
+using cpad::cfg::EdgeRequest;
+using cpad::cfg::EdgeRequestHelper;
+using cpad::cfg::EdgeResponse;
+using cpad::cfg::EdgeResponseHelper;
+
+static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-class CfgCollectionServicesImpl final : public ::cpad::insns::CfgCollectionServices::Service
+class CfgCollectionServicesImpl final : public CfgCollectionServices::Service
 {
  public:
   explicit CfgCollectionServicesImpl(void)
@@ -45,76 +67,76 @@ class CfgCollectionServicesImpl final : public ::cpad::insns::CfgCollectionServi
   
   virtual ::grpc::Status
     CompilationUnitStartService(::grpc::ServerContext* context,
-                                const ::cpad::insns::CompilationUnitStartRequest* request,
-                                ::cpad::insns::CompilationUnitStartResponse* response)
+                                const CompilationUnitStartRequest* request,
+                                CompilationUnitStartResponse* response)
   {
     std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::CompilationUnitStartRequestHelper cusrh(request);
-    curh.dump();
+    CompilationUnitStartRequestHelper cusrh(request);
+    cusrh.dump();
     
     std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::CompilationUnitStartResponseHelper curesph((const ::cpad::insns::CompilationUnitStartResponse*)response);
-    curesph.dump();
+    CompilationUnitStartResponseHelper cusresph((const CompilationUnitStartResponse*)response);
+    cusresph.dump();
     
     return ::Status::OK;
   }
   
   virtual ::grpc::Status
     CompilationUnitEndService(::grpc::ServerContext* context,
-                          const ::cpad::insns::CompilationUnitEndRequest* request,
-                          ::cpad::insns::CompilationUnitEndResponse* response)
+                              const CompilationUnitEndRequest* request,
+                              CompilationUnitEndResponse* response)
   {
     std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::CompilationUnitEndRequestHelper cuerh(request);
+    CompilationUnitEndRequestHelper cuerh(request);
     cuerh.dump();
     
     std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::CompilationUnitEndResponseHelper cueresph((const ::cpad::insns::CompilationUnitEndResponse*)response);
+    CompilationUnitEndResponseHelper cueresph((const CompilationUnitEndResponse*)response);
     cueresph.dump();
     return ::Status::OK;
   }
   
   virtual ::grpc::Status
     FunctionService(::grpc::ServerContext* context,
-                    const ::cpad::insns::FunctionRequest* request,
-                    ::cpad::insns::FunctionResponse* response)
+                    const FunctionRequest* request,
+                    FunctionResponse* response)
   {
     std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::FunctionRequestHelper frh(request);
+    FunctionRequestHelper frh(request);
     frh.dump();
     
     std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::FunctionResponseHelper fresph((const ::cpad::insns::FunctionResponse*)response);
+    FunctionResponseHelper fresph((const FunctionResponse*)response);
     fresph.dump();
     return ::Status::OK;
   }
   
   virtual ::grpc::Status
     BasicBlockService(::grpc::ServerContext* context,
-                      const ::cpad::insns::BasicBlockRequest* request,
-                      ::cpad::insns::BasicBlockResponse* response)
+                      const BasicBlockRequest* request,
+                      BasicBlockResponse* response)
   {
     std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::BasicBlockRequestHelper bbrh(request);
+    BasicBlockRequestHelper bbrh(request);
     bbrh.dump();
     
     std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::BasicBlockResponseHelper bbresph((const ::cpad::insns::BasicBlockResponse*)response);
+    BasicBlockResponseHelper bbresph((const BasicBlockResponse*)response);
     bbresph.dump();
     return ::Status::OK;
   }
   
   virtual ::grpc::Status
     EdgeService(::grpc::ServerContext* context,
-                const ::cpad::insns::EdgeRequest* request,
-                ::cpad::insns::EdgeResponse* response)
+                const EdgeRequest* request,
+                EdgeResponse* response)
   {
     std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::EdgeRequestHelper erh(request);
+    EdgeRequestHelper erh(request);
     erh.dump();
     
     std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::EdgeResponseHelper eresph((const ::cpad::insns::EdgeResponse*)response);
+    EdgeResponseHelper eresph((const EdgeResponse*)response);
     eresph.dump();
     return ::Status::OK;
   }
@@ -144,7 +166,7 @@ int main(int argc, char** argv)
   po::options_description desc("Options allowed for test gRPC CfgCollectionServices server.");
   desc.add_options()
     ("help,h", "Produce help message.")
-    ("verbose,v", po::value<unsigned char>(&verbose_option)->default_value(0)->implicit_value(1), "Set verbosity level.")
+    ("verbose,v", po::value<unsigned int>(&verbose_option)->default_value(0)->implicit_value(1), "Set verbosity level.")
     ("hostname", po::value<std::string>()->default_value("localhost"), "Set server hostname. Default: localhost.")
     ("port,p", po::value<unsigned int>(&port_option)->default_value(50051), "Set server port. Default: 50051.")
     ;

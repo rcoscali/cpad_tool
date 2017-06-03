@@ -13,9 +13,11 @@
 #include <grpc++/create_channel.h>
 #include <grpc++/security/credentials.h>
 
-#include "VersionMsg.h"
-#include "InsertionPointMsg.h"
-#include "plugin_request.grpc.pb.h"
+#include "CompilationUnitMsg.h"
+#include "FunctionMsg.h"
+#include "BasicBlockMsg.h"
+#include "EdgeMsg.h"
+#include "cfg_request.grpc.pb.h"
 
 namespace po = boost::program_options;
 
@@ -33,6 +35,8 @@ using cpad::cfg::CompilationUnitStartResponse;
 using cpad::cfg::CompilationUnitStartResponseHelper;
 using cpad::cfg::CompilationUnitEndRequest;
 using cpad::cfg::CompilationUnitEndRequestHelper;
+using cpad::cfg::CompilationUnitEndResponse;
+using cpad::cfg::CompilationUnitEndResponseHelper;
 using cpad::cfg::FunctionRequest;
 using cpad::cfg::FunctionRequestHelper;
 using cpad::cfg::FunctionResponse;
@@ -46,7 +50,7 @@ using cpad::cfg::EdgeRequestHelper;
 using cpad::cfg::EdgeResponse;
 using cpad::cfg::EdgeResponseHelper;
 
-static unsigned char verbose_option = 0;
+static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
@@ -62,15 +66,15 @@ public:
   void CompilationUnitStartService()
   {
     ClientContext context;
-    CompilationUnitStartRequestHelper cusrh(0, 1, std::string("gRPC test Client"));
-    CompilationUnitStartResponseHelper cusresph(0, 0, std::string(""));
+    CompilationUnitStartRequestHelper cusrh(std::string("FooBar.cc"));
+    CompilationUnitStartResponseHelper cusresph;
 
     std::cout << "---===[> Client send:" << std::endl;
-    vrh.dump();
+    cusrh.dump();
     
     Status status = m_stub->CompilationUnitStartService(&context,
-                                                        (const CompilationUnitStartRequest&)vrh,
-                                                        (CompilationUnitStartResponse*)&vresph);
+                                                        (const CompilationUnitStartRequest&)cusrh,
+                                                        (CompilationUnitStartResponse*)&cusresph);
     if (!status.ok())
       {
         std::cout << "---EEE* CompilationUnitStartService rpc failed." << std::endl;
@@ -78,22 +82,22 @@ public:
     else
       {
         std::cout << "---===[> Server responded:" << std::endl;
-        vresph.dump();
+        cusresph.dump();
       }
   }
 
   void CompilationUnitEndService()
   {
     ClientContext context;
-    CompilationUnitEndRequestHelper cusrh(0, 1, std::string("gRPC test Client"));
-    CompilationUnitEndResponseHelper cusresph(0, 0, std::string(""));
+    CompilationUnitEndRequestHelper cuerh;
+    CompilationUnitEndResponseHelper cueresph;
 
     std::cout << "---===[> Client send:" << std::endl;
-    vrh.dump();
+    cuerh.dump();
     
     Status status = m_stub->CompilationUnitEndService(&context,
-                                                        (const CompilationUnitEndRequest&)vrh,
-                                                        (CompilationUnitEndResponse*)&vresph);
+                                                      (const CompilationUnitEndRequest&)cuerh,
+                                                      (CompilationUnitEndResponse*)&cueresph);
     if (!status.ok())
       {
         std::cout << "---EEE* CompilationUnitEndService rpc failed." << std::endl;
@@ -101,7 +105,7 @@ public:
     else
       {
         std::cout << "---===[> Server responded:" << std::endl;
-        vresph.dump();
+        cueresph.dump();
       }
   }
 
@@ -109,15 +113,15 @@ public:
   void FunctionService()
   {
     ClientContext context;
-    FunctionRequestHelper cusrh(0, 1, std::string("gRPC test Client"));
-    FunctionResponseHelper cusresph(0, 0, std::string(""));
+    FunctionRequestHelper frh(std::string("FooBar.cc"), std::string("Foo"));
+    FunctionResponseHelper fresph;
 
     std::cout << "---===[> Client send:" << std::endl;
-    vrh.dump();
+    frh.dump();
     
     Status status = m_stub->FunctionService(&context,
-                                                        (const FunctionRequest&)vrh,
-                                                        (FunctionResponse*)&vresph);
+                                            (const FunctionRequest&)frh,
+                                            (FunctionResponse*)&fresph);
     if (!status.ok())
       {
         std::cout << "---EEE* FunctionService rpc failed." << std::endl;
@@ -125,22 +129,22 @@ public:
     else
       {
         std::cout << "---===[> Server responded:" << std::endl;
-        vresph.dump();
+        fresph.dump();
       }
   }
 
   void BasicBlockService()
   {
     ClientContext context;
-    BasicBlockRequestHelper cusrh(0, 1, std::string("gRPC test Client"));
-    BasicBlockResponseHelper cusresph(0, 0, std::string(""));
+    BasicBlockRequestHelper bbrh(std::string("FooBar.cc"), std::string("Foo"), std::string("BB3"));
+    BasicBlockResponseHelper bbresph;
 
     std::cout << "---===[> Client send:" << std::endl;
-    vrh.dump();
+    bbrh.dump();
     
     Status status = m_stub->BasicBlockService(&context,
-                                                        (const BasicBlockRequest&)vrh,
-                                                        (BasicBlockResponse*)&vresph);
+                                              (const BasicBlockRequest&)bbrh,
+                                              (BasicBlockResponse*)&bbresph);
     if (!status.ok())
       {
         std::cout << "---EEE* BasicBlockService rpc failed." << std::endl;
@@ -148,22 +152,24 @@ public:
     else
       {
         std::cout << "---===[> Server responded:" << std::endl;
-        vresph.dump();
+        bbresph.dump();
       }
   }
 
   void EdgeService()
   {
     ClientContext context;
-    EdgeRequestHelper cusrh(0, 1, std::string("gRPC test Client"));
-    EdgeResponseHelper cusresph(0, 0, std::string(""));
+    EdgeRequestHelper erh(std::string("FooBar.cc"), std::string("Foo"), std::string("BB2"),
+                          std::string("FooBaz.cc"), std::string("Baz"), std::string("BB5"),
+                          cpad::cfg::EDGE_FALLBACK_BRANCH);
+    EdgeResponseHelper eresph;
 
     std::cout << "---===[> Client send:" << std::endl;
-    vrh.dump();
+    erh.dump();
     
     Status status = m_stub->EdgeService(&context,
-                                        (const EdgeRequest&)vrh,
-                                        (EdgeResponse*)&vresph);
+                                        (const EdgeRequest&)erh,
+                                        (EdgeResponse*)&eresph);
     if (!status.ok())
       {
         std::cout << "---EEE* EdgeService rpc failed." << std::endl;
@@ -171,7 +177,7 @@ public:
     else
       {
         std::cout << "---===[> Server responded:" << std::endl;
-        vresph.dump();
+        eresph.dump();
       }
   }
 
@@ -191,7 +197,7 @@ main(int argc, char** argv)
   po::options_description desc("Options allowed for test gRPC CfgCollectionServices client.");  
   desc.add_options()
     ("help,h", "Produce help message.")
-    ("verbose,v", po::value<unsigned char>(&verbose_option)->default_value(0)->implicit_value(1), "Set verbosity level.")
+    ("verbose,v", po::value<unsigned int>(&verbose_option)->default_value(0)->implicit_value(1), "Set verbosity level.")
     ("hostname", po::value<std::string>()->default_value("localhost"), "Set server hostname. Default: localhost.")
     ("port,p", po::value<unsigned int>(&port_option)->default_value(50051), "Set server port. Default: 50051.")
     ;
@@ -233,12 +239,23 @@ main(int argc, char** argv)
 
 
       CfgCollectionServicesClient client(::grpc::CreateChannel(server_address_str,
-                                                        grpc::InsecureChannelCredentials()));
+                                                               grpc::InsecureChannelCredentials()));
 
-      std::cout << "**[ VersionService RPC test:" << std::endl;
-      client.VersionService();
-      std::cout << "**[ InsertionPointService RPC test:" << std::endl;
-      client.InsertionPointService();
+      std::cout << "**[ CompilationUnitStartService RPC test:" << std::endl;
+      client.CompilationUnitStartService();
+
+      std::cout << "**[ CompilationUnitEndService RPC test:" << std::endl;
+      client.CompilationUnitEndService();
+
+      std::cout << "**[ FunctionService RPC test:" << std::endl;
+      client.FunctionService();
+
+      std::cout << "**[ BasicBlockService RPC test:" << std::endl;
+      client.BasicBlockService();
+
+      std::cout << "**[ EdgeService RPC test:" << std::endl;
+      client.EdgeService();
+
     }
   
   return 0;
