@@ -2,6 +2,8 @@
 // Copyright ©2017 NagraFrance
 //
 
+#include <uuid/uuid.h>
+
 #include "BuildMngtMsg.h"
 
 cpad::build_mngt::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(std::string build_name,
@@ -18,6 +20,11 @@ cpad::build_mngt::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelp
   : ::cpad::build_mngt::StartCfgCollectionRequest()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::build_mngt::StartCfgCollectionRequestHelper::StartCfgCollectionRequestHelper(const ::cpad::build_mngt::StartCfgCollectionRequest *request)
+  : ::cpad::build_mngt::StartCfgCollectionRequest(*request)
+{
 }
 
 cpad::build_mngt::StartCfgCollectionRequestHelper::~StartCfgCollectionRequestHelper()
@@ -72,6 +79,11 @@ cpad::build_mngt::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHe
   ParseFromString(std::string(buffer));
 }
 
+cpad::build_mngt::StartCfgCollectionResponseHelper::StartCfgCollectionResponseHelper(const ::cpad::build_mngt::StartCfgCollectionResponse *response)
+  : ::cpad::build_mngt::StartCfgCollectionResponse(*response)
+{
+}
+
 cpad::build_mngt::StartCfgCollectionResponseHelper::~StartCfgCollectionResponseHelper()
 {
 }
@@ -102,9 +114,13 @@ cpad::build_mngt::StartCfgCollectionResponseHelper::serialize(char *buffer)
 void
 cpad::build_mngt::StartCfgCollectionResponseHelper::dump(std::ostream &osb)
 {
+  char uuid_str[50];
+  memset(uuid_str, 0, 50);
+  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
+
   osb << "[StartCfgCollectionResponse]" << std::endl;
   osb << "cpad config status: " << cpad_config_status() << std::endl;
-  osb << "uuid: " << uuid() << std::endl;
+  osb << "uuid: " << uuid_str << std::endl;
 }
 
 cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(std::string uuid)
@@ -117,6 +133,11 @@ cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(c
   : ::cpad::build_mngt::EndCfgCollectionRequest()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(const ::cpad::build_mngt::EndCfgCollectionRequest *request)
+  : ::cpad::build_mngt::EndCfgCollectionRequest(*request)
+{
 }
 
 cpad::build_mngt::EndCfgCollectionRequestHelper::~EndCfgCollectionRequestHelper()
@@ -147,8 +168,12 @@ cpad::build_mngt::EndCfgCollectionRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgCollectionRequestHelper::dump(std::ostream &osb)
 {
+  char uuid_str[50];
+  memset(uuid_str, 0, 50);
+  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
+
   osb << "[EndCfgCollectionRequest]" << std::endl;
-  osb << "uuid: " << uuid() << std::endl;
+  osb << "uuid: " << uuid_str << std::endl;
 }
 
 cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(::cpad::build_mngt::EndCfgCollectionResponse_ApexAllocationStatus apex_allocation_status,
@@ -163,6 +188,11 @@ cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper
   : ::cpad::build_mngt::EndCfgCollectionResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(const ::cpad::build_mngt::EndCfgCollectionResponse *response)
+  : ::cpad::build_mngt::EndCfgCollectionResponse(*response)
+{
 }
 
 cpad::build_mngt::EndCfgCollectionResponseHelper::~EndCfgCollectionResponseHelper()
@@ -212,6 +242,11 @@ cpad::build_mngt::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(con
   ParseFromString(std::string(buffer));
 }
 
+cpad::build_mngt::StartCfgToolingRequestHelper::StartCfgToolingRequestHelper(const ::cpad::build_mngt::StartCfgToolingRequest *request)
+  : ::cpad::build_mngt::StartCfgToolingRequest(*request)
+{
+}
+
 cpad::build_mngt::StartCfgToolingRequestHelper::~StartCfgToolingRequestHelper()
 {
 }
@@ -240,8 +275,12 @@ cpad::build_mngt::StartCfgToolingRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::StartCfgToolingRequestHelper::dump(std::ostream &osb)
 {
+  char uuid_str[50];
+  memset(uuid_str, 0, 50);
+  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
+
   osb << "[StartCfgToolingRequest]" << std::endl;
-  osb << "uuid: " << uuid() << std::endl;
+  osb << "uuid: " << uuid_str << std::endl;
 }
 
 cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper()
@@ -253,6 +292,11 @@ cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper(c
   : ::cpad::build_mngt::StartCfgToolingResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper(const ::cpad::build_mngt::StartCfgToolingResponse *response)
+  : ::cpad::build_mngt::StartCfgToolingResponse(*response)
+{
 }
 
 cpad::build_mngt::StartCfgToolingResponseHelper::~StartCfgToolingResponseHelper()
@@ -297,6 +341,11 @@ cpad::build_mngt::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(const c
   ParseFromString(std::string(buffer));
 }
 
+cpad::build_mngt::EndCfgToolingRequestHelper::EndCfgToolingRequestHelper(const ::cpad::build_mngt::EndCfgToolingRequest *request)
+  : ::cpad::build_mngt::EndCfgToolingRequest(*request)
+{
+}
+
 cpad::build_mngt::EndCfgToolingRequestHelper::~EndCfgToolingRequestHelper()
 {
 }
@@ -325,8 +374,12 @@ cpad::build_mngt::EndCfgToolingRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgToolingRequestHelper::dump(std::ostream &osb)
 {
+  char uuid_str[50];
+  memset(uuid_str, 0, 50);
+  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
+  
   osb << "[EndCfgToolingRequest]" << std::endl;
-  osb << "uuid: " << uuid() << std::endl;
+  osb << "uuid: " << uuid_str << std::endl;
 }
 
 cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(::google::protobuf::Map< ::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> const& statistics)
@@ -339,6 +392,11 @@ cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(const
   : ::cpad::build_mngt::EndCfgToolingResponse()
 {
   ParseFromString(std::string(buffer));
+}
+
+cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(const ::cpad::build_mngt::EndCfgToolingResponse *response)
+  : ::cpad::build_mngt::EndCfgToolingResponse(*response)
+{
 }
 
 cpad::build_mngt::EndCfgToolingResponseHelper::~EndCfgToolingResponseHelper()
