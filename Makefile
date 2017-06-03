@@ -106,6 +106,12 @@ GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS = \
 	BasicBlockMsg.cc \
 	EdgeMsg.cc
 
+GRPC_SRV_BUILD_MNGT_SERVICES_SRCS = \
+	BuildMngtServices.cc \
+	build_mngt.pb.cc \
+	build_mngt.grpc.pb.cc \
+	BuildMngtMsg.cc
+
 GRPC_CLT_PLUGIN_SERVICES_SRCS = \
 	PluginServicesClient.cc \
 	plugin_request.pb.cc \
@@ -121,6 +127,12 @@ GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS = \
 	FunctionMsg.cc \
 	BasicBlockMsg.cc \
 	EdgeMsg.cc
+
+GRPC_CLT_BUILD_MNGT_SERVICES_SRCS = \
+	BuildMngtServicesClient.cc \
+	build_mngt.pb.cc \
+	build_mngt.grpc.pb.cc \
+	BuildMngtMsg.cc
 
 LIBCPAD_OBJS = \
 	plugin_request.pb.o \
@@ -143,12 +155,16 @@ GRPC_SRV_PLUGIN_SERVICES_OBJS = $(GRPC_SRV_PLUGIN_SERVICES_SRCS:%.cc=%.o)
 GRPC_CLT_PLUGIN_SERVICES_OBJS = $(GRPC_CLT_PLUGIN_SERVICES_SRCS:%.cc=%.o)
 GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
 GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
+GRPC_SRV_BUILD_MNGT_SERVICES_OBJS = $(GRPC_SRV_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o)
+GRPC_CLT_BUILD_MNGT_SERVICES_OBJS = $(GRPC_CLT_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o)
 
 ALL_TESTS = \
 	PluginServicesSrv \
 	PluginServicesClt \
 	CfgCollectionServicesSrv \
-	CfgCollectionServicesClt
+	CfgCollectionServicesClt \
+	BuildMngtServicesSrv \
+	BuildMngtServicesClt
 
 ifeq ($(SINGLE_TEST_EXE),no)
 ALL_TESTS += $(MSG_TESTS_SRCS:%.cc=%)
@@ -161,7 +177,9 @@ ALL_TESTS_OBJS = \
 	PluginServices.o \
 	PluginServicesClient.o \
 	CfgCollectionServices.o \
-	CfgCollectionServicesClient.o
+	CfgCollectionServicesClient.o \
+	BuildMngtServices.o \
+	BuildMngtServicesClient.o
 
 GTEST_DIR = /usr/local/src/misc/googletest/googletest
 
@@ -178,7 +196,7 @@ PROTOC_FLAGS = --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --proto_path=. -
 CPPFLAGS := -I/usr/include/uuid
 
 LDFLAGS := -g -O1 -std=c++11
-LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_program_options -lboost_system -lstdc++ -lpthread -ldl
+LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_program_options -lboost_system -luuid -lstdc++ -lpthread -ldl
 
 CPAD_LDLIBS := $(LDLIBS)
 CFG_LDLIBS := -luuid
@@ -213,6 +231,12 @@ CfgCollectionServicesSrv: $(GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 CfgCollectionServicesClt: $(GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS)
+	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+
+BuildMngtServicesSrv: $(GRPC_SRV_BUILD_MNGT_SERVICES_OBJS)
+	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+
+BuildMngtServicesClt: $(GRPC_CLT_BUILD_MNGT_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 libgtest.a: 
@@ -333,7 +357,15 @@ tests/StartCfgToolingResponseTest: tests/StartCfgToolingResponseTest.cc BuildMng
 tests/VersionRequestTest: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 tests/VersionResponseTest: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 endif
+PluginServicesSrv: PluginServices.o 
+PluginServicesClt: PluginServicesClient.o
+CfgCollectionServicesSrv: CfgCollectionServices.o
+CfgCollectionServicesClt: CfgCollectionServicesClient.o
+BuildMngtServicesSrv: BuildMngtServices.o
+BuildMngtServicesClt: BuildMngtServicesClient.o
 PluginServices.o: PluginServices.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
 PluginServicesClient.o: PluginServicesClient.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
 CfgCollectionServices.o: CfgCollectionServices.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
 CfgCollectionServicesClient.o: CfgCollectionServicesClient.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
+BuildMngtServices.o: BuildMngtServices.cc build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
+BuildMngtServicesClient.o: BuildMngtServicesClient.cc build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
