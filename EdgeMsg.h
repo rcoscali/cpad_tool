@@ -19,7 +19,9 @@ namespace cpad
     class EdgeRequestHelper : public ::cpad::cfg::EdgeRequest
     {
     public:
-      EdgeRequestHelper(std::string);
+      EdgeRequestHelper(std::string, std::string, std::string,
+                        std::string, std::string, std::string,
+                        ::cpad::cfg::EdgeKind);
       EdgeRequestHelper(const char *);
       EdgeRequestHelper(const ::cpad::cfg::EdgeRequest*);
       virtual ~EdgeRequestHelper();
@@ -34,9 +36,9 @@ namespace cpad
     class EdgeResponseHelper : public ::cpad::cfg::EdgeResponse
     {
     public:
-      EdgeResponseHelper(std::string);
+      EdgeResponseHelper();
       EdgeResponseHelper(const char *);
-      EdgeResponseHelper(::cpad::cfg::EdgeResponse*);
+      EdgeResponseHelper(const ::cpad::cfg::EdgeResponse*);
       virtual ~EdgeResponseHelper();
 
       EdgeResponseHelper(EdgeResponseHelper const&);
@@ -47,3 +49,4 @@ namespace cpad
     };
     
   }
+}
