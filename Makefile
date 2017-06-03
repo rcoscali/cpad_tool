@@ -1,5 +1,5 @@
-#SINGLE_TEST_EXE = no
-SINGLE_TEST_EXE = yes
+#SINGLE_TEST_EXE ?= no
+SINGLE_TEST_EXE ?= yes
 
 CXX = g++
 PROTOC ?= protoc
@@ -57,6 +57,7 @@ CLT_SRCS = \
 	clt_main.cc \
 	plugin_request.pb.cc \
 	build_mngt.pb.cc \
+	cfg_request.pb.cc \
 	VersionMsg.cc \
 	InsertionPointMsg.cc \
 	CompilationUnitMsg.cc \
@@ -81,7 +82,13 @@ MSG_TESTS_SRCS = \
 	tests/StartCfgToolingRequestTest.cc \
 	tests/StartCfgToolingResponseTest.cc \
 	tests/EndCfgToolingRequestTest.cc \
-	tests/EndCfgToolingResponseTest.cc
+	tests/EndCfgToolingResponseTest.cc \
+	tests/FunctionRequestTest.cc \
+	tests/FunctionResponseTest.cc \
+	tests/BasicBlockRequestTest.cc \
+	tests/BasicBlockResponseTest.cc \
+	tests/EdgeRequestTest.cc \
+	tests/EdgeResponseTest.cc
 
 GRPC_SRV_PLUGIN_SERVICES_SRCS = \
 	PluginServices.cc \
@@ -121,9 +128,9 @@ LIBCPAD_OBJS = \
 	InsertionPointMsg.o \
 	cfg_request.pb.o \
 	CompilationUnitMsg.o \
-	FunctionMsg.cc \
-	BasicBlockMsg.cc \
-	EdgeMsg.cc \
+	FunctionMsg.o \
+	BasicBlockMsg.o \
+	EdgeMsg.o \
 	build_mngt.pb.o \
 	BuildMngtMsg.o
 
@@ -138,9 +145,23 @@ GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS:
 GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
 
 ALL_TESTS = \
-	$(MSG_TESTS_SRCS:%.cc=%)
+	PluginServicesSrv \
+	PluginServicesClt \
+	CfgCollectionServicesSrv \
+	CfgCollectionServicesClt
+
+ifeq ($(SINGLE_TEST_EXE),no)
+ALL_TESTS += $(MSG_TESTS_SRCS:%.cc=%)
+else
+ALL_TESTS += tests/alltests
+endif
+
 ALL_TESTS_OBJS = \
-	$(MSG_TESTS_SRCS:%.cc=%.o)
+	$(MSG_TESTS_SRCS:%.cc=%.o) \
+	PluginServices.o \
+	PluginServicesClient.o \
+	CfgCollectionServices.o \
+	CfgCollectionServicesClient.o
 
 GTEST_DIR = /usr/local/src/misc/googletest/googletest
 
@@ -201,16 +222,18 @@ libgtest.a:
 libcpad.a: $(LIBCPAD_OBJS)
 	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
 
+$(ALL_TESTS): libgtest.a libcpad.a
+
 ifeq ($(SINGLE_TEST_EXE),no)
-tests: libgtest.a libcpad.a $(ALL_TESTS)
+tests: $(ALL_TESTS)
 	for t in $(ALL_TESTS); do \
 		./$$t; \
 	done
 else
-tests/alltests: tests/alltests.o $(ALL_TESTS_OBJS)
+tests/alltests: tests/alltests.o libgtest.a libcpad.a $(ALL_TESTS_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/*.o libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
 
-tests: libgtest.a libcpad.a tests/alltests
+tests: $(ALL_TESTS)
 	./tests/alltests
 endif
 
