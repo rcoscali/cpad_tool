@@ -7,101 +7,70 @@
 
 #include <boost/program_options.hpp>
 
-#include <grpc/grpc.h>
-#include <grpc++/channel.h>
-#include <grpc++/client_context.h>
-#include <grpc++/create_channel.h>
-#include <grpc++/security/credentials.h>
-
-#include "VersionMsg.h"
-#include "InsertionPointMsg.h"
-#include "plugin_request.grpc.pb.h"
+#include "PluginServicesClient.h"
 
 namespace po = boost::program_options;
-
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::ClientReader;
-using grpc::ClientReaderWriter;
-using grpc::ClientWriter;
-using grpc::Status;
-
-using cpad::insns::PluginServices;
-using cpad::insns::VersionRequest;
-using cpad::insns::VersionRequestHelper;
-using cpad::insns::VersionResponse;
-using cpad::insns::VersionResponseHelper;
-using cpad::insns::InsertionPointRequest;
-using cpad::insns::InsertionPointRequestHelper;
-using cpad::insns::InsertionPointResponse;
-using cpad::insns::InsertionPointResponseHelper;
 
 static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-class PluginServicesClient
+PluginServicesClient::PluginServicesClient(std::shared_ptr<Channel> channel)
+  : m_stub(PluginServices::NewStub(channel))
 {
-public:
+}
 
-  PluginServicesClient(std::shared_ptr<Channel> channel)
-    : m_stub(PluginServices::NewStub(channel))
-  {
-  }
+void PluginServicesClient::VersionService(void)
+{
+  ClientContext context;
+  VersionRequestHelper vrh(0, 1, std::string("gRPC test Client"));
+  VersionResponseHelper vresph(0, 0, std::string(""));
 
-  void VersionService()
-  {
-    ClientContext context;
-    VersionRequestHelper vrh(0, 1, std::string("gRPC test Client"));
-    VersionResponseHelper vresph(0, 0, std::string(""));
-
-    std::cout << "---===[> Client send:" << std::endl;
-    vrh.dump();
+  std::cout << "---===[> Client send:" << std::endl;
+  vrh.dump();
     
-    Status status = m_stub->VersionService(&context,
-                                           (const VersionRequest&)vrh,
-                                           (VersionResponse*)&vresph);
-    if (!status.ok())
-      {
-        std::cout << "---EEE* VersionService rpc failed." << std::endl;
-      }
-    else
-      {
-        std::cout << "---===[> Server responded:" << std::endl;
-        vresph.dump();
-      }
-  }
+  Status status = m_stub->VersionService(&context,
+                                         (const VersionRequest&)vrh,
+                                         (VersionResponse*)&vresph);
+  if (!status.ok())
+    {
+      std::cout << "---EEE* VersionService rpc failed." << std::endl;
+    }
+  else
+    {
+      std::cout << "---===[> Server responded:" << std::endl;
+      vresph.dump();
+    }
+}
 
-  void InsertionPointService()
-  {
-    ClientContext context;
-    InsertionPointRequestHelper iprh(std::string("foobar.c"),
-                                     std::string("foo"),
-                                     cpad::insns::FUNCTION_BEFORE_CALL);
-    InsertionPointResponseHelper ipresph("");
+void
+PluginServicesClient::InsertionPointService(void)
+{
+  ClientContext context;
+  InsertionPointRequestHelper iprh(std::string("foobar.c"),
+                                   std::string("foo"),
+                                   cpad::insns::FUNCTION_BEFORE_CALL);
+  InsertionPointResponseHelper ipresph("");
 
-    std::cout << "---===[> Client send:" << std::endl;
-    iprh.dump();
+  std::cout << "---===[> Client send:" << std::endl;
+  iprh.dump();
 
-    Status status = m_stub->InsertionPointService(&context,
-                                                  (const InsertionPointRequest&)iprh,
-                                                  (InsertionPointResponse*)&ipresph);
-    if (!status.ok())
-      {
-        std::cout << "---EEE* InsertionPointService rpc failed." << std::endl;
-      }
-    else
-      {
-        std::cout << "---===[> Server responded:" << std::endl;
-        ipresph.dump();
-      }
+  Status status = m_stub->InsertionPointService(&context,
+                                                (const InsertionPointRequest&)iprh,
+                                                (InsertionPointResponse*)&ipresph);
+  if (!status.ok())
+    {
+      std::cout << "---EEE* InsertionPointService rpc failed." << std::endl;
+    }
+  else
+    {
+      std::cout << "---===[> Server responded:" << std::endl;
+      ipresph.dump();
+    }
     
-  }
+}
 
-private:
-  std::unique_ptr<PluginServices::Stub> m_stub;
-  
-};
+#ifndef SINGLE_TEST_EXE
 
 int
 main(int argc, char** argv)
@@ -165,3 +134,5 @@ main(int argc, char** argv)
   
   return 0;
 }
+
+#endif /* SINGLE_TEST_EXE */

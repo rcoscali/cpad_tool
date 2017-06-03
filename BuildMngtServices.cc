@@ -1,155 +1,117 @@
 //
 // Copyright 2017, Google Inc.
 //
+
 #include <iostream>
 #include <sstream>
 
 #include <boost/program_options.hpp>
 
-#include <grpc/grpc.h>
-#include <grpc++/server.h>
-#include <grpc++/server_builder.h>
-#include <grpc++/server_context.h>
-#include <grpc++/security/server_credentials.h>
-
-#include "BuildMngtMsg.h"
-#include "build_mngt.grpc.pb.h"
-
 namespace po = boost::program_options;
 
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::ServerReader;
-using grpc::ServerReaderWriter;
-using grpc::ServerWriter;
-using grpc::Status;
-
-using cpad::build_mngt::BuildMngtServices;
-using cpad::build_mngt::StartCfgCollectionRequest;
-using cpad::build_mngt::StartCfgCollectionRequestHelper;
-using cpad::build_mngt::StartCfgCollectionResponse;
-using cpad::build_mngt::StartCfgCollectionResponseHelper;
-using cpad::build_mngt::EndCfgCollectionRequest;
-using cpad::build_mngt::EndCfgCollectionRequestHelper;
-using cpad::build_mngt::EndCfgCollectionResponse;
-using cpad::build_mngt::EndCfgCollectionResponseHelper;
-using cpad::build_mngt::StartCfgToolingRequest;
-using cpad::build_mngt::StartCfgToolingRequestHelper;
-using cpad::build_mngt::StartCfgToolingResponse;
-using cpad::build_mngt::StartCfgToolingResponseHelper;
-using cpad::build_mngt::EndCfgToolingRequest;
-using cpad::build_mngt::EndCfgToolingRequestHelper;
-using cpad::build_mngt::EndCfgToolingResponse;
-using cpad::build_mngt::EndCfgToolingResponseHelper;
+#include "BuildMngtServices.h"
 
 static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-class BuildMngtServicesImpl final : public BuildMngtServices::Service
+BuildMngtServicesImpl::BuildMngtServicesImpl(void)
 {
- public:
-  explicit BuildMngtServicesImpl(void)
-  {
-  }
+}
+
+BuildMngtServicesImpl::~BuildMngtServicesImpl()
+{
+}
   
-  virtual ~BuildMngtServicesImpl()
-  {
-  }
+::grpc::Status
+BuildMngtServicesImpl::StartCfgCollectionService(::grpc::ServerContext* context,
+                                                 const StartCfgCollectionRequest* request,
+                                                 StartCfgCollectionResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  StartCfgCollectionRequestHelper sccrh(request);
+  sccrh.dump();
   
-  virtual ::grpc::Status
-    StartCfgCollectionService(::grpc::ServerContext* context,
-                              const StartCfgCollectionRequest* request,
-                              StartCfgCollectionResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    StartCfgCollectionRequestHelper sccrh(request);
-    sccrh.dump();
-    
-    response->set_cpad_config_status(StartCfgCollectionResponse::CPAD_CONFIG_OK);
-    response->set_uuid(std::string("dbfa5367-edd4-4697-9009-403fd71b8fed"));
-
-    std::cout << "---===[> Server respond:" << std::endl;
-    StartCfgCollectionResponseHelper sccresph((const StartCfgCollectionResponse*)response);
-    sccresph.dump();
-    
-    return ::Status::OK;
-  }
-
-  virtual ::grpc::Status
-    EndCfgCollectionService(::grpc::ServerContext* context,
-                            const EndCfgCollectionRequest* request,
-                            EndCfgCollectionResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    EndCfgCollectionRequestHelper eccrh(request);
-    eccrh.dump();
-    
-    response->set_apex_allocation_status(EndCfgCollectionResponse::APEX_ALLOCATION_OK);
-    response->set_apex_allocation_message(std::string("APEX Allocated!"));
-
-    std::cout << "---===[> Server respond:" << std::endl;
-    EndCfgCollectionResponseHelper eccresph((const EndCfgCollectionResponse*)response);
-    eccresph.dump();
-    
-    return ::Status::OK;
-  }
-
-  virtual ::grpc::Status
-    StartCfgToolingService(::grpc::ServerContext* context,
-                              const StartCfgToolingRequest* request,
-                              StartCfgToolingResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    StartCfgToolingRequestHelper sctrh(request);
-    sctrh.dump();
-    
-    std::cout << "---===[> Server respond:" << std::endl;
-    StartCfgToolingResponseHelper sctresph((const StartCfgToolingResponse*)response);
-    sctresph.dump();
-    
-    return ::Status::OK;
-  }
-
-  virtual ::grpc::Status
-    EndCfgToolingService(::grpc::ServerContext* context,
-                         const EndCfgToolingRequest* request,
-                         EndCfgToolingResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    EndCfgToolingRequestHelper ectrh(request);
-    ectrh.dump();
-    
-    ::google::protobuf::Map<::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> *stat = response->mutable_statistics();
-    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb1stat;
-    bb1stat.set_bb_original_length(10);
-    bb1stat.set_bb_modified_length(15);
-    (*stat)[std::string("BB1")] = bb1stat;
-    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb2stat;
-    bb2stat.set_bb_original_length(12);
-    bb2stat.set_bb_modified_length(19);
-    (*stat)[std::string("BB2")] = bb2stat;
-    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb3stat;
-    bb3stat.set_bb_original_length(14);
-    bb3stat.set_bb_modified_length(17);
-    (*stat)[std::string("BB3")] = bb3stat;
-    ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb4stat;
-    bb4stat.set_bb_original_length(34);
-    bb4stat.set_bb_modified_length(65);
-    (*stat)[std::string("BB4")] = bb4stat;
-
-    std::cout << "---===[> Server respond:" << std::endl;
-    EndCfgToolingResponseHelper ectresph((const EndCfgToolingResponse*)response);
-    ectresph.dump();
-    
-    return ::Status::OK;
-  }
-
+  response->set_cpad_config_status(StartCfgCollectionResponse::CPAD_CONFIG_OK);
+  response->set_uuid(std::string("dbfa5367-edd4-4697-9009-403fd71b8fed"));
   
- private:
+  std::cout << "---===[> Server respond:" << std::endl;
+  StartCfgCollectionResponseHelper sccresph((const StartCfgCollectionResponse*)response);
+  sccresph.dump();
   
-};
+  return ::Status::OK;
+}
+
+::grpc::Status
+BuildMngtServicesImpl::EndCfgCollectionService(::grpc::ServerContext* context,
+                                               const EndCfgCollectionRequest* request,
+                                               EndCfgCollectionResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  EndCfgCollectionRequestHelper eccrh(request);
+  eccrh.dump();
+  
+  response->set_apex_allocation_status(EndCfgCollectionResponse::APEX_ALLOCATION_OK);
+  response->set_apex_allocation_message(std::string("APEX Allocated!"));
+  
+  std::cout << "---===[> Server respond:" << std::endl;
+  EndCfgCollectionResponseHelper eccresph((const EndCfgCollectionResponse*)response);
+  eccresph.dump();
+  
+  return ::Status::OK;
+}
+
+::grpc::Status
+BuildMngtServicesImpl::StartCfgToolingService(::grpc::ServerContext* context,
+                                              const StartCfgToolingRequest* request,
+                                              StartCfgToolingResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  StartCfgToolingRequestHelper sctrh(request);
+  sctrh.dump();
+    
+  std::cout << "---===[> Server respond:" << std::endl;
+  StartCfgToolingResponseHelper sctresph((const StartCfgToolingResponse*)response);
+  sctresph.dump();
+    
+  return ::Status::OK;
+}
+
+::grpc::Status
+BuildMngtServicesImpl::EndCfgToolingService(::grpc::ServerContext* context,
+                                            const EndCfgToolingRequest* request,
+                                            EndCfgToolingResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  EndCfgToolingRequestHelper ectrh(request);
+  ectrh.dump();
+    
+  ::google::protobuf::Map<::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> *stat = response->mutable_statistics();
+  ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb1stat;
+  bb1stat.set_bb_original_length(10);
+  bb1stat.set_bb_modified_length(15);
+  (*stat)[std::string("BB1")] = bb1stat;
+  ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb2stat;
+  bb2stat.set_bb_original_length(12);
+  bb2stat.set_bb_modified_length(19);
+  (*stat)[std::string("BB2")] = bb2stat;
+  ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb3stat;
+  bb3stat.set_bb_original_length(14);
+  bb3stat.set_bb_modified_length(17);
+  (*stat)[std::string("BB3")] = bb3stat;
+  ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb4stat;
+  bb4stat.set_bb_original_length(34);
+  bb4stat.set_bb_modified_length(65);
+  (*stat)[std::string("BB4")] = bb4stat;
+
+  std::cout << "---===[> Server respond:" << std::endl;
+  EndCfgToolingResponseHelper ectresph((const EndCfgToolingResponse*)response);
+  ectresph.dump();
+    
+  return ::Status::OK;
+}
+
+#ifndef SINGLE_TEST_EXE
 
 void RunServer(std::string server_address)
 {
@@ -216,3 +178,4 @@ int main(int argc, char** argv)
   return 0;
 }
 
+#endif

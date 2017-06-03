@@ -6,144 +6,99 @@
 
 #include <boost/program_options.hpp>
 
-#include <grpc/grpc.h>
-#include <grpc++/server.h>
-#include <grpc++/server_builder.h>
-#include <grpc++/server_context.h>
-#include <grpc++/security/server_credentials.h>
-
-#include "CompilationUnitMsg.h"
-#include "FunctionMsg.h"
-#include "BasicBlockMsg.h"
-#include "EdgeMsg.h"
-#include "cfg_request.grpc.pb.h"
-
 namespace po = boost::program_options;
 
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::ServerReader;
-using grpc::ServerReaderWriter;
-using grpc::ServerWriter;
-using grpc::Status;
-
-using cpad::cfg::CfgCollectionServices;
-using cpad::cfg::CompilationUnitStartRequest;
-using cpad::cfg::CompilationUnitStartRequestHelper;
-using cpad::cfg::CompilationUnitStartResponse;
-using cpad::cfg::CompilationUnitStartResponseHelper;
-using cpad::cfg::CompilationUnitEndRequest;
-using cpad::cfg::CompilationUnitEndRequestHelper;
-using cpad::cfg::CompilationUnitEndResponse;
-using cpad::cfg::CompilationUnitEndResponseHelper;
-using cpad::cfg::FunctionRequest;
-using cpad::cfg::FunctionRequestHelper;
-using cpad::cfg::FunctionResponse;
-using cpad::cfg::FunctionResponseHelper;
-using cpad::cfg::BasicBlockRequest;
-using cpad::cfg::BasicBlockRequestHelper;
-using cpad::cfg::BasicBlockResponse;
-using cpad::cfg::BasicBlockResponseHelper;
-using cpad::cfg::EdgeRequest;
-using cpad::cfg::EdgeRequestHelper;
-using cpad::cfg::EdgeResponse;
-using cpad::cfg::EdgeResponseHelper;
+#include "CfgCollectionServices.h"
 
 static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-class CfgCollectionServicesImpl final : public CfgCollectionServices::Service
+CfgCollectionServicesImpl::CfgCollectionServicesImpl(void)
 {
- public:
-  explicit CfgCollectionServicesImpl(void)
-  {
-  }
+}
   
-  virtual ~CfgCollectionServicesImpl()
-  {
-  }
+CfgCollectionServicesImpl::~CfgCollectionServicesImpl()
+{
+}
   
-  virtual ::grpc::Status
-    CompilationUnitStartService(::grpc::ServerContext* context,
-                                const CompilationUnitStartRequest* request,
-                                CompilationUnitStartResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    CompilationUnitStartRequestHelper cusrh(request);
-    cusrh.dump();
+::grpc::Status
+CfgCollectionServicesImpl::CompilationUnitStartService(::grpc::ServerContext* context,
+                                                       const CompilationUnitStartRequest* request,
+                                                       CompilationUnitStartResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  CompilationUnitStartRequestHelper cusrh(request);
+  cusrh.dump();
     
-    std::cout << "---===[> Server respond:" << std::endl;
-    CompilationUnitStartResponseHelper cusresph((const CompilationUnitStartResponse*)response);
-    cusresph.dump();
+  std::cout << "---===[> Server respond:" << std::endl;
+  CompilationUnitStartResponseHelper cusresph((const CompilationUnitStartResponse*)response);
+  cusresph.dump();
     
-    return ::Status::OK;
-  }
+  return ::Status::OK;
+}
   
-  virtual ::grpc::Status
-    CompilationUnitEndService(::grpc::ServerContext* context,
-                              const CompilationUnitEndRequest* request,
-                              CompilationUnitEndResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    CompilationUnitEndRequestHelper cuerh(request);
-    cuerh.dump();
+::grpc::Status
+CfgCollectionServicesImpl::CompilationUnitEndService(::grpc::ServerContext* context,
+                                                     const CompilationUnitEndRequest* request,
+                                                     CompilationUnitEndResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  CompilationUnitEndRequestHelper cuerh(request);
+  cuerh.dump();
     
-    std::cout << "---===[> Server respond:" << std::endl;
-    CompilationUnitEndResponseHelper cueresph((const CompilationUnitEndResponse*)response);
-    cueresph.dump();
-    return ::Status::OK;
-  }
+  std::cout << "---===[> Server respond:" << std::endl;
+  CompilationUnitEndResponseHelper cueresph((const CompilationUnitEndResponse*)response);
+  cueresph.dump();
+  return ::Status::OK;
+}
   
-  virtual ::grpc::Status
-    FunctionService(::grpc::ServerContext* context,
-                    const FunctionRequest* request,
-                    FunctionResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    FunctionRequestHelper frh(request);
-    frh.dump();
+::grpc::Status
+CfgCollectionServicesImpl::FunctionService(::grpc::ServerContext* context,
+                                           const FunctionRequest* request,
+                                           FunctionResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  FunctionRequestHelper frh(request);
+  frh.dump();
     
-    std::cout << "---===[> Server respond:" << std::endl;
-    FunctionResponseHelper fresph((const FunctionResponse*)response);
-    fresph.dump();
-    return ::Status::OK;
-  }
+  std::cout << "---===[> Server respond:" << std::endl;
+  FunctionResponseHelper fresph((const FunctionResponse*)response);
+  fresph.dump();
+  return ::Status::OK;
+}
   
-  virtual ::grpc::Status
-    BasicBlockService(::grpc::ServerContext* context,
-                      const BasicBlockRequest* request,
-                      BasicBlockResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    BasicBlockRequestHelper bbrh(request);
-    bbrh.dump();
+::grpc::Status
+CfgCollectionServicesImpl::BasicBlockService(::grpc::ServerContext* context,
+                                             const BasicBlockRequest* request,
+                                             BasicBlockResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  BasicBlockRequestHelper bbrh(request);
+  bbrh.dump();
     
-    std::cout << "---===[> Server respond:" << std::endl;
-    BasicBlockResponseHelper bbresph((const BasicBlockResponse*)response);
-    bbresph.dump();
-    return ::Status::OK;
-  }
+  std::cout << "---===[> Server respond:" << std::endl;
+  BasicBlockResponseHelper bbresph((const BasicBlockResponse*)response);
+  bbresph.dump();
+  return ::Status::OK;
+}
   
-  virtual ::grpc::Status
-    EdgeService(::grpc::ServerContext* context,
-                const EdgeRequest* request,
-                EdgeResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    EdgeRequestHelper erh(request);
-    erh.dump();
+::grpc::Status
+CfgCollectionServicesImpl::EdgeService(::grpc::ServerContext* context,
+                                       const EdgeRequest* request,
+                                       EdgeResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  EdgeRequestHelper erh(request);
+  erh.dump();
     
-    std::cout << "---===[> Server respond:" << std::endl;
-    EdgeResponseHelper eresph((const EdgeResponse*)response);
-    eresph.dump();
-    return ::Status::OK;
-  }
+  std::cout << "---===[> Server respond:" << std::endl;
+  EdgeResponseHelper eresph((const EdgeResponse*)response);
+  eresph.dump();
+  return ::Status::OK;
+}
   
- private:
-  
-};
+#ifndef SINGLE_TEST_EXE
 
 void RunServer(std::string server_address)
 {
@@ -210,3 +165,4 @@ int main(int argc, char** argv)
   return 0;
 }
 
+#endif

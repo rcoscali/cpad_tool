@@ -221,6 +221,16 @@ endif
 
 all: cfgtest cpad tests PluginServicesSrv
 
+libgtest.a: 
+	$(CXX) -isystem $(GTEST_DIR)/include -I$(GTEST_DIR) -pthread -c $(GTEST_DIR)/src/gtest-all.cc
+	$(AR_CMD) libgtest.a gtest-all.o
+
+libcpad.a: $(LIBCPAD_OBJS)
+	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
+
+$(ALL_TESTS): libgtest.a libcpad.a
+
+ifeq ($(SINGLE_TEST_EXE),no)
 PluginServicesSrv: $(GRPC_SRV_PLUGIN_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
@@ -239,23 +249,13 @@ BuildMngtServicesSrv: $(GRPC_SRV_BUILD_MNGT_SERVICES_OBJS)
 BuildMngtServicesClt: $(GRPC_CLT_BUILD_MNGT_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
-libgtest.a: 
-	$(CXX) -isystem $(GTEST_DIR)/include -I$(GTEST_DIR) -pthread -c $(GTEST_DIR)/src/gtest-all.cc
-	$(AR_CMD) libgtest.a gtest-all.o
-
-libcpad.a: $(LIBCPAD_OBJS)
-	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
-
-$(ALL_TESTS): libgtest.a libcpad.a
-
-ifeq ($(SINGLE_TEST_EXE),no)
 tests: $(ALL_TESTS)
 	for t in $(ALL_TESTS); do \
 		./$$t; \
 	done
 else
 tests/alltests: tests/alltests.o libgtest.a libcpad.a $(ALL_TESTS_OBJS)
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/*.o libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $(ALL_TESTS_OBJS) libcpad.a libgtest.a `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 tests: $(ALL_TESTS)
 	./tests/alltests
@@ -332,7 +332,7 @@ tests/StartCfgToolingResponseTest.o: tests/StartCfgToolingResponseTest.cc BuildM
 tests/VersionRequestTest.o: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 tests/VersionResponseTest.o: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 tests/alltests.o: tests/alltests.cc
-tests/alltests: tests/alltests.o
+tests/alltests: tests/alltests.o PluginServices.o PluginServicesClient.o CfgCollectionServices.o CfgCollectionServicesClient.o BuildMngtServices.o BuildMngtServicesClient.o
 else
 tests/CompilationUnitEndRequestTest: tests/CompilationUnitEndRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitEndResponseTest: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
@@ -369,3 +369,4 @@ CfgCollectionServices.o: CfgCollectionServices.cc cfg_request.grpc.pb.cc cfg_req
 CfgCollectionServicesClient.o: CfgCollectionServicesClient.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
 BuildMngtServices.o: BuildMngtServices.cc build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
 BuildMngtServicesClient.o: BuildMngtServicesClient.cc build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
+

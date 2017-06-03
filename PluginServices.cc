@@ -6,82 +6,61 @@
 
 #include <boost/program_options.hpp>
 
-#include <grpc/grpc.h>
-#include <grpc++/server.h>
-#include <grpc++/server_builder.h>
-#include <grpc++/server_context.h>
-#include <grpc++/security/server_credentials.h>
-
-#include "VersionMsg.h"
-#include "InsertionPointMsg.h"
-#include "plugin_request.grpc.pb.h"
-
 namespace po = boost::program_options;
 
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::ServerReader;
-using grpc::ServerReaderWriter;
-using grpc::ServerWriter;
-using grpc::Status;
+#include "PluginServices.h"
 
 static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-class PluginServicesImpl final : public ::cpad::insns::PluginServices::Service
+PluginServicesImpl::PluginServicesImpl(void)
 {
- public:
-  explicit PluginServicesImpl(void)
-  {
-  }
+}
   
-  virtual ~PluginServicesImpl()
-  {
-  }
+PluginServicesImpl::~PluginServicesImpl()
+{
+}
   
-  virtual ::grpc::Status
-    VersionService(::grpc::ServerContext* context,
-                   const ::cpad::insns::VersionRequest* request,
-                   ::cpad::insns::VersionResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::VersionRequestHelper vrh(request);
-    vrh.dump();
+::grpc::Status
+PluginServicesImpl::VersionService(::grpc::ServerContext* context,
+                                   const ::cpad::insns::VersionRequest* request,
+                                   ::cpad::insns::VersionResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  ::cpad::insns::VersionRequestHelper vrh(request);
+  vrh.dump();
     
-    response->set_server_version_minor(0);
-    response->set_server_version_major(1);
-    response->set_server_provider_name(std::string("gRPC test server"));
+  response->set_server_version_minor(0);
+  response->set_server_version_major(1);
+  response->set_server_provider_name(std::string("gRPC test server"));
 
-    std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::VersionResponseHelper vresph((const ::cpad::insns::VersionResponse*)response);
-    vresph.dump();
+  std::cout << "---===[> Server respond:" << std::endl;
+  ::cpad::insns::VersionResponseHelper vresph((const ::cpad::insns::VersionResponse*)response);
+  vresph.dump();
     
-    return ::Status::OK;
-  }
+  return ::Status::OK;
+}
   
-  virtual ::grpc::Status
-    InsertionPointService(::grpc::ServerContext* context,
-                          const ::cpad::insns::InsertionPointRequest* request,
-                          ::cpad::insns::InsertionPointResponse* response)
-  {
-    std::cout << "---===[> Client sent:" << std::endl;
-    ::cpad::insns::InsertionPointRequestHelper iph(request);
-    iph.dump();
+::grpc::Status
+PluginServicesImpl::InsertionPointService(::grpc::ServerContext* context,
+                                          const ::cpad::insns::InsertionPointRequest* request,
+                                          ::cpad::insns::InsertionPointResponse* response)
+{
+  std::cout << "---===[> Client sent:" << std::endl;
+  ::cpad::insns::InsertionPointRequestHelper iph(request);
+  iph.dump();
     
-    response->set_insert_asm_statement(true);
-    response->set_asm_statement(std::string("__asm(Nop; Nop; Nop)"));
+  response->set_insert_asm_statement(true);
+  response->set_asm_statement(std::string("__asm(Nop; Nop; Nop)"));
 
-    std::cout << "---===[> Server respond:" << std::endl;
-    ::cpad::insns::InsertionPointResponseHelper ipresph((const ::cpad::insns::InsertionPointResponse*)response);
-    ipresph.dump();
-    return ::Status::OK;
-  }
+  std::cout << "---===[> Server respond:" << std::endl;
+  ::cpad::insns::InsertionPointResponseHelper ipresph((const ::cpad::insns::InsertionPointResponse*)response);
+  ipresph.dump();
+  return ::Status::OK;
+}
   
- private:
-  
-};
+#ifndef SINGLE_TEST_EXE
 
 void RunServer(std::string server_address)
 {
@@ -148,3 +127,4 @@ int main(int argc, char** argv)
   return 0;
 }
 
+#endif /* SINGLE_TEST_EXE */
