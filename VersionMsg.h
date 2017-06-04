@@ -48,7 +48,7 @@ namespace cpad
       void dump(std::ostream &osb = std::cout);
     };
     
-  }
-}
+  } // namespace insns
+} // namespace cpad
 
 #endif /* __VERSION_MSG_H__ */
