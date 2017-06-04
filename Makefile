@@ -161,8 +161,6 @@ GRPC_CLT_BUILD_MNGT_SERVICES_OBJS = $(GRPC_CLT_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o
 ALL_TESTS = \
 	PluginServicesSrv \
 	PluginServicesClt \
-	plugin_request.pb.o \
-	plugin_request.grpc.pb.o \
 	CfgCollectionServicesSrv \
 	CfgCollectionServicesClt \
 	BuildMngtServicesSrv \
@@ -206,7 +204,7 @@ CPPFLAGS := -I/usr/include/uuid
 LDFLAGS := -g -O1 -std=c++11
 LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_program_options -lboost_system -luuid -lstdc++ -lpthread -ldl
 
-CPAD_LDLIBS := $(LDLIBS)
+CPAD_LDLIBS := `pkg-config --libs grpc++` $(LDLIBS)
 CFG_LDLIBS := -luuid
 SRV_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -lrt -ldl
 CLT_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -lrt -ldl
@@ -218,7 +216,7 @@ CLT_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf 
 	$(PROTOC) $(PROTOC_FLAGS) $<
 
 ifeq ($(SINGLE_TEST_EXE),no)
-tests/%: tests/%.cc
+tests/%: libcpad.a libgtest.a tests/%.cc
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $< libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
 else
 tests/%.o: tests/%.cc
@@ -229,12 +227,14 @@ endif
 
 all: cfgtest cpad tests PluginServicesSrv
 
-libgtest.a: 
+gtest-all.o: $(GTEST_DIR)/src/gtest-all.cc
 	$(CXX) -isystem $(GTEST_DIR)/include -I$(GTEST_DIR) -pthread -c $(GTEST_DIR)/src/gtest-all.cc
-	$(AR_CMD) libgtest.a gtest-all.o
+
+libgtest.a: gtest-all.o
+	$(AR_CMD) $@ $^
 
 libcpad.a: $(LIBCPAD_OBJS)
-	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
+	$(AR_CMD) $@ $^
 
 $(ALL_TESTS): libgtest.a libcpad.a
 
@@ -262,8 +262,8 @@ tests: $(ALL_TESTS)
 		./$$t; \
 	done
 else
-tests/alltests: tests/alltests.o libgtest.a libcpad.a $(ALL_TESTS_OBJS)
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/alltests.o $(ALL_TESTS_OBJS) libcpad.a libgtest.a `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+tests/alltests: tests/alltests.o $(ALL_TESTS_OBJS) libgtest.a libcpad.a 
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $^ $(CPAD_LDLIBS) -o $@
 
 tests: $(ALL_TESTS)
 	./tests/alltests
