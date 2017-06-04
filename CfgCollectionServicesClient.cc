@@ -21,104 +21,104 @@ CfgCollectionServicesClient::CfgCollectionServicesClient(std::shared_ptr<Channel
 }
 
 void
-CfgCollectionServicesClient::CompilationUnitStartService(void)
+CfgCollectionServicesClient::CompilationUnitStartService(std::ostream& osb)
 {
   ClientContext context;
   CompilationUnitStartRequestHelper cusrh(std::string("FooBar.cc"));
   CompilationUnitStartResponseHelper cusresph;
 
-  std::cout << "---===[> Client send:" << std::endl;
-  cusrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  cusrh.dump(osb);
     
   Status status = m_stub->CompilationUnitStartService(&context,
                                                       (const CompilationUnitStartRequest&)cusrh,
                                                       (CompilationUnitStartResponse*)&cusresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* CompilationUnitStartService rpc failed." << std::endl;
+      osb << "---EEE* CompilationUnitStartService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      cusresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      cusresph.dump(osb);
     }
 }
 
 void
-CfgCollectionServicesClient::CompilationUnitEndService(void)
+CfgCollectionServicesClient::CompilationUnitEndService(std::ostream& osb)
 {
   ClientContext context;
   CompilationUnitEndRequestHelper cuerh;
   CompilationUnitEndResponseHelper cueresph;
 
-  std::cout << "---===[> Client send:" << std::endl;
-  cuerh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  cuerh.dump(osb);
     
   Status status = m_stub->CompilationUnitEndService(&context,
                                                     (const CompilationUnitEndRequest&)cuerh,
                                                     (CompilationUnitEndResponse*)&cueresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* CompilationUnitEndService rpc failed." << std::endl;
+      osb << "---EEE* CompilationUnitEndService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      cueresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      cueresph.dump(osb);
     }
 }
 
 
 void
-CfgCollectionServicesClient::FunctionService(void)
+CfgCollectionServicesClient::FunctionService(std::ostream& osb)
 {
   ClientContext context;
   FunctionRequestHelper frh(std::string("FooBar.cc"), std::string("Foo"));
   FunctionResponseHelper fresph;
 
-  std::cout << "---===[> Client send:" << std::endl;
-  frh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  frh.dump(osb);
     
   Status status = m_stub->FunctionService(&context,
                                           (const FunctionRequest&)frh,
                                           (FunctionResponse*)&fresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* FunctionService rpc failed." << std::endl;
+      osb << "---EEE* FunctionService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      fresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      fresph.dump(osb);
     }
 }
 
 void
-CfgCollectionServicesClient::BasicBlockService(void)
+CfgCollectionServicesClient::BasicBlockService(std::ostream& osb)
 {
   ClientContext context;
   BasicBlockRequestHelper bbrh(std::string("FooBar.cc"), std::string("Foo"), std::string("BB3"));
   BasicBlockResponseHelper bbresph;
 
-  std::cout << "---===[> Client send:" << std::endl;
-  bbrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  bbrh.dump(osb);
     
   Status status = m_stub->BasicBlockService(&context,
                                             (const BasicBlockRequest&)bbrh,
                                             (BasicBlockResponse*)&bbresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* BasicBlockService rpc failed." << std::endl;
+      osb << "---EEE* BasicBlockService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      bbresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      bbresph.dump(osb);
     }
 }
 
 void
-CfgCollectionServicesClient::EdgeService(void)
+CfgCollectionServicesClient::EdgeService(std::ostream& osb)
 {
   ClientContext context;
   EdgeRequestHelper erh(std::string("FooBar.cc"), std::string("Foo"), std::string("BB2"),
@@ -126,20 +126,20 @@ CfgCollectionServicesClient::EdgeService(void)
                         cpad::cfg::EDGE_FALLBACK_BRANCH);
   EdgeResponseHelper eresph;
 
-  std::cout << "---===[> Client send:" << std::endl;
-  erh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  erh.dump(osb);
     
   Status status = m_stub->EdgeService(&context,
                                       (const EdgeRequest&)erh,
                                       (EdgeResponse*)&eresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* EdgeService rpc failed." << std::endl;
+      osb << "---EEE* EdgeService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      eresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      eresph.dump(osb);
     }
 }
 

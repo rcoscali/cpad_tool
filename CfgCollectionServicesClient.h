@@ -3,6 +3,7 @@
 //
 
 #ifndef _CFG_COLLECTION_SERVICES_CLIENT_H_
+#define _CFG_COLLECTION_SERVICES_CLIENT_H_
 
 #include <grpc/grpc.h>
 #include <grpc++/channel.h>
@@ -51,11 +52,11 @@ class CfgCollectionServicesClient
 
   CfgCollectionServicesClient(std::shared_ptr<Channel> channel);
 
-  void CompilationUnitStartService(void);
-  void CompilationUnitEndService(void);
-  void FunctionService(void);
-  void BasicBlockService(void);
-  void EdgeService(void);
+  void CompilationUnitStartService(std::ostream& osb = std::cout);
+  void CompilationUnitEndService(std::ostream& osb = std::cout);
+  void FunctionService(std::ostream& osb = std::cout);
+  void BasicBlockService(std::ostream& osb = std::cout);
+  void EdgeService(std::ostream& osb = std::cout);
 
 
 private:
