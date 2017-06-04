@@ -2,6 +2,9 @@
 // Copyright ©2017 NagraFrance
 //
 
+#ifndef _COMPILATION_UNIT_MSG_H_
+#define _COMPILATION_UNIT_MSG_H_
+
 #include <stdint.h>
 
 #include <string>
@@ -81,3 +84,5 @@ namespace cpad
 
   }
 }
+
+#endif /* !_COMPILATION_UNIT_MSG_H_ */

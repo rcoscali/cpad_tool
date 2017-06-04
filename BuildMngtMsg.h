@@ -2,6 +2,9 @@
 // Copyright ©2017 NagraFrance
 //
 
+#ifndef _BUILD_MNGT_MSH_H_
+#define _BUILD_MNGT_MSH_H_
+
 #include <stdint.h>
 
 #include <string>
@@ -146,3 +149,5 @@ namespace cpad
     };
   }
 }
+
+#endif /* !_BUILD_MNGT_MSH_H_ */

@@ -2,6 +2,9 @@
 // Copyright ©2017 NagraFrance
 //
 
+#ifndef _EDGE_MSG_H_
+#define _EDGE_MSG_H_
+
 #include <stdint.h>
 
 #include <string>
@@ -50,3 +53,5 @@ namespace cpad
     
   }
 }
+
+#endif /* !_EDGE_MSG_H_ */

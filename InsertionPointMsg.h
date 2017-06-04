@@ -2,6 +2,9 @@
 // Copyright ©2017 NagraFrance
 //
 
+#ifndef _INSERTION_POINT_MSH_H_
+#define _INSERTION_POINT_MSH_H_
+
 #include <stdint.h>
 
 #include <string>
@@ -48,5 +51,7 @@ namespace cpad
       void dump(std::ostream &osb = std::cout);
     };
 
-  }
-}
+  } // namespace insns
+} // namespace cpad
+
+#endif /* !_INSERTION_POINT_MSH_H_ */

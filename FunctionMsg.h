@@ -2,6 +2,9 @@
 // Copyright ©2017 NagraFrance
 //
 
+#ifndef _FUNCTION_MSG_H_
+#define _FUNCTION_MSG_H_
+
 #include <stdint.h>
 
 #include <string>
@@ -46,5 +49,7 @@ namespace cpad
       void dump(std::ostream& osb = std::cout);
     };
     
-  }
-}
+  } // namespace cfg
+} // namespace cpad
+
+#endif /* !_FUNCTION_MSG_H_ */
