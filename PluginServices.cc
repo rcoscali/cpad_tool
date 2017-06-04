@@ -14,8 +14,9 @@ static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-PluginServicesImpl::PluginServicesImpl(void)
+PluginServicesImpl::PluginServicesImpl(std::ostream* osb)
 {
+  m_osb = osb ? osb : &std::cout;
 }
   
 PluginServicesImpl::~PluginServicesImpl()
@@ -27,17 +28,17 @@ PluginServicesImpl::VersionService(::grpc::ServerContext* context,
                                    const ::cpad::insns::VersionRequest* request,
                                    ::cpad::insns::VersionResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   ::cpad::insns::VersionRequestHelper vrh(request);
-  vrh.dump();
+  vrh.dump((*m_osb));
     
   response->set_server_version_minor(0);
   response->set_server_version_major(1);
   response->set_server_provider_name(std::string("gRPC test server"));
 
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   ::cpad::insns::VersionResponseHelper vresph((const ::cpad::insns::VersionResponse*)response);
-  vresph.dump();
+  vresph.dump((*m_osb));
     
   return ::Status::OK;
 }
@@ -47,16 +48,16 @@ PluginServicesImpl::InsertionPointService(::grpc::ServerContext* context,
                                           const ::cpad::insns::InsertionPointRequest* request,
                                           ::cpad::insns::InsertionPointResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   ::cpad::insns::InsertionPointRequestHelper iph(request);
-  iph.dump();
+  iph.dump((*m_osb));
     
   response->set_insert_asm_statement(true);
   response->set_asm_statement(std::string("__asm(Nop; Nop; Nop)"));
 
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   ::cpad::insns::InsertionPointResponseHelper ipresph((const ::cpad::insns::InsertionPointResponse*)response);
-  ipresph.dump();
+  ipresph.dump((*m_osb));
   return ::Status::OK;
 }
   
@@ -64,7 +65,7 @@ PluginServicesImpl::InsertionPointService(::grpc::ServerContext* context,
 
 void RunServer(std::string server_address)
 {
-  PluginServicesImpl *service = new PluginServicesImpl();
+  PluginServicesImpl *service = new PluginServicesImpl(std::cout);
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());

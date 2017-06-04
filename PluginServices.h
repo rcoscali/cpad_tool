@@ -3,6 +3,7 @@
 //
 
 #ifndef _PLUGIN_SERVICES_H_
+#define _PLUGIN_SERVICES_H_
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -25,7 +26,7 @@ using grpc::Status;
 class PluginServicesImpl final : public ::cpad::insns::PluginServices::Service
 {
  public:
-  explicit PluginServicesImpl(void);
+  explicit PluginServicesImpl(std::ostream* osb);
   
   virtual ~PluginServicesImpl();
   
@@ -40,7 +41,7 @@ class PluginServicesImpl final : public ::cpad::insns::PluginServices::Service
                           ::cpad::insns::InsertionPointResponse* response);
   
  private:
-  
+  std::ostream* m_osb;
 };
 
 #endif /* _PLUGIN_SERVICES_H_ */
