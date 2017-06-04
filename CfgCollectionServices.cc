@@ -14,8 +14,9 @@ static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-CfgCollectionServicesImpl::CfgCollectionServicesImpl(void)
+CfgCollectionServicesImpl::CfgCollectionServicesImpl(std::ostream* osb)
 {
+  m_osb = osb ? osb : &std::cout;
 }
   
 CfgCollectionServicesImpl::~CfgCollectionServicesImpl()
@@ -27,13 +28,13 @@ CfgCollectionServicesImpl::CompilationUnitStartService(::grpc::ServerContext* co
                                                        const CompilationUnitStartRequest* request,
                                                        CompilationUnitStartResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   CompilationUnitStartRequestHelper cusrh(request);
-  cusrh.dump();
+  cusrh.dump((*m_osb));
     
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   CompilationUnitStartResponseHelper cusresph((const CompilationUnitStartResponse*)response);
-  cusresph.dump();
+  cusresph.dump((*m_osb));
     
   return ::Status::OK;
 }
@@ -43,13 +44,13 @@ CfgCollectionServicesImpl::CompilationUnitEndService(::grpc::ServerContext* cont
                                                      const CompilationUnitEndRequest* request,
                                                      CompilationUnitEndResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   CompilationUnitEndRequestHelper cuerh(request);
-  cuerh.dump();
+  cuerh.dump((*m_osb));
     
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   CompilationUnitEndResponseHelper cueresph((const CompilationUnitEndResponse*)response);
-  cueresph.dump();
+  cueresph.dump((*m_osb));
   return ::Status::OK;
 }
   
@@ -58,13 +59,13 @@ CfgCollectionServicesImpl::FunctionService(::grpc::ServerContext* context,
                                            const FunctionRequest* request,
                                            FunctionResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   FunctionRequestHelper frh(request);
-  frh.dump();
+  frh.dump((*m_osb));
     
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   FunctionResponseHelper fresph((const FunctionResponse*)response);
-  fresph.dump();
+  fresph.dump((*m_osb));
   return ::Status::OK;
 }
   
@@ -73,13 +74,13 @@ CfgCollectionServicesImpl::BasicBlockService(::grpc::ServerContext* context,
                                              const BasicBlockRequest* request,
                                              BasicBlockResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   BasicBlockRequestHelper bbrh(request);
-  bbrh.dump();
+  bbrh.dump((*m_osb));
     
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   BasicBlockResponseHelper bbresph((const BasicBlockResponse*)response);
-  bbresph.dump();
+  bbresph.dump((*m_osb));
   return ::Status::OK;
 }
   
@@ -88,13 +89,13 @@ CfgCollectionServicesImpl::EdgeService(::grpc::ServerContext* context,
                                        const EdgeRequest* request,
                                        EdgeResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   EdgeRequestHelper erh(request);
-  erh.dump();
+  erh.dump((*m_osb));
     
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   EdgeResponseHelper eresph((const EdgeResponse*)response);
-  eresph.dump();
+  eresph.dump((*m_osb));
   return ::Status::OK;
 }
   
@@ -102,13 +103,13 @@ CfgCollectionServicesImpl::EdgeService(::grpc::ServerContext* context,
 
 void RunServer(std::string server_address)
 {
-  CfgCollectionServicesImpl *service = new CfgCollectionServicesImpl();
+  CfgCollectionServicesImpl *service = new CfgCollectionServicesImpl(&std::cout);
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   builder.RegisterService((grpc::Service*)service);
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  std::cout << "!! Server listening on " << server_address << std::endl;
+  (*m_osb) << "!! Server listening on " << server_address << std::endl;
   server->Wait();
 }
 

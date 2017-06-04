@@ -3,6 +3,7 @@
 //
 
 #ifndef __CFG_COLLECTION_SERVICES_H_
+#define __CFG_COLLECTION_SERVICES_H_
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -49,7 +50,7 @@ using cpad::cfg::EdgeResponseHelper;
 class CfgCollectionServicesImpl final : public CfgCollectionServices::Service
 {
  public:
-  explicit CfgCollectionServicesImpl(void);
+  explicit CfgCollectionServicesImpl(std::ostream*);
   
   virtual ~CfgCollectionServicesImpl();
   
@@ -80,7 +81,8 @@ class CfgCollectionServicesImpl final : public CfgCollectionServices::Service
 
   
  private:
-  
+
+  std::ostream* m_osb;
 };
 
 #endif /* __CFG_COLLECTION_SERVICES_H_ */
