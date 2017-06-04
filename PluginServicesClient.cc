@@ -20,31 +20,31 @@ PluginServicesClient::PluginServicesClient(std::shared_ptr<Channel> channel)
 {
 }
 
-void PluginServicesClient::VersionService(void)
+void PluginServicesClient::VersionService(std::ostream& osb)
 {
   ClientContext context;
   VersionRequestHelper vrh(0, 1, std::string("gRPC test Client"));
   VersionResponseHelper vresph(0, 0, std::string(""));
 
-  std::cout << "---===[> Client send:" << std::endl;
-  vrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  vrh.dump(osb);
     
   Status status = m_stub->VersionService(&context,
                                          (const VersionRequest&)vrh,
                                          (VersionResponse*)&vresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* VersionService rpc failed." << std::endl;
+      osb << "---EEE* VersionService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      vresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      vresph.dump(osb);
     }
 }
 
 void
-PluginServicesClient::InsertionPointService(void)
+PluginServicesClient::InsertionPointService(std::ostream& osb)
 {
   ClientContext context;
   InsertionPointRequestHelper iprh(std::string("foobar.c"),
@@ -52,20 +52,20 @@ PluginServicesClient::InsertionPointService(void)
                                    cpad::insns::FUNCTION_BEFORE_CALL);
   InsertionPointResponseHelper ipresph("");
 
-  std::cout << "---===[> Client send:" << std::endl;
-  iprh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  iprh.dump(osb);
 
   Status status = m_stub->InsertionPointService(&context,
                                                 (const InsertionPointRequest&)iprh,
                                                 (InsertionPointResponse*)&ipresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* InsertionPointService rpc failed." << std::endl;
+      osb << "---EEE* InsertionPointService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      ipresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      ipresph.dump(osb);
     }
     
 }

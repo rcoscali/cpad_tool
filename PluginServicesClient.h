@@ -3,6 +3,7 @@
 //
 
 #ifndef _PLUGIN_SERVICES_CLIENT_H_
+#define _PLUGIN_SERVICES_CLIENT_H_
 
 #include <grpc/grpc.h>
 #include <grpc++/channel.h>
@@ -37,9 +38,8 @@ public:
 
   PluginServicesClient(std::shared_ptr<Channel> channel);
 
-  void VersionService(void);
-
-  void InsertionPointService(void);
+  void VersionService(std::ostream& osb = std::cout);
+  void InsertionPointService(std::ostream& osb = std::cout);
 
 private:
   std::unique_ptr<PluginServices::Stub> m_stub;
