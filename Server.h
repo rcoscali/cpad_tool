@@ -2,6 +2,9 @@
  * Copyright ©2017 NagraFrance
  */
 
+#ifndef _SERVER_H_
+#define _SERVER_H_
+
 #include <cstdlib>
 #include <iostream>
 #include <boost/bind.hpp>
@@ -53,4 +56,6 @@ namespace cpad
     boost::asio::signal_set m_signal;
     tcp::acceptor m_acceptor;
   };
-}
+} // namespace cpad
+
+#endif /* !_SERVER_H_ */

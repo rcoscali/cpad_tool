@@ -2,6 +2,9 @@
 // Copyright ©2017 Nagravision
 //
 
+#ifndef _CLIENT_H_
+#define _CLIENT_H_
+
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -27,4 +30,7 @@ namespace cpad
     boost::asio::io_service m_io_svc;
     tcp::socket m_socket;
 
-  }
+  };
+}
+
+#endif /* !_CLIENT_H_ */
