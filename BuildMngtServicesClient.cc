@@ -21,7 +21,7 @@ BuildMngtServicesClient::BuildMngtServicesClient(std::shared_ptr<Channel> channe
 }
 
 void
-BuildMngtServicesClient::StartCfgCollectionService(void)
+BuildMngtServicesClient::StartCfgCollectionService(std::ostream& osb)
 {
   ClientContext context;
   StartCfgCollectionRequestHelper sccrh(std::string("gRPC test Client build"),
@@ -30,92 +30,92 @@ BuildMngtServicesClient::StartCfgCollectionService(void)
   StartCfgCollectionResponseHelper sccresph(StartCfgCollectionResponse::CPAD_CONFIG_ERROR,
                                             std::string("\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0\x0"));
 
-  std::cout << "---===[> Client send:" << std::endl;
-  sccrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  sccrh.dump(osb);
     
   Status status = m_stub->StartCfgCollectionService(&context,
                                                     (const StartCfgCollectionRequest&)sccrh,
                                                     (StartCfgCollectionResponse*)&sccresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* StartCfgCollectionService rpc failed." << std::endl;
+      osb << "---EEE* StartCfgCollectionService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      sccresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      sccresph.dump(osb);
     }
 }
 
 void
-BuildMngtServicesClient::EndCfgCollectionService(void)
+BuildMngtServicesClient::EndCfgCollectionService(std::ostream& osb)
 {
   ClientContext context;
   EndCfgCollectionRequestHelper eccrh(std::string("\x6e\x67\x75\x5f\xef\x1b\x46\x98\x87\x5b\x5f\xa8\x6d\x25\x6c\x39"));
   EndCfgCollectionResponseHelper eccresph(EndCfgCollectionResponse::APEX_ALLOCATION_ERROR, std::string(""));
 
-  std::cout << "---===[> Client send:" << std::endl;
-  eccrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  eccrh.dump(osb);
     
   Status status = m_stub->EndCfgCollectionService(&context,
                                                   (const EndCfgCollectionRequest&)eccrh,
                                                   (EndCfgCollectionResponse*)&eccresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* EndCfgCollectionService rpc failed." << std::endl;
+      osb << "---EEE* EndCfgCollectionService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      eccresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      eccresph.dump(osb);
     }
 }
 
 void
-BuildMngtServicesClient::StartCfgToolingService(void)
+BuildMngtServicesClient::StartCfgToolingService(std::ostream& osb)
 {
   ClientContext context;
   StartCfgToolingRequestHelper sctrh(std::string("\x72\x35\x59\x6a\x93\x32\x45\x8c\xb1\x56\xd6\xbd\xb6\x73\x65\x5e"));
   StartCfgToolingResponseHelper sctresph;
 
-  std::cout << "---===[> Client send:" << std::endl;
-  sctrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  sctrh.dump(osb);
     
   Status status = m_stub->StartCfgToolingService(&context,
                                                  (const StartCfgToolingRequest&)sctrh,
                                                  (StartCfgToolingResponse*)&sctresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* StartCfgToolingService rpc failed." << std::endl;
+      osb << "---EEE* StartCfgToolingService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      sctresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      sctresph.dump(osb);
     }
 }
 
 void
-BuildMngtServicesClient::EndCfgToolingService(void)
+BuildMngtServicesClient::EndCfgToolingService(std::ostream& osb)
 {
   ClientContext context;
   EndCfgToolingRequestHelper ectrh(std::string("\xb7\x1c\xc0\x17\x06\x47\x47\xf0\xb6\x05\x0e\xb7\xc1\x42\x6c\xf1"));
   EndCfgToolingResponseHelper ectresph("");
 
-  std::cout << "---===[> Client send:" << std::endl;
-  ectrh.dump();
+  osb << "---===[> Client send:" << std::endl;
+  ectrh.dump(osb);
     
   Status status = m_stub->EndCfgToolingService(&context,
                                                (const EndCfgToolingRequest&)ectrh,
                                                (EndCfgToolingResponse*)&ectresph);
   if (!status.ok())
     {
-      std::cout << "---EEE* EndCfgToolingService rpc failed." << std::endl;
+      osb << "---EEE* EndCfgToolingService rpc failed." << std::endl;
     }
   else
     {
-      std::cout << "---===[> Server responded:" << std::endl;
-      ectresph.dump();
+      osb << "---===[> Server responded:" << std::endl;
+      ectresph.dump(osb);
     }
 }
 

@@ -3,6 +3,7 @@
 //
 
 #ifndef _BUILD_MNGT_SERVICES_CLIENT_H_
+#define _BUILD_MNGT_SERVICES_CLIENT_H_
 
 #include <iostream>
 #include <sstream>
@@ -51,13 +52,10 @@ public:
 
   BuildMngtServicesClient(std::shared_ptr<Channel> channel);
 
-  void StartCfgCollectionService(void);
-
-  void EndCfgCollectionService(void);
-
-  void StartCfgToolingService(void);
-
-  void EndCfgToolingService(void);
+  void StartCfgCollectionService(std::ostream& osb = std::cout);
+  void EndCfgCollectionService(std::ostream& osb = std::cout);
+  void StartCfgToolingService(std::ostream& osb = std::cout);
+  void EndCfgToolingService(std::ostream& osb = std::cout);
 
 private:
   std::unique_ptr<BuildMngtServices::Stub> m_stub;
