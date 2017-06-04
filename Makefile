@@ -161,6 +161,8 @@ GRPC_CLT_BUILD_MNGT_SERVICES_OBJS = $(GRPC_CLT_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o
 ALL_TESTS = \
 	PluginServicesSrv \
 	PluginServicesClt \
+	plugin_request.pb.o \
+	plugin_request.grpc.pb.o \
 	CfgCollectionServicesSrv \
 	CfgCollectionServicesClt \
 	BuildMngtServicesSrv \
@@ -174,12 +176,18 @@ endif
 
 ALL_TESTS_OBJS = \
 	$(MSG_TESTS_SRCS:%.cc=%.o) \
-	PluginServices.o \
 	PluginServicesClient.o \
-	CfgCollectionServices.o \
+	PluginServices.o \
+	plugin_request.pb.o \
+	plugin_request.grpc.pb.o \
 	CfgCollectionServicesClient.o \
+	CfgCollectionServices.o \
+	cfg_request.pb.o \
+	cfg_request.grpc.pb.o \
+	BuildMngtServicesClient.o \
 	BuildMngtServices.o \
-	BuildMngtServicesClient.o
+	build_mngt.pb.o \
+	build_mngt.grpc.pb.o
 
 GTEST_DIR = /usr/local/src/misc/googletest/googletest
 
@@ -204,7 +212,7 @@ SRV_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf 
 CLT_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -lrt -ldl
 
 %.o: %.cc
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 %.grpc.pb.cc %.grpc.pb.h %.pb.cc %.pb.h: %.proto
 	$(PROTOC) $(PROTOC_FLAGS) $<
@@ -232,22 +240,22 @@ $(ALL_TESTS): libgtest.a libcpad.a
 
 ifeq ($(SINGLE_TEST_EXE),no)
 PluginServicesSrv: $(GRPC_SRV_PLUGIN_SERVICES_OBJS)
-	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 PluginServicesClt: $(GRPC_CLT_PLUGIN_SERVICES_OBJS)
-	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 CfgCollectionServicesSrv: $(GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS)
-	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 CfgCollectionServicesClt: $(GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS)
-	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 BuildMngtServicesSrv: $(GRPC_SRV_BUILD_MNGT_SERVICES_OBJS)
-	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 BuildMngtServicesClt: $(GRPC_CLT_BUILD_MNGT_SERVICES_OBJS)
-	$(CXX) $(CXXFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 tests: $(ALL_TESTS)
 	for t in $(ALL_TESTS); do \
@@ -255,7 +263,7 @@ tests: $(ALL_TESTS)
 	done
 else
 tests/alltests: tests/alltests.o libgtest.a libcpad.a $(ALL_TESTS_OBJS)
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $(ALL_TESTS_OBJS) libcpad.a libgtest.a `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/alltests.o $(ALL_TESTS_OBJS) libcpad.a libgtest.a `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 tests: $(ALL_TESTS)
 	./tests/alltests
