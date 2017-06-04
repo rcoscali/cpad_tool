@@ -4,15 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/program_options.hpp>
-
-namespace po = boost::program_options;
-
 #include "PluginServices.h"
-
-static unsigned int verbose_option = 0;
-static char *hostname_option = (char *)"localhost";
-static unsigned int port_option = 50051;
 
 PluginServicesImpl::PluginServicesImpl(std::ostream* osb)
 {
@@ -63,7 +55,16 @@ PluginServicesImpl::InsertionPointService(::grpc::ServerContext* context,
   
 #ifndef SINGLE_TEST_EXE
 
-void RunServer(std::string server_address)
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
+static unsigned int verbose_option = 0;
+static char *hostname_option = (char *)"localhost";
+static unsigned int port_option = 50051;
+
+void
+RunServer(std::string server_address)
 {
   PluginServicesImpl *service = new PluginServicesImpl(std::cout);
 
@@ -75,7 +76,8 @@ void RunServer(std::string server_address)
   server->Wait();
 }
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
   // Check PB compat
   GOOGLE_PROTOBUF_VERIFY_VERSION;

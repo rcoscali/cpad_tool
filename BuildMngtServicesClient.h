@@ -19,8 +19,6 @@
 #include "BuildMngtMsg.h"
 #include "build_mngt.grpc.pb.h"
 
-namespace po = boost::program_options;
-
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::ClientReader;

@@ -5,15 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/program_options.hpp>
-
 #include "BuildMngtServicesClient.h"
-
-namespace po = boost::program_options;
-
-static unsigned int verbose_option = 0;
-static char *hostname_option = (char *)"localhost";
-static unsigned int port_option = 50051;
 
 BuildMngtServicesClient::BuildMngtServicesClient(std::shared_ptr<Channel> channel)
   : m_stub(BuildMngtServices::NewStub(channel))
@@ -120,6 +112,14 @@ BuildMngtServicesClient::EndCfgToolingService(std::ostream& osb)
 }
 
 #ifndef SINGLE_TEST_EXE
+
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
+static unsigned int verbose_option = 0;
+static char *hostname_option = (char *)"localhost";
+static unsigned int port_option = 50051;
 
 int
 main(int argc, char** argv)

@@ -5,15 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/program_options.hpp>
-
-namespace po = boost::program_options;
-
 #include "BuildMngtServices.h"
-
-static unsigned int verbose_option = 0;
-static char *hostname_option = (char *)"localhost";
-static unsigned int port_option = 50051;
 
 BuildMngtServicesImpl::BuildMngtServicesImpl(std::ostream* osb)
 {
@@ -114,7 +106,12 @@ BuildMngtServicesImpl::EndCfgToolingService(::grpc::ServerContext* context,
 
 #ifndef SINGLE_TEST_EXE
 
-void RunServer(std::string server_address)
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
+void
+RunServer(std::string server_address)
 {
   BuildMngtServicesImpl *service = new BuildMngtServicesImpl(NULL);
 
@@ -126,7 +123,12 @@ void RunServer(std::string server_address)
   server->Wait();
 }
 
-int main(int argc, char** argv)
+static unsigned int verbose_option = 0;
+static char *hostname_option = (char *)"localhost";
+static unsigned int port_option = 50051;
+
+int
+main(int argc, char** argv)
 {
   // Check PB compat
   GOOGLE_PROTOBUF_VERIFY_VERSION;

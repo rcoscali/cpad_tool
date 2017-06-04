@@ -5,15 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/program_options.hpp>
-
 #include "CfgCollectionServicesClient.h"
-
-namespace po = boost::program_options;
-
-static unsigned int verbose_option = 0;
-static char *hostname_option = (char *)"localhost";
-static unsigned int port_option = 50051;
 
 CfgCollectionServicesClient::CfgCollectionServicesClient(std::shared_ptr<Channel> channel)
   : m_stub(CfgCollectionServices::NewStub(channel))
@@ -144,6 +136,14 @@ CfgCollectionServicesClient::EdgeService(std::ostream& osb)
 }
 
 #ifndef SINGLE_TEST_EXE
+
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
+static unsigned int verbose_option = 0;
+static char *hostname_option = (char *)"localhost";
+static unsigned int port_option = 50051;
 
 int
 main(int argc, char** argv)
