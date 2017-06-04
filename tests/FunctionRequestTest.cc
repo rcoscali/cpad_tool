@@ -1,3 +1,6 @@
+//
+// Copyright 2017, Google Inc.
+//
 #include <iostream>     // std::cout, std::ostream, std::hex
 #include <sstream>      // std::stringbuf
 #include <string>       // std::string
