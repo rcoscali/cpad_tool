@@ -15,8 +15,9 @@ static unsigned int verbose_option = 0;
 static char *hostname_option = (char *)"localhost";
 static unsigned int port_option = 50051;
 
-BuildMngtServicesImpl::BuildMngtServicesImpl(void)
+BuildMngtServicesImpl::BuildMngtServicesImpl(std::ostream* osb)
 {
+  m_osb = osb ? osb : &std::cout;
 }
 
 BuildMngtServicesImpl::~BuildMngtServicesImpl()
@@ -28,16 +29,16 @@ BuildMngtServicesImpl::StartCfgCollectionService(::grpc::ServerContext* context,
                                                  const StartCfgCollectionRequest* request,
                                                  StartCfgCollectionResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   StartCfgCollectionRequestHelper sccrh(request);
-  sccrh.dump();
+  sccrh.dump((*m_osb));
   
   response->set_cpad_config_status(StartCfgCollectionResponse::CPAD_CONFIG_OK);
   response->set_uuid(std::string("dbfa5367-edd4-4697-9009-403fd71b8fed"));
   
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   StartCfgCollectionResponseHelper sccresph((const StartCfgCollectionResponse*)response);
-  sccresph.dump();
+  sccresph.dump((*m_osb));
   
   return ::Status::OK;
 }
@@ -47,16 +48,16 @@ BuildMngtServicesImpl::EndCfgCollectionService(::grpc::ServerContext* context,
                                                const EndCfgCollectionRequest* request,
                                                EndCfgCollectionResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   EndCfgCollectionRequestHelper eccrh(request);
-  eccrh.dump();
+  eccrh.dump((*m_osb));
   
   response->set_apex_allocation_status(EndCfgCollectionResponse::APEX_ALLOCATION_OK);
   response->set_apex_allocation_message(std::string("APEX Allocated!"));
   
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   EndCfgCollectionResponseHelper eccresph((const EndCfgCollectionResponse*)response);
-  eccresph.dump();
+  eccresph.dump((*m_osb));
   
   return ::Status::OK;
 }
@@ -66,13 +67,13 @@ BuildMngtServicesImpl::StartCfgToolingService(::grpc::ServerContext* context,
                                               const StartCfgToolingRequest* request,
                                               StartCfgToolingResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   StartCfgToolingRequestHelper sctrh(request);
-  sctrh.dump();
+  sctrh.dump((*m_osb));
     
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   StartCfgToolingResponseHelper sctresph((const StartCfgToolingResponse*)response);
-  sctresph.dump();
+  sctresph.dump((*m_osb));
     
   return ::Status::OK;
 }
@@ -82,9 +83,9 @@ BuildMngtServicesImpl::EndCfgToolingService(::grpc::ServerContext* context,
                                             const EndCfgToolingRequest* request,
                                             EndCfgToolingResponse* response)
 {
-  std::cout << "---===[> Client sent:" << std::endl;
+  (*m_osb) << "---===[> Client sent:" << std::endl;
   EndCfgToolingRequestHelper ectrh(request);
-  ectrh.dump();
+  ectrh.dump((*m_osb));
     
   ::google::protobuf::Map<::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> *stat = response->mutable_statistics();
   ::cpad::build_mngt::EndCfgToolingResponse_BbStat bb1stat;
@@ -104,9 +105,9 @@ BuildMngtServicesImpl::EndCfgToolingService(::grpc::ServerContext* context,
   bb4stat.set_bb_modified_length(65);
   (*stat)[std::string("BB4")] = bb4stat;
 
-  std::cout << "---===[> Server respond:" << std::endl;
+  (*m_osb) << "---===[> Server respond:" << std::endl;
   EndCfgToolingResponseHelper ectresph((const EndCfgToolingResponse*)response);
-  ectresph.dump();
+  ectresph.dump((*m_osb));
     
   return ::Status::OK;
 }
@@ -115,7 +116,7 @@ BuildMngtServicesImpl::EndCfgToolingService(::grpc::ServerContext* context,
 
 void RunServer(std::string server_address)
 {
-  BuildMngtServicesImpl *service = new BuildMngtServicesImpl();
+  BuildMngtServicesImpl *service = new BuildMngtServicesImpl(NULL);
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());

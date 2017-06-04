@@ -3,6 +3,7 @@
 //
 
 #ifndef __BUILDMNGT_SERVICES_H_
+#define __BUILDMNGT_SERVICES_H_
 
 #include <grpc/grpc.h>
 #include <grpc++/server.h>
@@ -42,7 +43,7 @@ using cpad::build_mngt::EndCfgToolingResponseHelper;
 class BuildMngtServicesImpl final : public BuildMngtServices::Service
 {
  public:
-  explicit BuildMngtServicesImpl(void);
+  explicit BuildMngtServicesImpl(std::ostream*);
   
   virtual ~BuildMngtServicesImpl();
   
@@ -61,6 +62,10 @@ class BuildMngtServicesImpl final : public BuildMngtServices::Service
   virtual ::grpc::Status EndCfgToolingService(::grpc::ServerContext* context,
                                               const EndCfgToolingRequest* request,
                                               EndCfgToolingResponse* response);
+
+ private:
+
+  std::ostream* m_osb;
 };
 
 #endif
