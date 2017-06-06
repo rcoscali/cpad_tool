@@ -31,7 +31,7 @@ public:
   std::ostream *m_osb;
   std::stringbuf m_strbuf_srv;
   std::ostream *m_osb_srv;
-  const std::string DUMPVAL = "**[ VersionService RPC test:\n" \
+  const std::string DUMPVAL_CLT = "**[ VersionService RPC test:\n" \
     "---===[> Client send:\n"                                  \
     "[VersionRequest]\n"                                       \
     "client minor: 0\n"                                        \
@@ -51,6 +51,25 @@ public:
     "---===[> Server responded:\n"                             \
     "[InsertionPointResponse]\n"                               \
     "insert asm statement: 1\n"                                \
+    "asm statement: __asm(Nop; Nop; Nop)\n";
+  const std::string DUMPVAL_SRV = "---===[> Client sent:\n" \
+    "[VersionRequest]\n"                                    \
+    "client minor: 0\n"                                     \
+    "client major: 1\n"                                     \
+    "client provider: gRPC test Client\n"                   \
+    "---===[> Server respond:\n"                            \
+    "[VersionResponse]\n"                                   \
+    "server minor: 0\n"                                     \
+    "server major: 1\n"                                     \
+    "server provider: gRPC test server\n"                   \
+    "---===[> Client sent:\n"                               \
+    "[InsertionPointRequest]\n"                             \
+    "cunit name: foobar.c\n"                                \
+    "cfun name: foo\n"                                      \
+    "location: ::cpad::insns::FUNCTION_BEFORE_CALL (5)\n"   \
+    "---===[> Server respond:\n"                            \
+    "[InsertionPointResponse]\n"                            \
+    "insert asm statement: 1\n"                             \
     "asm statement: __asm(Nop; Nop; Nop)\n";
 
   PluginServicesClientServerTests()
@@ -95,7 +114,8 @@ TEST_F(PluginServicesClientServerTests, ClientServerOptimalTest)
   (*m_osb) << "**[ InsertionPointService RPC test:" << std::endl;
   m_client->InsertionPointService((*m_osb));
 
-  EXPECT_STREQ(DUMPVAL.c_str(), m_strbuf.str().c_str());
+  EXPECT_STREQ(DUMPVAL_CLT.c_str(), m_strbuf.str().c_str());
+  EXPECT_STREQ(DUMPVAL_SRV.c_str(), m_strbuf_srv.str().c_str());
 
   (*m_osb) << "**[ Shutdown server:" << std::endl;
   m_server->Shutdown();
@@ -119,7 +139,7 @@ public:
   std::ostream *m_osb;
   std::stringbuf m_strbuf_srv;
   std::ostream *m_osb_srv;
-  const std::string DUMPVAL = "**[ CompilationUnitStartService RPC test:\n" \
+  const std::string DUMPVAL_CLT = "**[ CompilationUnitStartService RPC test:\n" \
     "---===[> Client send:\n"                                           \
     "[CompilationUnitStartRequest]\n"                                   \
     "CUnit filename: FooBar.cc\n"                                       \
@@ -160,6 +180,41 @@ public:
     "---===[> Server responded:\n"                                      \
     "[EdgeResponse]\n"                                                  \
     "";
+  const std::string DUMPVAL_SRV = "---===[> Client sent:\n" \
+    "[CompilationUnitStartRequest]\n"                       \
+    "CUnit filename: FooBar.cc\n"                           \
+    "---===[> Server respond:\n"                            \
+    "[CompilationUnitStartResponse]\n"                      \
+    "---===[> Client sent:\n"                               \
+    "[CompilationUnitEndRequest]\n"                         \
+    "---===[> Server respond:\n"                            \
+    "[CompilationUnitEndResponse]\n"                        \
+    "---===[> Client sent:\n"                               \
+    "[FunctionRequest]\n"                                   \
+    "  CUnit name: FooBar.cc\n"                             \
+    "  CFun name: Foo\n"                                    \
+    "---===[> Server respond:\n"                            \
+    "[FunctionResponse]\n"                                  \
+    "---===[> Client sent:\n"                               \
+    "[BasicBlockRequest]\n"                                 \
+    "  CUnit name: FooBar.cc\n"                             \
+    "  CFun name: Foo\n"                                    \
+    "  BB name: BB3\n"                                      \
+    "---===[> Server respond:\n"                            \
+    "[BasicBlockResponse]\n"                                \
+    "---===[> Client sent:\n"                               \
+    "[EdgeRequest]\n"                                       \
+    "  Start BB: \n"                                        \
+    "    | CUnit name: FooBar.cc\n"                         \
+    "    | CFun name: Foo\n"                                \
+    "    | BB name: BB2\n"                                  \
+    "  End BB: \n"                                          \
+    "    | CUnit name: FooBaz.cc\n"                         \
+    "    | CFun name: Baz\n"                                \
+    "    | BB name: BB5\n"                                  \
+    "  Branch kind: EDGE_FALLBACK_BRANCH\n"                 \
+    "---===[> Server respond:\n"                            \
+    "[EdgeResponse]\n";
 
   CfgCollectionServicesClientServerTests()
   {
@@ -212,7 +267,8 @@ TEST_F(CfgCollectionServicesClientServerTests, ClientServerOptimalTest)
   (*m_osb) << "**[ EdgeService RPC test:" << std::endl;
   m_client->EdgeService((*m_osb));
   
-  EXPECT_STREQ(DUMPVAL.c_str(), m_strbuf.str().c_str());
+  EXPECT_STREQ(DUMPVAL_CLT.c_str(), m_strbuf.str().c_str());
+  EXPECT_STREQ(DUMPVAL_SRV.c_str(), m_strbuf_srv.str().c_str());
 
   (*m_osb) << "**[ Shutdown server:" << std::endl;
   m_server->Shutdown();
@@ -236,7 +292,7 @@ public:
   std::ostream *m_osb;
   std::stringbuf m_strbuf_srv;
   std::ostream *m_osb_srv;
-  const std::string DUMPVAL = "**[ StartCfgCollectionService RPC test:\n" \
+  const std::string DUMPVAL_CLT = "**[ StartCfgCollectionService RPC test:\n" \
     "---===[> Client send:\n"                                           \
     "[StartCfgCollectionRequest]\n"                                     \
     "build name: gRPC test Client build\n"                              \
@@ -279,6 +335,45 @@ public:
     "   original length: 34\n"                                          \
     "   modified length: 65\n"                                          \
     "";
+  const std::string DUMPVAL_SRV = "---===[> Client sent:\n" \
+    "[StartCfgCollectionRequest]\n"                         \
+    "build name: gRPC test Client build\n"                  \
+    "number cunits: 16\n"                                   \
+    "cpad_config: <cpad_config></cpad_config>\n"            \
+    "---===[> Server respond:\n"                            \
+    "[StartCfgCollectionResponse]\n"                        \
+    "cpad config status: 1\n"                               \
+    "uuid: 64626661-3533-3637-2d65-6464342d3436\n"          \
+    "---===[> Client sent:\n"                               \
+    "[EndCfgCollectionRequest]\n"                           \
+    "uuid: 6e67755f-ef1b-4698-875b-5fa86d256c39\n"          \
+    "---===[> Server respond:\n"                            \
+    "[EndCfgCollectionResponse]\n"                          \
+    "apex allocation status: 1\n"                           \
+    "apex allocation message: APEX Allocated!\n"            \
+    "---===[> Client sent:\n"                               \
+    "[StartCfgToolingRequest]\n"                            \
+    "uuid: 7235596a-9332-458c-b156-d6bdb673655e\n"          \
+    "---===[> Server respond:\n"                            \
+    "[StartCfgToolingResponse]\n"                           \
+    "---===[> Client sent:\n"                               \
+    "[EndCfgToolingRequest]\n"                              \
+    "uuid: b71cc017-0647-47f0-b605-0eb7c1426cf1\n"          \
+    "---===[> Server respond:\n"                            \
+    "[EndCfgToolingResponse]\n"                             \
+    "statistics for BB 'BB1' is: \n"                        \
+    "   original length: 10\n"                              \
+    "   modified length: 15\n"                              \
+    "statistics for BB 'BB2' is: \n"                        \
+    "   original length: 12\n"                              \
+    "   modified length: 19\n"                              \
+    "statistics for BB 'BB3' is: \n"                        \
+    "   original length: 14\n"                              \
+    "   modified length: 17\n"                              \
+    "statistics for BB 'BB4' is: \n"                        \
+    "   original length: 34\n"                              \
+    "   modified length: 65\n";
+
 
   BuildMngtServicesClientServerTests()
   {
@@ -325,7 +420,8 @@ TEST_F(BuildMngtServicesClientServerTests, ClientServerOptimalTest)
   (*m_osb) << "**[ EndCfgToolingService RPC test:" << std::endl;
   m_client->EndCfgToolingService((*m_osb));
   
-  EXPECT_STREQ(DUMPVAL.c_str(), m_strbuf.str().c_str());
+  EXPECT_STREQ(DUMPVAL_CLT.c_str(), m_strbuf.str().c_str());
+  EXPECT_STREQ(DUMPVAL_SRV.c_str(), m_strbuf_srv.str().c_str());
 
   (*m_osb) << "**[ Shutdown server:" << std::endl;
   m_server->Shutdown();
