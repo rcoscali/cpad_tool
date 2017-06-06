@@ -2,7 +2,9 @@
 // Copyright ©2017 NagraFrance
 //
 
-#include <uuid/uuid.h>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+//#include <boost/uuid/string_generator.hpp>
 
 #include "BuildMngtMsg.h"
 
@@ -114,13 +116,12 @@ cpad::build_mngt::StartCfgCollectionResponseHelper::serialize(char *buffer)
 void
 cpad::build_mngt::StartCfgCollectionResponseHelper::dump(std::ostream &osb)
 {
-  char uuid_str[50];
-  memset(uuid_str, 0, 50);
-  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
-
+  boost::uuids::uuid u;
+  std::copy(uuid().begin(), uuid().end(), u.begin());
+  
   osb << "[StartCfgCollectionResponse]" << std::endl;
   osb << "cpad config status: " << cpad_config_status() << std::endl;
-  osb << "uuid: " << uuid_str << std::endl;
+  osb << "uuid: " << u << std::endl;
 }
 
 cpad::build_mngt::EndCfgCollectionRequestHelper::EndCfgCollectionRequestHelper(std::string uuid)
@@ -168,12 +169,11 @@ cpad::build_mngt::EndCfgCollectionRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgCollectionRequestHelper::dump(std::ostream &osb)
 {
-  char uuid_str[50];
-  memset(uuid_str, 0, 50);
-  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
+  boost::uuids::uuid u;
+  std::copy(uuid().begin(), uuid().end(), u.begin());
 
   osb << "[EndCfgCollectionRequest]" << std::endl;
-  osb << "uuid: " << uuid_str << std::endl;
+  osb << "uuid: " << u << std::endl;
 }
 
 cpad::build_mngt::EndCfgCollectionResponseHelper::EndCfgCollectionResponseHelper(::cpad::build_mngt::EndCfgCollectionResponse_ApexAllocationStatus apex_allocation_status,
@@ -275,12 +275,11 @@ cpad::build_mngt::StartCfgToolingRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::StartCfgToolingRequestHelper::dump(std::ostream &osb)
 {
-  char uuid_str[50];
-  memset(uuid_str, 0, 50);
-  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
+  boost::uuids::uuid u;
+  std::copy(uuid().begin(), uuid().end(), u.begin());
 
   osb << "[StartCfgToolingRequest]" << std::endl;
-  osb << "uuid: " << uuid_str << std::endl;
+  osb << "uuid: " << u << std::endl;
 }
 
 cpad::build_mngt::StartCfgToolingResponseHelper::StartCfgToolingResponseHelper()
@@ -374,12 +373,11 @@ cpad::build_mngt::EndCfgToolingRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgToolingRequestHelper::dump(std::ostream &osb)
 {
-  char uuid_str[50];
-  memset(uuid_str, 0, 50);
-  uuid_unparse_lower((const unsigned char *)uuid().c_str(), uuid_str);
-  
+  boost::uuids::uuid u;
+  std::copy(uuid().begin(), uuid().end(), u.begin());
+
   osb << "[EndCfgToolingRequest]" << std::endl;
-  osb << "uuid: " << uuid_str << std::endl;
+  osb << "uuid: " << u << std::endl;
 }
 
 cpad::build_mngt::EndCfgToolingResponseHelper::EndCfgToolingResponseHelper(::google::protobuf::Map< ::std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> const& statistics)
@@ -427,12 +425,12 @@ cpad::build_mngt::EndCfgToolingResponseHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgToolingResponseHelper::dump(std::ostream &osb)
 {
-  auto& stats = statistics();
+  auto stats = statistics();
   std::map<std::string, ::cpad::build_mngt::EndCfgToolingResponse_BbStat> ordered_map(stats.begin(), stats.end());
   osb << "[EndCfgToolingResponse]" << std::endl;
-  for (const auto& stat : ordered_map)
+  for (const auto stat : ordered_map)
     {
-      const auto& bb_stat = stat.second;
+      const auto bb_stat = stat.second;
       osb << "statistics for BB '" << stat.first << "' is: " << std::endl;
       osb << "   original length: " << bb_stat.bb_original_length() << std::endl;
       osb << "   modified length: " << bb_stat.bb_modified_length() << std::endl;
