@@ -14,13 +14,16 @@ TARGET_GXX ?= $(BUILD_GXX)
 AR ?= ar
 AR_CMD ?= $(AR) -rv
 
+# CPAD prototype (obsolete, we decided to use Boost Graph Library)
 CPAD_SRCS = \
 	main.cc \
 	Filter.cc \
 	Cpad.cc \
 	CUnit.cc \
 	Func.cc 
+CPAD_OBJS = $(CPAD_SRCS:%.cc=%.o)
 
+# CPAD cmd
 CPAD_CMD_SRCS = \
 	cpad_cmd.cc \
 	cfg_request.pb.cc \
@@ -30,7 +33,9 @@ CPAD_CMD_SRCS = \
 	InsertionPointMsg.cc \
 	CompilationUnitMsg.cc \
 	BuildMngtMsg.cc
+CPAD_CMD_OBJS = $(CPAD_CMD_SRCS:%.cc=%.o)
 
+# Config prototype (obsolete)
 CFG_SRCS = \
 	cfgtest.cc \
 	Graph.cc \
@@ -38,7 +43,9 @@ CFG_SRCS = \
 	CUnit.cc \
 	Node.cc \
 	Edge.cc
+CFG_OBJS = $(CFG_SRCS:%.cc=%.o)
 
+# Server prototype (obsolete, we decided to go with grpc)
 SRV_SRCS = \
 	srv_main.cc \
 	Server.cc \
@@ -52,7 +59,9 @@ SRV_SRCS = \
 	BasicBlockMsg.cc \
 	EdgeMsg.cc \
 	BuildMngtMsg.cc
+SRV_OBJS = $(SRV_SRCS:%.cc=%.o)
 
+# Client prototype (obsolete, we decided to go with grpc)
 CLT_SRCS = \
 	clt_main.cc \
 	plugin_request.pb.cc \
@@ -65,7 +74,9 @@ CLT_SRCS = \
 	BasicBlockMsg.cc \
 	EdgeMsg.cc \
 	BuildMngtMsg.cc
+CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
 
+# All messaging objects tests (6 tests per class)
 MSG_TESTS_SRCS = \
 	tests/VersionRequestTest.cc \
 	tests/VersionResponseTest.cc \
@@ -90,50 +101,7 @@ MSG_TESTS_SRCS = \
 	tests/EdgeRequestTest.cc \
 	tests/EdgeResponseTest.cc
 
-GRPC_SRV_PLUGIN_SERVICES_SRCS = \
-	PluginServices.cc \
-	plugin_request.pb.cc \
-	plugin_request.grpc.pb.cc \
-	VersionMsg.cc \
-	InsertionPointMsg.cc
-
-GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS = \
-	CfgCollectionServices.cc \
-	cfg_request.pb.cc \
-	cfg_request.grpc.pb.cc \
-	CompilationUnitMsg.cc \
-	FunctionMsg.cc \
-	BasicBlockMsg.cc \
-	EdgeMsg.cc
-
-GRPC_SRV_BUILD_MNGT_SERVICES_SRCS = \
-	BuildMngtServices.cc \
-	build_mngt.pb.cc \
-	build_mngt.grpc.pb.cc \
-	BuildMngtMsg.cc
-
-GRPC_CLT_PLUGIN_SERVICES_SRCS = \
-	PluginServicesClient.cc \
-	plugin_request.pb.cc \
-	plugin_request.grpc.pb.cc \
-	VersionMsg.cc \
-	InsertionPointMsg.cc
-
-GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS = \
-	CfgCollectionServicesClient.cc \
-	cfg_request.pb.cc \
-	cfg_request.grpc.pb.cc \
-	CompilationUnitMsg.cc \
-	FunctionMsg.cc \
-	BasicBlockMsg.cc \
-	EdgeMsg.cc
-
-GRPC_CLT_BUILD_MNGT_SERVICES_SRCS = \
-	BuildMngtServicesClient.cc \
-	build_mngt.pb.cc \
-	build_mngt.grpc.pb.cc \
-	BuildMngtMsg.cc
-
+# Library for tests
 LIBCPAD_OBJS = \
 	plugin_request.pb.o \
 	VersionMsg.o \
@@ -146,70 +114,152 @@ LIBCPAD_OBJS = \
 	build_mngt.pb.o \
 	BuildMngtMsg.o
 
-CPAD_OBJS = $(CPAD_SRCS:%.cc=%.o)
-SRV_OBJS = $(SRV_SRCS:%.cc=%.o)
-CLT_OBJS = $(CLT_SRCS:%.cc=%.o)
-CFG_OBJS = $(CFG_SRCS:%.cc=%.o)
-CPAD_CMD_OBJS = $(CPAD_CMD_SRCS:%.cc=%.o)
+# gRPC server for services in plugin_request.proto
+GRPC_SRV_PLUGIN_SERVICES_SRCS = \
+	plugin_request.pb.cc \
+	plugin_request.grpc.pb.cc \
+	PluginServices.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc
+
+# gRPC server for services in cfg_request.proto
+GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS = \
+	cfg_request.pb.cc \
+	cfg_request.grpc.pb.cc \
+	CfgCollectionServices.cc \
+	CompilationUnitMsg.cc \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc
+
+# gRPC server for services in build_mngt.proto
+GRPC_SRV_BUILD_MNGT_SERVICES_SRCS = \
+	build_mngt.pb.cc \
+	build_mngt.grpc.pb.cc \
+	BuildMngtServices.cc \
+	BuildMngtMsg.cc
+
+# gRPC client for services in plugin_request.proto
+GRPC_CLT_PLUGIN_SERVICES_SRCS = \
+	plugin_request.pb.cc \
+	plugin_request.grpc.pb.cc \
+	PluginServicesClient.cc \
+	VersionMsg.cc \
+	InsertionPointMsg.cc
+
+# gRPC client for services in cfg_request.proto
+GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS = \
+	cfg_request.pb.cc \
+	cfg_request.grpc.pb.cc \
+	CfgCollectionServicesClient.cc \
+	CompilationUnitMsg.cc \
+	FunctionMsg.cc \
+	BasicBlockMsg.cc \
+	EdgeMsg.cc
+
+# gRPC client for services in build_mngt.proto
+GRPC_CLT_BUILD_MNGT_SERVICES_SRCS = \
+	build_mngt.pb.cc \
+	build_mngt.grpc.pb.cc \
+	BuildMngtServicesClient.cc \
+	BuildMngtMsg.cc
+
+#
+# For building one exe per test, we rename the object file
+# for server from <SVC>Services.o to <SVC>ServicesSvc.o
+# and
+# for client from <SVC>ServicesClient.o to <SVC>ServicesClt.o
+# This way we build server/client
+# with <SVC>ServicesSvc.o/<SVC>ServicesClt.o for one exe per test
+# and
+# with <SVC>Services.o/<SVC>ServicesClient.o for one exe for all tests
+#
+ifeq ($(SINGLE_TEST_EXE),no)
+GRPC_SRV_PLUGIN_SERVICES_OBJS = $(subst PluginServices.o,PluginServicesSrv.o,$(GRPC_SRV_PLUGIN_SERVICES_SRCS:%.cc=%.o))
+GRPC_CLT_PLUGIN_SERVICES_OBJS = $(subst PluginServicesClient.o,PluginServicesClt.o,$(GRPC_CLT_PLUGIN_SERVICES_SRCS:%.cc=%.o))
+else
 GRPC_SRV_PLUGIN_SERVICES_OBJS = $(GRPC_SRV_PLUGIN_SERVICES_SRCS:%.cc=%.o)
 GRPC_CLT_PLUGIN_SERVICES_OBJS = $(GRPC_CLT_PLUGIN_SERVICES_SRCS:%.cc=%.o)
+endif
+
+ifeq ($(SINGLE_TEST_EXE),no)
+GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS = $(subst CfgCollectionServices.o,CfgCollectionServicesSrv.o,$(GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o))
+GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS = $(subst CfgCollectionServicesClient.o,CfgCollectionServicesClt.o,$(GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o))
+else
 GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_SRV_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
 GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS = $(GRPC_CLT_CFG_COLLECTION_SERVICES_SRCS:%.cc=%.o)
+endif
+
+ifeq ($(SINGLE_TEST_EXE),no)
+GRPC_SRV_BUILD_MNGT_SERVICES_OBJS = $(subst BuildMngtServices.o,BuildMngtServicesSrv.o,$(GRPC_SRV_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o))
+GRPC_CLT_BUILD_MNGT_SERVICES_OBJS = $(subst BuildMngtServicesClient.o,BuildMngtServicesClt.o,$(GRPC_CLT_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o))
+else
 GRPC_SRV_BUILD_MNGT_SERVICES_OBJS = $(GRPC_SRV_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o)
 GRPC_CLT_BUILD_MNGT_SERVICES_OBJS = $(GRPC_CLT_BUILD_MNGT_SERVICES_SRCS:%.cc=%.o)
+endif
 
+# All tests are clients & servers for Plugin, CfgCollection & BuildMngt
+ifeq ($(SINGLE_TEST_EXE),no)
 ALL_TESTS = \
 	PluginServicesSrv \
 	PluginServicesClt \
-	plugin_request.pb.o \
-	plugin_request.grpc.pb.o \
 	CfgCollectionServicesSrv \
 	CfgCollectionServicesClt \
 	BuildMngtServicesSrv \
-	BuildMngtServicesClt
-
-ifeq ($(SINGLE_TEST_EXE),no)
-ALL_TESTS += $(MSG_TESTS_SRCS:%.cc=%)
+	BuildMngtServicesClt \
+	$(MSG_TESTS_SRCS:%.cc=%)
 else
-ALL_TESTS += tests/alltests
+ALL_TESTS = tests/alltests
 endif
 
 ALL_TESTS_OBJS = \
+	plugin_request.pb.o \
+	plugin_request.grpc.pb.o \
+	cfg_request.pb.o \
+	cfg_request.grpc.pb.o \
+	build_mngt.pb.o \
+	build_mngt.grpc.pb.o \
 	$(MSG_TESTS_SRCS:%.cc=%.o) \
 	PluginServicesClient.o \
 	PluginServices.o \
-	plugin_request.pb.o \
-	plugin_request.grpc.pb.o \
 	CfgCollectionServicesClient.o \
 	CfgCollectionServices.o \
-	cfg_request.pb.o \
-	cfg_request.grpc.pb.o \
 	BuildMngtServicesClient.o \
-	BuildMngtServices.o \
-	build_mngt.pb.o \
-	build_mngt.grpc.pb.o
+	BuildMngtServices.o
 
+ifeq ($(SINGLE_TEST_EXE),yes)
+ALL_TESTS_OBJS += tests/alltests.o
+endif
+
+# Location of dir googletest in cloned git repository
 GTEST_DIR = /usr/local/src/misc/googletest/googletest
 
 ifeq ($(SINGLE_TEST_EXE),no)
-GTEST_CPPFLAGS = -isystem $(GTEST_DIR)/include
+GTEST_CPPFLAGS = -USINGLE_TEST_EXE -isystem $(GTEST_DIR)/include
 else
 GTEST_CPPFLAGS = -DSINGLE_TEST_EXE -isystem $(GTEST_DIR)/include
 endif
 
 CXXFLAGS = -g -O1 -std=c++11
 PROTOC := protoc
-PROTOC_FLAGS = --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --proto_path=. --cpp_out=. --grpc_out=.
+PROTOC_FLAGS := --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --proto_path=. --cpp_out=. --grpc_out=.
 
-CPPFLAGS := -I/usr/include/uuid
+CPPFLAGS := -I.
 
 LDFLAGS := -g -O1 -std=c++11
-LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_program_options -lboost_system -luuid -lstdc++ -lpthread -ldl
+LDFLAGS += `pkg-config --libs-only-L grpc++`
+LDFLAGS += `pkg-config --libs-only-L grpc++_reflection`
+LDFLAGS += `pkg-config --libs-only-L protobuf` 
+
+LDLIBS = `pkg-config --libs grpc++`
+LDLIBS += -Wl,--no-as-needed `pkg-config --libs-only-l grpc++_reflection` -Wl,--as-needed 
+LDLIBS += -lboost_program_options -lboost_system -lboost_iostreams 
+LDLIBS += `pkg-config --libs-only-l protobuf` -lstdc++ -lrt -ldl
 
 CPAD_LDLIBS := $(LDLIBS)
 CFG_LDLIBS := -luuid
-SRV_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -lrt -ldl
-CLT_LDLIBS := -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -lprotobuf -lboost_system -lboost_iostreams $(LDLIBS) -lpthread -lrt -ldl
+SRV_LDLIBS := $(LDLIBS)
+CLT_LDLIBS := $(LDLIBS)
 
 %.o: %.cc
 	$(CXX) $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
@@ -227,7 +277,7 @@ endif
 
 .PHONY: all cls clean tests
 
-all: cfgtest cpad tests PluginServicesSrv
+all: cfgtest cpad tests PluginServicesSrv PluginServicesClt CfgCollectionServicesSrv CfgCollectionServicesClt BuildMngtServicesSrv BuildMngtServicesClt
 
 libgtest.a: 
 	$(CXX) -isystem $(GTEST_DIR)/include -I$(GTEST_DIR) -pthread -c $(GTEST_DIR)/src/gtest-all.cc
@@ -236,34 +286,86 @@ libgtest.a:
 libcpad.a: $(LIBCPAD_OBJS)
 	$(AR_CMD) libcpad.a $(LIBCPAD_OBJS)
 
-$(ALL_TESTS): libgtest.a libcpad.a
-
+## Let's add targets for the one exe per test config
 ifeq ($(SINGLE_TEST_EXE),no)
-PluginServicesSrv: $(GRPC_SRV_PLUGIN_SERVICES_OBJS)
+PluginServicesSrv.o: PluginServices.cc
+	$(CXX) -USINGLE_TEST_EXE $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+PluginServicesSrv: libgtest.a libcpad.a $(GRPC_SRV_PLUGIN_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
-PluginServicesClt: $(GRPC_CLT_PLUGIN_SERVICES_OBJS)
+PluginServicesClt.o: PluginServicesClient.cc
+	$(CXX) -USINGLE_TEST_EXE $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+PluginServicesClt: libgtest.a libcpad.a $(GRPC_CLT_PLUGIN_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
-CfgCollectionServicesSrv: $(GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS)
+CfgCollectionServicesSrv.o: CfgCollectionServices.cc
+	$(CXX) -USINGLE_TEST_EXE $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+CfgCollectionServicesSrv: libgtest.a libcpad.a $(GRPC_SRV_CFG_COLLECTION_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
-CfgCollectionServicesClt: $(GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS)
+CfgCollectionServicesClt.o: CfgCollectionServicesClient.cc
+	$(CXX) -USINGLE_TEST_EXE $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+CfgCollectionServicesClt: libgtest.a libcpad.a $(GRPC_CLT_CFG_COLLECTION_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
-BuildMngtServicesSrv: $(GRPC_SRV_BUILD_MNGT_SERVICES_OBJS)
+BuildMngtServicesSrv.o: BuildMngtServices.cc
+	$(CXX) -USINGLE_TEST_EXE $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+BuildMngtServicesSrv: libgtest.a libcpad.a $(GRPC_SRV_BUILD_MNGT_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
-BuildMngtServicesClt: $(GRPC_CLT_BUILD_MNGT_SERVICES_OBJS)
+BuildMngtServicesClt.o: BuildMngtServicesClient.cc
+	$(CXX) -USINGLE_TEST_EXE $(GTEST_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+BuildMngtServicesClt: libgtest.a libcpad.a $(GRPC_CLT_BUILD_MNGT_SERVICES_OBJS)
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I. -pthread $^ `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
 
 tests: $(ALL_TESTS)
 	for t in $(ALL_TESTS); do \
-		./$$t; \
+		if test "$$t" = "PluginServicesSrv"; then \
+			echo "==> Launching plugin_request.proto services server"; \
+			bash -c "./$$t &"; \
+			sleep 1; \
+		elif test "$$t" = "CfgCollectionServicesSrv"; then \
+			echo "==> Launching cfg_request.proto services server"; \
+			bash -c "./$$t &"; \
+			sleep 1; \
+		elif test "$$t" = "BuildMngtServicesSrv"; then \
+			echo "==> Launching build_mngt.proto services server"; \
+			bash -c "./$$t &"; \
+			sleep 1; \
+		elif test "$$t" = "PluginServicesClt"; then \
+			echo "==> Launching plugin_request.proto services client"; \
+			./$$t; \
+			sleep 1; \
+			echo "==> Killing plugin_request.proto services server"; \
+			killall -TERM PluginServicesSrv; \
+			sleep 1; \
+		elif test "$$t" = "CfgCollectionServicesClt"; then \
+			echo "==> Launching cfg_request.proto services client"; \
+			./$$t; \
+			sleep 1; \
+			echo "==> Killing cfg_request.proto services server"; \
+			killall -TERM CfgCollectionServicesSrv; \
+			sleep 1; \
+		elif test "$$t" = "BuildMngtServicesClt"; then \
+			echo "==> Launching build_mngt.proto services client"; \
+			./$$t; \
+			sleep 1; \
+			echo "==> Killing build_mngt.proto services server"; \
+			killall -TERM BuildMngtServicesSrv; \
+			sleep 1; \
+		else \
+			./$$t; \
+		fi; \
 	done
 else
-tests/alltests: tests/alltests.o libgtest.a libcpad.a $(ALL_TESTS_OBJS)
-	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread tests/alltests.o $(ALL_TESTS_OBJS) libcpad.a libgtest.a `pkg-config --libs grpc++` $(CPAD_LDLIBS) -o $@
+tests/alltests: libgtest.a libcpad.a $(ALL_TESTS_OBJS) tests/alltests.o
+	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $(ALL_TESTS_OBJS) libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
 
 tests: $(ALL_TESTS)
 	./tests/alltests
@@ -315,7 +417,7 @@ FunctionMsg.o: cfg_request.pb.cc cfg_request.pb.h FunctionMsg.cc FunctionMsg.h
 BasicBlockMsg.o: cfg_request.pb.cc cfg_request.pb.h BasicBlockMsg.cc BasicBlockMsg.h
 EdgeMsg.o: cfg_request.pb.cc cfg_request.pb.h EdgeMsg.cc EdgeMsg.h
 cfgtest.o: cfgtest.cc Graph.h Func.h CUnit.h Node.h Edge.h
-cpad_cmd.o: plugin_request.pb.cc build_mngt.pb.cc
+cpad_cmd.o: plugin_request.pb.cc cfg_request.pb.cc build_mngt.pb.cc
 ifeq ($(SINGLE_TEST_EXE),yes)
 tests/CompilationUnitEndRequestTest.o: tests/CompilationUnitEndRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitEndResponseTest.o: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
@@ -341,6 +443,12 @@ tests/VersionRequestTest.o: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.
 tests/VersionResponseTest.o: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 tests/alltests.o: tests/alltests.cc
 tests/alltests: tests/alltests.o PluginServices.o PluginServicesClient.o CfgCollectionServices.o CfgCollectionServicesClient.o BuildMngtServices.o BuildMngtServicesClient.o
+PluginServices.o: plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
+PluginServicesClient.o: PluginServicesClient.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
+CfgCollectionServices.o: cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
+CfgCollectionServicesClient.o: cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
+BuildMngtServices.o: build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
+BuildMngtServicesClient.o: build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
 else
 tests/CompilationUnitEndRequestTest: tests/CompilationUnitEndRequestTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
 tests/CompilationUnitEndResponseTest: tests/CompilationUnitEndResponseTest.cc CompilationUnitMsg.o CompilationUnitMsg.h cfg_request.pb.cc cfg_request.pb.h
@@ -364,17 +472,23 @@ tests/StartCfgToolingRequestTest: tests/StartCfgToolingRequestTest.cc BuildMngtM
 tests/StartCfgToolingResponseTest: tests/StartCfgToolingResponseTest.cc BuildMngtMsg.o BuildMngtMsg.h build_mngt.pb.cc build_mngt.pb.h
 tests/VersionRequestTest: tests/VersionRequestTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
 tests/VersionResponseTest: tests/VersionResponseTest.cc VersionMsg.o VersionMsg.h plugin_request.pb.cc plugin_request.pb.h
+PluginServicesSrv.o: PluginServices.cc
+PluginServicesClt.o: PluginServicesClient.cc
+PluginServicesSrv: PluginServicesSrv.o 
+PluginServicesClt: PluginServicesClt.o
+CfgCollectionServicesSrv.o: CfgCollectionServices.cc
+CfgCollectionServicesClt.o: CfgCollectionServicesClient.cc
+CfgCollectionServicesSrv: CfgCollectionServicesSrv.o
+CfgCollectionServicesClt: CfgCollectionServicesClt.o
+BuildMngtServicesSrv.o: BuildMngtServices.cc
+BuildMngtServicesClt.o: BuildMngtServicesClient.cc
+BuildMngtServicesSrv: BuildMngtServicesSrv.o
+BuildMngtServicesClt: BuildMngtServicesClt.o
+PluginServicesSvc.o: plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
+PluginServicesClt.o: PluginServicesClient.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
+CfgCollectionServicesSvc.o: cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
+CfgCollectionServicesClt.o: cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
+BuildMngtServicesSvc.o: build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
+BuildMngtServicesClt.o: build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
 endif
-PluginServicesSrv: PluginServices.o 
-PluginServicesClt: PluginServicesClient.o
-CfgCollectionServicesSrv: CfgCollectionServices.o
-CfgCollectionServicesClt: CfgCollectionServicesClient.o
-BuildMngtServicesSrv: BuildMngtServices.o
-BuildMngtServicesClt: BuildMngtServicesClient.o
-PluginServices.o: PluginServices.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
-PluginServicesClient.o: PluginServicesClient.cc plugin_request.grpc.pb.cc plugin_request.grpc.pb.h plugin_request.pb.cc plugin_request.pb.h 
-CfgCollectionServices.o: CfgCollectionServices.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
-CfgCollectionServicesClient.o: CfgCollectionServicesClient.cc cfg_request.grpc.pb.cc cfg_request.grpc.pb.h cfg_request.pb.cc cfg_request.pb.h 
-BuildMngtServices.o: BuildMngtServices.cc build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
-BuildMngtServicesClient.o: BuildMngtServicesClient.cc build_mngt.grpc.pb.cc build_mngt.grpc.pb.h build_mngt.pb.cc build_mngt.pb.h 
 
