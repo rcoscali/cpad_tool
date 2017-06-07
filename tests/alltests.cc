@@ -245,7 +245,7 @@ public:
     "---===[> Server responded:\n"                                      \
     "[StartCfgCollectionResponse]\n"                                    \
     "cpad config status: 1\n"                                           \
-    "uuid: 64626661-3533-3637-2d65-6464342d3436\n"                      \
+    "uuid: dbfa5367-edd4-4697-9009-403fd71b8fed\n"                      \
     "**[ EndCfgCollectionService RPC test:\n"                           \
     "---===[> Client send:\n"                                           \
     "[EndCfgCollectionRequest]\n"                                       \
