@@ -4,7 +4,7 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
-//#include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 #include "BuildMngtMsg.h"
 
@@ -116,8 +116,8 @@ cpad::build_mngt::StartCfgCollectionResponseHelper::serialize(char *buffer)
 void
 cpad::build_mngt::StartCfgCollectionResponseHelper::dump(std::ostream &osb)
 {
-  boost::uuids::uuid u;
-  std::copy(uuid().begin(), uuid().end(), u.begin());
+  boost::uuids::string_generator gen;
+  boost::uuids::uuid u = gen(uuid());;
   
   osb << "[StartCfgCollectionResponse]" << std::endl;
   osb << "cpad config status: " << cpad_config_status() << std::endl;
@@ -169,8 +169,8 @@ cpad::build_mngt::EndCfgCollectionRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgCollectionRequestHelper::dump(std::ostream &osb)
 {
-  boost::uuids::uuid u;
-  std::copy(uuid().begin(), uuid().end(), u.begin());
+  boost::uuids::string_generator gen;
+  boost::uuids::uuid u = gen(uuid());;
 
   osb << "[EndCfgCollectionRequest]" << std::endl;
   osb << "uuid: " << u << std::endl;
@@ -275,8 +275,8 @@ cpad::build_mngt::StartCfgToolingRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::StartCfgToolingRequestHelper::dump(std::ostream &osb)
 {
-  boost::uuids::uuid u;
-  std::copy(uuid().begin(), uuid().end(), u.begin());
+  boost::uuids::string_generator gen;
+  boost::uuids::uuid u = gen(uuid());;
 
   osb << "[StartCfgToolingRequest]" << std::endl;
   osb << "uuid: " << u << std::endl;
@@ -373,8 +373,8 @@ cpad::build_mngt::EndCfgToolingRequestHelper::serialize(char *buffer)
 void
 cpad::build_mngt::EndCfgToolingRequestHelper::dump(std::ostream &osb)
 {
-  boost::uuids::uuid u;
-  std::copy(uuid().begin(), uuid().end(), u.begin());
+  boost::uuids::string_generator gen;
+  boost::uuids::uuid u = gen(uuid());;
 
   osb << "[EndCfgToolingRequest]" << std::endl;
   osb << "uuid: " << u << std::endl;
