@@ -50,7 +50,7 @@ using cpad::cfg::EdgeResponseHelper;
 class CfgCollectionServicesImpl final : public CfgCollectionServices::Service
 {
  public:
-  explicit CfgCollectionServicesImpl(std::ostream*);
+  explicit CfgCollectionServicesImpl(std::ostream* osb = &std::cout);
   
   virtual ~CfgCollectionServicesImpl();
   
@@ -81,7 +81,6 @@ class CfgCollectionServicesImpl final : public CfgCollectionServices::Service
 
   
  private:
-
   std::ostream* m_osb;
 };
 

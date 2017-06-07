@@ -26,7 +26,7 @@ using grpc::Status;
 class PluginServicesImpl final : public ::cpad::insns::PluginServices::Service
 {
  public:
-  explicit PluginServicesImpl(std::ostream* osb);
+  explicit PluginServicesImpl(std::ostream* osb = &std::cout);
   
   virtual ~PluginServicesImpl();
   

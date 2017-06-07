@@ -43,7 +43,7 @@ using cpad::build_mngt::EndCfgToolingResponseHelper;
 class BuildMngtServicesImpl final : public BuildMngtServices::Service
 {
  public:
-  explicit BuildMngtServicesImpl(std::ostream*);
+  explicit BuildMngtServicesImpl(std::ostream* = &std::cout);
   
   virtual ~BuildMngtServicesImpl();
   

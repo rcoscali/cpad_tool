@@ -103,13 +103,13 @@ CfgCollectionServicesImpl::EdgeService(::grpc::ServerContext* context,
 
 void RunServer(std::string server_address)
 {
-  CfgCollectionServicesImpl *service = new CfgCollectionServicesImpl(&std::cout);
+  CfgCollectionServicesImpl *service = new CfgCollectionServicesImpl();
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   builder.RegisterService((grpc::Service*)service);
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  (*m_osb) << "!! Server listening on " << server_address << std::endl;
+  std::cerr << "!! Server listening on " << server_address << std::endl;
   server->Wait();
 }
 
@@ -134,7 +134,7 @@ int main(int argc, char** argv)
 
   if (vm.count("help"))
     {
-      std::cout << desc << std::endl;
+      std::cerr << desc << std::endl;
     }
   else
     {
@@ -146,11 +146,11 @@ int main(int argc, char** argv)
       
       if (verbose_option)
         {
-          std::cout << "**> Verbosity set to level " << (unsigned int)verbose_option << std::endl;
+          std::cerr << "**> Verbosity set to level " << (unsigned int)verbose_option << std::endl;
           if (vm.count("hostname"))
-            std::cout << "**> Hostname set to '" << vm["hostname"].as<std::string>() << "'" << std::endl;
+            std::cerr << "**> Hostname set to '" << vm["hostname"].as<std::string>() << "'" << std::endl;
           if (vm.count("port"))
-            std::cout << "**> Port set to " << vm["port"].as<unsigned int>() << std::endl;
+            std::cerr << "**> Port set to " << vm["port"].as<unsigned int>() << std::endl;
         }
 
       std::ostringstream server_os;
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
       std::string server_address_str = server_os.str();
 
       if (verbose_option)
-        std::cout << "**> Running server on '" << server_address_str << "'" << std::endl;
+        std::cerr << "**> Running server on '" << server_address_str << "'" << std::endl;
 
       RunServer(server_address_str);
     }
