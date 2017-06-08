@@ -5,20 +5,12 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/program_options.hpp>
-
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/nil_generator.hpp>
 
 #include "BuildMngtServicesClient.h"
-
-namespace po = boost::program_options;
-
-static unsigned int verbose_option = 0;
-static char *hostname_option = (char *)"localhost";
-static unsigned int port_option = 50051;
 
 #define TEST_UUID1_VALUE { 0x6e, 0x67, 0x75, 0x5f, 0xef, 0x1b, 0x46, 0x98, 0x87, 0x5b, 0x5f, 0xa8, 0x6d, 0x25, 0x6c, 0x39 }
 #define TEST_UUID1_STR "6e67755f-ef1b-4698-875b-5fa86d256c39"

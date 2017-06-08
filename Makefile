@@ -268,7 +268,7 @@ CLT_LDLIBS := $(LDLIBS)
 	$(PROTOC) $(PROTOC_FLAGS) $<
 
 ifeq ($(SINGLE_TEST_EXE),no)
-tests/%: libcpad.a libgtest.a tests/%.cc
+tests/%:  tests/%.cc
 	$(CXX) $(CXXFLAGS) $(GTEST_CPPFLAGS) -I$(GTEST_DIR) -I. -pthread $< libcpad.a libgtest.a $(CPAD_LDLIBS) -o $@
 else
 tests/%.o: tests/%.cc

@@ -9,18 +9,10 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 
-#include <boost/program_options.hpp>
-
-namespace po = boost::program_options;
-
 #include "BuildMngtServices.h"
 
 #define TEST_UUID_VALUE { 0xdb, 0xfa, 0x53, 0x67, 0xed, 0xd4, 0x46, 0x97, 0x90, 0x09, 0x40, 0x3f, 0xd7, 0x1b, 0x8f, 0xed }
 #define TEST_UUID_STR "dbfa5367-edd4-4697-9009-403fd71b8fed"
-
-static unsigned int verbose_option = 0;
-static char *hostname_option = (char *)"localhost";
-static unsigned int port_option = 50051;
 
 BuildMngtServicesImpl::BuildMngtServicesImpl(std::ostream* osb)
 {
