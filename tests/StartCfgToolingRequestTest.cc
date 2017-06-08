@@ -2,15 +2,21 @@
 #include <sstream>      // std::stringbuf
 #include <string>       // std::string
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/string_generator.hpp>
+
 #include <gtest/gtest.h>
 
 #include "BuildMngtMsg.h"
 
-#define TEST_UUID_VALUE "\x80\x0c\x0d\xf3\x9f\xd5\x46\x62\x85\xe4\x93\x7d\x6f\xd6\x7f\xf2"
+#define TEST_UUID_VALUE { 0x80, 0x0c, 0x0d, 0xf3, 0x9f, 0xd5, 0x46, 0x62, 0x85, 0xe4, 0x93, 0x7d, 0x6f, 0xd6, 0x7f, 0xf2 }
+#define TEST_UUID_STR "800c0df3-9fd5-4662-85e4-937d6fd67ff2"
 
 class StartCfgToolingRequestTests : public ::testing::Test
 {
 public:
+  static constexpr const boost::uuids::uuid& u = TEST_UUID_VALUE;
   char *buffer;
   ::cpad::build_mngt::StartCfgToolingRequestHelper *sccrh1;
   std::stringbuf strbuf;
@@ -22,7 +28,7 @@ public:
   {
     buffer = new char[128];
     memset(buffer, 0, 128);
-    sccrh1 = new ::cpad::build_mngt::StartCfgToolingRequestHelper(std::string(TEST_UUID_VALUE));
+    sccrh1 = new ::cpad::build_mngt::StartCfgToolingRequestHelper(to_string(u));
     osb = new std::ostream(&strbuf);
   }
 
@@ -44,14 +50,14 @@ public:
 
 TEST_F(StartCfgToolingRequestTests, DefaultConstructor)
 {
-  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(std::string(TEST_UUID_VALUE));
-  EXPECT_STREQ(sccrh.uuid().c_str(), TEST_UUID_VALUE);
+  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(to_string(u));
+  EXPECT_STREQ(sccrh.uuid().c_str(), TEST_UUID_STR);
 }
 
 TEST_F(StartCfgToolingRequestTests, DeserializeConstructor)
 {
   ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh2(buffer);
-  EXPECT_STREQ(sccrh2.uuid().c_str(), TEST_UUID_VALUE);
+  EXPECT_STREQ(sccrh2.uuid().c_str(), TEST_UUID_STR);
 }
 
 TEST_F(StartCfgToolingRequestTests, DeserializeConstructorFromEmptyString)
@@ -68,7 +74,7 @@ TEST_F(StartCfgToolingRequestTests, CopyConstructor)
 
 TEST_F(StartCfgToolingRequestTests, SerializeMethod)
 {
-  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(std::string(TEST_UUID_VALUE));
+  ::cpad::build_mngt::StartCfgToolingRequestHelper sccrh(to_string(u));
   char local_buffer[128];
   memset(local_buffer, 0, 128);
   sccrh.serialize(local_buffer);    

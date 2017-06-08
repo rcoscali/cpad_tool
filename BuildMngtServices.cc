@@ -5,7 +5,22 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/string_generator.hpp>
+
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
 #include "BuildMngtServices.h"
+
+#define TEST_UUID_VALUE { 0xdb, 0xfa, 0x53, 0x67, 0xed, 0xd4, 0x46, 0x97, 0x90, 0x09, 0x40, 0x3f, 0xd7, 0x1b, 0x8f, 0xed }
+#define TEST_UUID_STR "dbfa5367-edd4-4697-9009-403fd71b8fed"
+
+static unsigned int verbose_option = 0;
+static char *hostname_option = (char *)"localhost";
+static unsigned int port_option = 50051;
 
 BuildMngtServicesImpl::BuildMngtServicesImpl(std::ostream* osb)
 {
@@ -24,9 +39,10 @@ BuildMngtServicesImpl::StartCfgCollectionService(::grpc::ServerContext* context,
   (*m_osb) << "---===[> Client sent:" << std::endl;
   StartCfgCollectionRequestHelper sccrh(request);
   sccrh.dump((*m_osb));
-  
+
+  boost::uuids::uuid u = TEST_UUID_VALUE;
   response->set_cpad_config_status(StartCfgCollectionResponse::CPAD_CONFIG_OK);
-  response->set_uuid(std::string("dbfa5367-edd4-4697-9009-403fd71b8fed"));
+  response->set_uuid(to_string(u));
   
   (*m_osb) << "---===[> Server respond:" << std::endl;
   StartCfgCollectionResponseHelper sccresph((const StartCfgCollectionResponse*)response);
@@ -113,13 +129,13 @@ namespace po = boost::program_options;
 void
 RunServer(std::string server_address)
 {
-  BuildMngtServicesImpl *service = new BuildMngtServicesImpl(NULL);
+  BuildMngtServicesImpl *service = new BuildMngtServicesImpl();
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
   builder.RegisterService((grpc::Service*)service);
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  std::cout << "!! Server listening on " << server_address << std::endl;
+  std::cerr << "!! Server listening on " << server_address << std::endl;
   server->Wait();
 }
 
@@ -149,7 +165,7 @@ main(int argc, char** argv)
 
   if (vm.count("help"))
     {
-      std::cout << desc << std::endl;
+      std::cerr << desc << std::endl;
     }
   else
     {
@@ -161,11 +177,11 @@ main(int argc, char** argv)
       
       if (verbose_option)
         {
-          std::cout << "**> Verbosity set to level " << (unsigned int)verbose_option << std::endl;
+          std::cerr << "**> Verbosity set to level " << (unsigned int)verbose_option << std::endl;
           if (vm.count("hostname"))
-            std::cout << "**> Hostname set to '" << vm["hostname"].as<std::string>() << "'" << std::endl;
+            std::cerr << "**> Hostname set to '" << vm["hostname"].as<std::string>() << "'" << std::endl;
           if (vm.count("port"))
-            std::cout << "**> Port set to " << vm["port"].as<unsigned int>() << std::endl;
+            std::cerr << "**> Port set to " << vm["port"].as<unsigned int>() << std::endl;
         }
 
       std::ostringstream server_os;
@@ -173,7 +189,7 @@ main(int argc, char** argv)
       std::string server_address_str = server_os.str();
 
       if (verbose_option)
-        std::cout << "**> Running server on '" << server_address_str << "'" << std::endl;
+        std::cerr << "**> Running server on '" << server_address_str << "'" << std::endl;
 
       RunServer(server_address_str);
     }
